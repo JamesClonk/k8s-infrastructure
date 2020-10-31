@@ -1,0 +1,15 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #6326 from kolorful/master...'
+      sha: 9b683e40555fdfaba453d826306bc9c03880dc16
+      tags:
+      - ingress-nginx-3.7.1
+    path: .
+  path: vendor/github.com/kubernetes/ingress-nginx
+- contents:
+  - directory: {}
+    path: .
+  path: ingress/templates
+kind: LockConfig

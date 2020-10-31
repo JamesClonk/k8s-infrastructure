@@ -1,0 +1,21 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "name":"ingress-nginx-controller"}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"controller"}), expects=1
+      - name: controller
+        ports:
+        #@overlay/match by=overlay.subset({"name":"http"}), expects=1
+        - name: http
+          containerPort: 80
+          hostPort: 80
+          protocol: TCP
+        #@overlay/match by=overlay.subset({"name":"https"}), expects=1
+        - name: https
+          containerPort: 443
+          hostPort: 443
+          protocol: TCP

@@ -1,0 +1,19 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "name":"ingress-nginx-controller"}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"controller"}), expects=1
+      - name: controller
+        resources:
+          #@overlay/match missing_ok=True
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          #@overlay/match missing_ok=True
+          requests:
+            cpu: 250m
+            memory: 128Mi

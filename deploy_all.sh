@@ -7,7 +7,7 @@ deployments=(
 	"k3s"
 
 	# we need some fancy routing here..
-	"ingress"
+	"ingress-nginx"
 )
 
 # deploy it all, all of it!

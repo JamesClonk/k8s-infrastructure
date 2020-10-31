@@ -1,0 +1,24 @@
+---
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.11.0
+
+directories:
+- path: vendor/github.com/kubernetes/ingress-nginx
+  contents:
+  - path: .
+    git:
+      url: https://github.com/kubernetes/ingress-nginx
+      ref: ingress-nginx-3.7.1
+    includePaths:
+    - deploy/static/provider/baremetal/*
+- path: ingress-nginx/templates
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
+    includePaths:
+    - deploy.yaml
+    excludePaths:
+    - LICENSE
+    - kustomization.yaml
