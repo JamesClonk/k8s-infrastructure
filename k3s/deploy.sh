@@ -43,3 +43,11 @@ echo "checking for server [${NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${NODE_NAME}" \
 	|| hcloud server create --name "${NODE_NAME}" --type "${NODE_TYPE}" --image "${NODE_IMAGE}" \
 	--ssh-key "${SSH_KEY_NAME}" --network "${PRIVATE_NETWORK_NAME}" --location "${NODE_LOCATION}"
+
+echo "installing k3s on server [${NODE_NAME}] ..."
+# TODO: query k8s api, if OK then no need to reinstall k3s??? or do we run k3s upgrade command here?
+hcloud server ssh "${NODE_NAME}" 'curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable=traefik --disable=servicelb" sh -'
+mkdir -p $HOME/.kube
+SERVER_IP=$(hcloud server describe ${NODE_NAME} -o format='{{ .PublicNet.IPv4.IP }}')
+#hcloud server ssh "${NODE_NAME}" 'cat /etc/rancher/k3s/k3s.yaml' | perl -pe "s/127.0.0.1/$IP/g" > "$HOME/.kube/${NODE_NAME}"
+
