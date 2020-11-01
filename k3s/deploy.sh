@@ -42,7 +42,8 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${NHETZNER_ODE_NAME}" 1>/dev/null \
 	|| (hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 	--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-	&& sleep 30) # wait half a minute for server to be started up
+	&& sleep 30)
+	# wait half a minute for server to be ready for sure
 echo " "
 
 ########################################################################################################################
