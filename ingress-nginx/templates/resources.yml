@@ -9,5 +9,5 @@ spec:
       containers:
       #@overlay/match by=overlay.subset({"name":"controller"}), expects=1
       - name: controller
-        #@overlay/replace missing_ok=True
+        #@overlay/replace
         resources: #@ data.values.ingress.resources

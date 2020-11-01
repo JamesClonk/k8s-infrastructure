@@ -43,6 +43,3 @@ install_tool_from_tarball "k9s" "https://github.com/derailed/k9s/releases/downlo
 if [ -z "${KUBE_DOMAIN}" ]; then
 	export KUBE_DOMAIN="127.0.0.1.xip.io"
 fi
-if [ -z "${KUBECONFIG}" ]; then
-	export KUBECONFIG="$HOME/.kube/hetzner-k3s"
-fi
