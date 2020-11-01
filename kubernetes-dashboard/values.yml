@@ -1,0 +1,9 @@
+#@data/values
+---
+domains:
+- ${KUBE_DOMAIN}
+
+dashboard:
+  auth: "${DASHBOARD_BASIC_AUTH}"
+  username: "${DASHBOARD_BASIC_AUTH_USERNAME}"
+  password: "${DASHBOARD_BASIC_AUTH_PASSWORD}"

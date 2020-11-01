@@ -11,5 +11,17 @@ directories:
 - contents:
   - directory: {}
     path: .
-  path: ingress/templates
+  path: ingress-nginx/templates/upstream
+- contents:
+  - git:
+      commitTitle: Bump version to 2.0.4 (#5498)...
+      sha: 4da3dfcd15a11011f950d63ba76c03f73b33fe96
+      tags:
+      - v2.0.4
+    path: .
+  path: vendor/github.com/kubernetes/dashboard
+- contents:
+  - directory: {}
+    path: .
+  path: kubernetes-dashboard/templates/upstream
 kind: LockConfig

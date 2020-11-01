@@ -12,7 +12,7 @@ directories:
       ref: ingress-nginx-3.7.1
     includePaths:
     - deploy/static/provider/baremetal/*
-- path: ingress-nginx/templates
+- path: ingress-nginx/templates/upstream
   contents:
   - path: .
     directory:
@@ -22,3 +22,21 @@ directories:
     excludePaths:
     - LICENSE
     - kustomization.yaml
+
+- path: vendor/github.com/kubernetes/dashboard
+  contents:
+  - path: .
+    git:
+      url: https://github.com/kubernetes/dashboard
+      ref: v2.0.4
+    includePaths:
+    - aio/deploy/*
+- path: kubernetes-dashboard/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/kubernetes/dashboard/aio/deploy
+    includePaths:
+    - recommended.yaml
+    excludePaths:
+    - LICENSE

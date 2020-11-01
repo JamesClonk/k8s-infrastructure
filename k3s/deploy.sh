@@ -55,10 +55,10 @@ hcloud server ssh "${NODE_NAME}" \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
 mkdir -p $HOME/.kube || true
-hcloud server ssh "${NODE_NAME}" 'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${NODE_IP}/g" > "$HOME/.kube/${NODE_NAME}"
-kubectl --kubeconfig="$HOME/.kube/${NODE_NAME}" cluster-info
+hcloud server ssh "${NODE_NAME}" 'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${NODE_IP}/g" > "${KUBECONFIG}"
+kubectl cluster-info
 echo " "
-kubectl --kubeconfig="$HOME/.kube/${NODE_NAME}" get nodes
+kubectl get nodes
 echo " "
-kubectl --kubeconfig="$HOME/.kube/${NODE_NAME}" top nodes
+kubectl top nodes
 echo " "

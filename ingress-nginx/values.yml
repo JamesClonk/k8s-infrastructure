@@ -1,0 +1,10 @@
+#@data/values
+---
+ingress:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

@@ -6,8 +6,11 @@ deployments=(
 	# setup cluster on hetzner cloud
 	"k3s"
 
-	# we need some fancy routing here..
+	# now we need some fancy ingress routing
 	"ingress-nginx"
+
+	# and it never hurts to have a dashboard!
+	"kubernetes-dashboard"
 )
 
 # deploy it all, all of it!

@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+source configuration.env
 
 function install_tool {
 	TOOL_NAME=$1
@@ -39,55 +40,9 @@ install_tool "kwt" "https://github.com/k14s/kwt/releases/download/v0.0.6/kwt-lin
 install_tool_from_tarball "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz"
 install_tool_from_tarball "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
 
-# vars
-export KUBE_APP_NAME=$(basename "$PWD")
-
-# disable diff on CI
-export KAPP_DIFF="--diff-changes"
-if [ ! -z "${CI}" ]; then
-	export KAPP_DIFF=""
-fi
-if [ ! -z "${CIRCLECI}" ]; then
-	export KAPP_DIFF=""
-fi
-if [ ! -z "${CIRCLE_JOB}" ]; then
-	export KAPP_DIFF=""
-fi
-if [ ! -z "${TRAVIS}" ]; then
-	export KAPP_DIFF=""
-fi
-
-# which env are we targetting?
-if [ -z "${KUBE_ENVIRONMENT}" ]; then
-	export KUBE_ENVIRONMENT=$(kubectl config current-context)
-	if [ "${KUBE_ENVIRONMENT}" == "minikube" ]; then
-		export KUBE_ENVIRONMENT="local"
-	fi
-	if [ "${KUBE_ENVIRONMENT}" == "microk8s" ]; then
-		export KUBE_ENVIRONMENT="local"
-	fi
-	if [ "${KUBE_ENVIRONMENT}" == "kind" ]; then
-		export KUBE_ENVIRONMENT="local"
-	fi
-	if [ "${KUBE_ENVIRONMENT}" == "scaleway" ]; then
-		export KUBE_ENVIRONMENT="prod"
-	fi
-	if [ "${KUBE_ENVIRONMENT}" == "hetzner" ]; then
-		export KUBE_ENVIRONMENT="prod"
-	fi
-	if [ "${KUBE_ENVIRONMENT}" == "production" ]; then
-		export KUBE_ENVIRONMENT="prod"
-	fi
-fi
-
-# what's the domain for that env?
-export KUBE_DOMAIN="127.0.0.1.xip.io"
-if [ "${KUBE_ENVIRONMENT}" == "local" ]; then
+if [ -z "${KUBE_DOMAIN}" ]; then
 	export KUBE_DOMAIN="127.0.0.1.xip.io"
 fi
-if [ "${KUBE_ENVIRONMENT}" == "test" ]; then
-	export KUBE_DOMAIN="test.jamesclonk.io"
-fi
-if [ "${KUBE_ENVIRONMENT}" == "prod" ]; then
-	export KUBE_DOMAIN="jamesclonk.io"
+if [ -z "${KUBECONFIG}" ]; then
+	export KUBECONFIG="$HOME/.kube/hetzner-k3s"
 fi
