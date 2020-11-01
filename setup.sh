@@ -2,6 +2,22 @@
 set -e
 source configuration.env
 
+function retry() {
+    local -r -i max_attempts="$1"; shift
+    local -r -i sleep_time="$1"; shift
+    local -i attempt_num=1
+    until "$@"; do
+        if (( attempt_num == max_attempts ))
+        then
+            echo "#$attempt_num failures!"
+            return 1
+        else
+            echo "#$(( attempt_num++ )): trying again in $sleep_time seconds ..."
+            sleep $sleep_time
+        fi
+    done
+}
+
 function install_tool {
 	TOOL_NAME=$1
 	TOOL_URL=$2
