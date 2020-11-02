@@ -3,20 +3,26 @@ set -e
 set -u
 source configuration.env
 
+function basic_auth() {
+	local -r -i username="$1"; shift
+	local -r -i password="$1"; shift
+	echo "${username}:$(openssl passwd -apr1 \"${password}\")"
+}
+
 function retry() {
-    local -r -i max_attempts="$1"; shift
-    local -r -i sleep_time="$1"; shift
-    local -i attempt_num=1
-    until "$@"; do
-        if (( attempt_num == max_attempts ))
-        then
-            echo "#$attempt_num failures!"
-            return 1
-        else
-            echo "#$(( attempt_num++ )): trying again in $sleep_time seconds ..."
-            sleep $sleep_time
-        fi
-    done
+	local -r -i max_attempts="$1"; shift
+	local -r -i sleep_time="$1"; shift
+	local -i attempt_num=1
+	until "$@"; do
+		if (( attempt_num == max_attempts ))
+	then
+		echo "#$attempt_num failures!"
+		return 1
+	else
+		echo "#$(( attempt_num++ )): trying again in $sleep_time seconds ..."
+		sleep $sleep_time
+		fi
+	done
 }
 
 function install_tool {
