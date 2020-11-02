@@ -5,7 +5,7 @@ source configuration.env
 
 deployments=(
 	# setup cluster on hetzner cloud
-	"k3s"
+	"hetzner-k3s"
 
 	# now we need some fancy ingress routing
 	"ingress-nginx"
