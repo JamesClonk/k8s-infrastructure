@@ -40,3 +40,21 @@ directories:
     - recommended.yaml
     excludePaths:
     - LICENSE
+
+- path: vendor/github.com/jetstack/cert-manager
+  contents:
+  - path: .
+    githubRelease:
+      slug: jetstack/cert-manager
+      tag: v1.0.4
+    includePaths:
+    - cert-manager.yaml
+- path: cert-manager/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/jetstack/cert-manager
+    includePaths:
+    - cert-manager.yaml
+    excludePaths:
+    - LICENSE
