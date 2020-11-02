@@ -1,14 +1,13 @@
 #!/bin/bash
 set -e
+set -u
 source ../setup.sh
 
-# deploy
+# check for HCLOUD_TOKEN
 if [ -z "${HCLOUD_TOKEN}" ]; then
 	echo "HCLOUD_TOKEN is missing"
 	exit 1
 fi
-# create context if not exists
-# hcloud context list -o noheader | grep "${PROJECT}" || hcloud context create ${PROJECT}
 
 ########################################################################################################################
 ####### ssh key ########################################################################################################
