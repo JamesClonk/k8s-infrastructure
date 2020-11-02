@@ -6,10 +6,13 @@ deployments=(
 	# setup cluster on hetzner cloud
 	"hetzner-k3s"
 
-	# now we need some fancy ingress routing
+	# we need some fancy ingress routing
 	"ingress-nginx"
 
-	# and it never hurts to have a dashboard!
+	# and automatic let's encrypt certificate management
+	"cert-manager"
+
+	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"
 )
 
