@@ -27,25 +27,25 @@ function retry() {
 }
 
 function install_tool {
-	TOOL_NAME=$1
-	TOOL_URL=$2
-	if [ ! -f "$HOME/bin/${TOOL_NAME}" ]; then
-		echo "downloading [${TOOL_NAME}] ..."
-		wget "${TOOL_URL}" -O "$HOME/bin/${TOOL_NAME}"
-		chmod +x "$HOME/bin/${TOOL_NAME}"
+	local -r tool_name="$1"; shift
+	local -r tool_url="$1"; shift
+	if [ ! -f "$HOME/bin/${tool_name}" ]; then
+		echo "downloading [${tool_name}] ..."
+		wget "${tool_url}" -O "$HOME/bin/${tool_name}"
+		chmod +x "$HOME/bin/${tool_name}"
 	fi
 }
 
 function install_tool_from_tarball {
-	TOOL_NAME=$1
-	TOOL_URL=$2
-	if [ ! -f "$HOME/bin/${TOOL_NAME}" ]; then
-		echo "downloading [${TOOL_NAME}] ..."
-		wget "${TOOL_URL}" -O "$HOME/bin/${TOOL_NAME}.tgz"
-		echo "unpacking [${TOOL_NAME}.tgz] ..."
-		tar -xvzf "$HOME/bin/${TOOL_NAME}.tgz" -C "$HOME/bin/" "${TOOL_NAME}"
-		chmod +x "$HOME/bin/${TOOL_NAME}"
-		rm -f "$HOME/bin/${TOOL_NAME}.tgz"
+	local -r tool_name="$1"; shift
+	local -r tool_url="$1"; shift
+	if [ ! -f "$HOME/bin/${tool_name}" ]; then
+		echo "downloading [${tool_name}] ..."
+		wget "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
+		echo "unpacking [${tool_name}.tgz] ..."
+		tar -xvzf "$HOME/bin/${tool_name}.tgz" -C "$HOME/bin/" "${tool_name}"
+		chmod +x "$HOME/bin/${tool_name}"
+		rm -f "$HOME/bin/${tool_name}.tgz"
 	fi
 }
 
