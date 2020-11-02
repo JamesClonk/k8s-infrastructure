@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 set -u
-source ${BASH_SOURCE[0]}/configuration.env.sh
+source $(dirname ${BASH_SOURCE[0]})/.env* || true # source any optional/hidden env config files first if available
+source $(dirname ${BASH_SOURCE[0]})/configuration.env.sh # source main configuration file
 
 function basic_auth() {
-	local -r -i username="$1"; shift
-	local -r -i password="$1"; shift
+	local -r username="$1"; shift
+	local -r password="$1"; shift
 	echo "${username}:$(openssl passwd -apr1 \"${password}\")"
 }
 
@@ -61,7 +62,3 @@ install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.11.0/
 install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.27.0/kbld-linux-amd64"
 install_tool_from_tarball "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz"
 install_tool_from_tarball "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
-
-if [ -z "${KUBE_DOMAIN}" ]; then
-	export KUBE_DOMAIN="127.0.0.1.xip.io"
-fi
