@@ -55,16 +55,20 @@ if [ "${HETZNER_LOADBALANCER_ENABLED}" == "true" ]; then
 		--location "${HETZNER_NODE_LOCATION}" --network-zone "${HETZNER_PRIVATE_NETWORK_ZONE}" \
 		&& sleep 10)
 		# wait 10 seconds for loadbalancer to be ready for sure
+
 	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null \
 		|| hcloud load-balancer attach-to-network --network "${HETZNER_PRIVATE_NETWORK_NAME}" "${HETZNER_LOADBALANCER_NAME}"
+
 	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "http 80 80" 1>/dev/null \
 		|| (hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
 		--protocol "http" --listen-port 80 --destination-port 80
 	    && hcloud load-balancer update-service "${HETZNER_LOADBALANCER_NAME}" \
 	    --protocol "http" --listen-port 80 --destination-port 80 --health-check-http-status-codes "2??,3??,404")
+
 	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "tcp 443 443" 1>/dev/null \
 		|| hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
 		--protocol "tcp" --listen-port 443 --destination-port 443
+
 	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{index .Targets 0}}' | grep "server" 1>/dev/null \
 		|| hcloud load-balancer add-target "${HETZNER_LOADBALANCER_NAME}" --server "${HETZNER_NODE_NAME}" --use-private-ip
 	echo " "
