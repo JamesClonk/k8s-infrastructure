@@ -1,7 +1,7 @@
 #@data/values
 ---
 domains:
-- ${INGRESS_DOMAIN}
+- "${INGRESS_DOMAIN}"
 
 dashboard:
   auth: "${DASHBOARD_BASIC_AUTH}"

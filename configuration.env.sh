@@ -11,17 +11,21 @@ export KUBECONFIG="$HOME/.kube/hetzner-k3s"
 export HCLOUD_TOKEN="${HCLOUD_TOKEN}" # https://docs.hetzner.cloud/#getting-started
 
 export HETZNER_SSH_KEY_NAME="kubernetes"
-export HETZNER_SSH_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rj/J6HeJVmCrSNB/eRZPrmmDqoK5TRgcyIXn/5kgKSwV58TTOAtQHkIbRVD6cZxCw0tdnSBOz1vNnfwvhPdEY23xbYxjdUvb2JnPf3yuiqSblOy7+sPLdlR+W2srzJQ6p1pHHVIugj45o9TYUBeW4WZFYHCZbHikipshq+k4UrdrtrjIkc7ERAjdIBHTGwt57tImEWJ5K68gK/zSobh6n+bK8YXgWp00Hg74AbQkx+dkwnx/3DEoCr0V7H2SrL7gtd8BI8OK5/C/5gN2mN/i+OyfXT7UoeGDz928z9mu0tD7usVOg2sQKoxrndtQJ4KxijsEO/XWtXZgOtsEqhM7 kubernetes' # your _public_ ssh-key
+export HETZNER_SSH_KEY="${HETZNER_SSH_KEY}" # your _public_ ssh-key
 
 export HETZNER_PRIVATE_NETWORK_NAME="k8s-private"
 export HETZNER_PRIVATE_NETWORK_RANGE="10.8.0.0/16"
 export HETZNER_PRIVATE_NETWORK_SUBNET="10.8.0.0/24"
 export HETZNER_PRIVATE_NETWORK_ZONE="eu-central"
 
-export HETZNER_NODE_NAME="kubernetes-cx11"
+export HETZNER_NODE_NAME="kubernetes-server"
 export HETZNER_NODE_TYPE="cx11" # https://www.hetzner.com/cloud#pricing
 export HETZNER_NODE_IMAGE="ubuntu-20.04"
 export HETZNER_NODE_LOCATION="nbg1" # https://docs.hetzner.com/general/others/data-centers-and-connection
+
+export HETZNER_LOADBALANCER_ENABLED="false" # set to 'true' if you want a Hetzner LoadBalancer in front of your server
+export HETZNER_LOADBALANCER_NAME="kubernetes-lb"
+export HETZNER_LOADBALANCER_TYPE="lb11" # https://www.hetzner.com/cloud/load-balancer#pricing
 
 export HETZNER_K3S_VERSION="v1.19.3+k3s2" # https://github.com/rancher/k3s/releases
 ########################################################################################################################

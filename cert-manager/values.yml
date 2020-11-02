@@ -1,0 +1,4 @@
+#@data/values
+---
+lets_encrypt:
+  email: "${LETS_ENCRYPT_EMAIL_ADDRESS}"

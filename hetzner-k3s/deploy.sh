@@ -25,11 +25,11 @@ hcloud network list -o noheader | grep "${HETZNER_PRIVATE_NETWORK_NAME}" 1>/dev/
 	|| hcloud network create --name "${HETZNER_PRIVATE_NETWORK_NAME}" --ip-range "${HETZNER_PRIVATE_NETWORK_RANGE}"
 
 echo "checking private network [${HETZNER_PRIVATE_NETWORK_NAME}] for ip-range [${HETZNER_PRIVATE_NETWORK_RANGE}] ..."
-hcloud network describe k8s-private -o format='{{.IPRange}}' | grep "${HETZNER_PRIVATE_NETWORK_RANGE}" 1>/dev/null \
+hcloud network describe "${HETZNER_PRIVATE_NETWORK_NAME}" -o format='{{.IPRange}}' | grep "${HETZNER_PRIVATE_NETWORK_RANGE}" 1>/dev/null \
 	|| hcloud network change-ip-range --ip-range "${HETZNER_PRIVATE_NETWORK_RANGE}" "${HETZNER_PRIVATE_NETWORK_NAME}"
 
 echo "checking private network [${HETZNER_PRIVATE_NETWORK_NAME}] for subnet [${HETZNER_PRIVATE_NETWORK_SUBNET}] ..."
-hcloud network describe k8s-private -o format='{{.Subnets}}' | grep "${HETZNER_PRIVATE_NETWORK_SUBNET}" 1>/dev/null \
+hcloud network describe "${HETZNER_PRIVATE_NETWORK_NAME}" -o format='{{.Subnets}}' | grep "${HETZNER_PRIVATE_NETWORK_SUBNET}" 1>/dev/null \
 	|| hcloud network add-subnet "${HETZNER_PRIVATE_NETWORK_NAME}" --ip-range "${HETZNER_PRIVATE_NETWORK_SUBNET}" \
 	--type "cloud" --network-zone "${HETZNER_PRIVATE_NETWORK_ZONE}"
 echo " "
@@ -38,12 +38,37 @@ echo " "
 ####### server #########################################################################################################
 ########################################################################################################################
 echo "checking for server [${HETZNER_NODE_NAME}] ..."
-hcloud server list -o noheader | grep "${NHETZNER_ODE_NAME}" 1>/dev/null \
+hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 	|| (hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 	--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
 	&& sleep 30)
 	# wait half a minute for server to be ready for sure
 echo " "
+
+########################################################################################################################
+####### loadbalancer####################################################################################################
+########################################################################################################################
+if [ "${HETZNER_LOADBALANCER_ENABLED}" == "true" ]; then
+	echo "checking for loadbalancer [${HETZNER_LOADBALANCER_NAME}] ..."
+	hcloud load-balancer list -o noheader | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null \
+		|| (hcloud load-balancer create --name "${HETZNER_LOADBALANCER_NAME}" --type "${HETZNER_LOADBALANCER_TYPE}" \
+		--location "${HETZNER_NODE_LOCATION}" --network-zone "${HETZNER_PRIVATE_NETWORK_ZONE}" \
+		&& sleep 10)
+		# wait 10 seconds for loadbalancer to be ready for sure
+	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null \
+		|| hcloud load-balancer attach-to-network --network "${HETZNER_PRIVATE_NETWORK_NAME}" "${HETZNER_LOADBALANCER_NAME}"
+	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "http 80 80" 1>/dev/null \
+		|| (hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
+		--protocol "http" --listen-port 80 --destination-port 80
+	    && hcloud load-balancer update-service "${HETZNER_LOADBALANCER_NAME}" \
+	    --protocol "http" --listen-port 80 --destination-port 80 --health-check-http-status-codes "2??,3??,404")
+	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "tcp 443 443" 1>/dev/null \
+		|| hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
+		--protocol "tcp" --listen-port 443 --destination-port 443
+	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{index .Targets 0}}' | grep "server" 1>/dev/null \
+		|| hcloud load-balancer add-target "${HETZNER_LOADBALANCER_NAME}" --server "${HETZNER_NODE_NAME}" --use-private-ip
+	echo " "
+fi
 
 ########################################################################################################################
 ####### kubernetes #####################################################################################################
