@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 set -u
-source configuration.env
 
 deployments=(
 	# setup cluster on hetzner cloud

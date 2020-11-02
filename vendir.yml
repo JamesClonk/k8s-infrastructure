@@ -47,6 +47,7 @@ directories:
     githubRelease:
       slug: jetstack/cert-manager
       tag: v1.0.4
+      disableAutoChecksumValidation: true
     includePaths:
     - cert-manager.yaml
 - path: cert-manager/templates/upstream

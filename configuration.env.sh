@@ -8,8 +8,10 @@ export KUBECONFIG="$HOME/.kube/hetzner-k3s"
 ########################################################################################################################
 ####### hetzner cloud - k3s ############################################################################################
 ########################################################################################################################
+export HCLOUD_TOKEN="${HCLOUD_TOKEN}" # https://docs.hetzner.cloud/#getting-started
+
 export HETZNER_SSH_KEY_NAME="kubernetes"
-export HETZNER_SSH_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rj/J6HeJVmCrSNB/eRZPrmmDqoK5TRgcyIXn/5kgKSwV58TTOAtQHkIbRVD6cZxCw0tdnSBOz1vNnfwvhPdEY23xbYxjdUvb2JnPf3yuiqSblOy7+sPLdlR+W2srzJQ6p1pHHVIugj45o9TYUBeW4WZFYHCZbHikipshq+k4UrdrtrjIkc7ERAjdIBHTGwt57tImEWJ5K68gK/zSobh6n+bK8YXgWp00Hg74AbQkx+dkwnx/3DEoCr0V7H2SrL7gtd8BI8OK5/C/5gN2mN/i+OyfXT7UoeGDz928z9mu0tD7usVOg2sQKoxrndtQJ4KxijsEO/XWtXZgOtsEqhM7 kubernetes'
+export HETZNER_SSH_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rj/J6HeJVmCrSNB/eRZPrmmDqoK5TRgcyIXn/5kgKSwV58TTOAtQHkIbRVD6cZxCw0tdnSBOz1vNnfwvhPdEY23xbYxjdUvb2JnPf3yuiqSblOy7+sPLdlR+W2srzJQ6p1pHHVIugj45o9TYUBeW4WZFYHCZbHikipshq+k4UrdrtrjIkc7ERAjdIBHTGwt57tImEWJ5K68gK/zSobh6n+bK8YXgWp00Hg74AbQkx+dkwnx/3DEoCr0V7H2SrL7gtd8BI8OK5/C/5gN2mN/i+OyfXT7UoeGDz928z9mu0tD7usVOg2sQKoxrndtQJ4KxijsEO/XWtXZgOtsEqhM7 kubernetes' # your _public_ ssh-key
 
 export HETZNER_PRIVATE_NETWORK_NAME="k8s-private"
 export HETZNER_PRIVATE_NETWORK_RANGE="10.8.0.0/16"

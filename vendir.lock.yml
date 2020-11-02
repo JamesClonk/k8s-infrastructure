@@ -24,4 +24,13 @@ directories:
   - directory: {}
     path: .
   path: kubernetes-dashboard/templates/upstream
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/jetstack/cert-manager/releases/33227877
+    path: .
+  path: vendor/github.com/jetstack/cert-manager
+- contents:
+  - directory: {}
+    path: .
+  path: cert-manager/templates/upstream
 kind: LockConfig
