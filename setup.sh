@@ -59,7 +59,6 @@ install_tool "kapp" "https://github.com/k14s/kapp/releases/download/v0.34.0/kapp
 install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.30.0/ytt-linux-amd64"
 install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.11.0/vendir-linux-amd64"
 install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.27.0/kbld-linux-amd64"
-install_tool "kwt" "https://github.com/k14s/kwt/releases/download/v0.0.6/kwt-linux-amd64"
 install_tool_from_tarball "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz"
 install_tool_from_tarball "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
 
