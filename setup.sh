@@ -57,7 +57,7 @@ export PATH="$HOME/bin:$PATH"
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
 chmod 700 "$HOME/.ssh"
 set +u
-if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then echo "KEY: ${HETZNER_PRIVATE_SSH_KEY}" > "$HOME/.ssh/id_rsa"; chmod 600 "$HOME/.ssh/id_rsa"; fi
+if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then echo -e "${HETZNER_PRIVATE_SSH_KEY}" > "$HOME/.ssh/id_rsa"; chmod 600 "$HOME/.ssh/id_rsa"; fi
 set -u
 
 # install tools
