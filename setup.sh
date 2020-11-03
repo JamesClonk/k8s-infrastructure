@@ -31,7 +31,7 @@ function install_tool {
 	local -r tool_url="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
-		wget "${tool_url}" -O "$HOME/bin/${tool_name}"
+		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}"
 		chmod +x "$HOME/bin/${tool_name}"
 	fi
 }
@@ -41,7 +41,7 @@ function install_tool_from_tarball {
 	local -r tool_url="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
-		wget "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
+		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
 		echo "unpacking [${tool_name}.tgz] ..."
 		tar -xvzf "$HOME/bin/${tool_name}.tgz" -C "$HOME/bin/" "${tool_name}"
 		chmod +x "$HOME/bin/${tool_name}"
@@ -52,6 +52,10 @@ function install_tool_from_tarball {
 # $HOME/bin
 if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
+
+# $HOME/.ssh
+if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
+chmod 700 "$HOME/.ssh"
 
 # install tools
 install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.19.3/bin/linux/amd64/kubectl"
