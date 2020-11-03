@@ -56,6 +56,9 @@ export PATH="$HOME/bin:$PATH"
 # $HOME/.ssh
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
 chmod 700 "$HOME/.ssh"
+set +u
+if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then echo "KEY: ${HETZNER_PRIVATE_SSH_KEY}" > "$HOME/.ssh/id_rsa"; chmod 600 "$HOME/.ssh/id_rsa"; fi
+set -u
 
 # install tools
 install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.19.3/bin/linux/amd64/kubectl"

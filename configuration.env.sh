@@ -11,7 +11,7 @@ export KUBECONFIG="$HOME/.kube/hetzner-k3s"
 export HCLOUD_TOKEN="${HCLOUD_TOKEN}" # https://docs.hetzner.cloud/#getting-started
 
 export HETZNER_SSH_KEY_NAME="kubernetes"
-export HETZNER_SSH_KEY="${HETZNER_SSH_KEY}" # your _public_ ssh-key
+export HETZNER_PUBLIC_SSH_KEY="${HETZNER_PUBLIC_SSH_KEY}" # your _public_ ssh-key
 
 export HETZNER_PRIVATE_NETWORK_NAME="k8s-private"
 export HETZNER_PRIVATE_NETWORK_RANGE="10.8.0.0/16"

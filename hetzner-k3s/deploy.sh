@@ -14,7 +14,7 @@ fi
 ########################################################################################################################
 echo "checking for ssh-key [${HETZNER_SSH_KEY_NAME}] ..."
 hcloud ssh-key list -o noheader | grep "${HETZNER_SSH_KEY_NAME}" 1>/dev/null \
-	|| hcloud ssh-key create --name "${HETZNER_SSH_KEY_NAME}" --public-key "${HETZNER_SSH_KEY}"
+	|| hcloud ssh-key create --name "${HETZNER_SSH_KEY_NAME}" --public-key "${HETZNER_PUBLIC_SSH_KEY}"
 echo " "
 
 ########################################################################################################################
