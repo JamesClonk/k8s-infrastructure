@@ -115,15 +115,16 @@ fi
 ########################################################################################################################
 echo "installing/upgrading k3s on server [${HETZNER_NODE_NAME}] ..."
 
-HETZNER_K3S_IP="${HETZNER_NODE_IP}"
-if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
-	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
-fi
 retry 10 10 hcloud server ssh "${HETZNER_NODE_NAME}" \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
 test -f "${KUBECONFIG}" || sleep 30 # wait a moment if this looks like it is k3s' first startup
+
 mkdir -p $HOME/.kube || true
+HETZNER_K3S_IP="${HETZNER_NODE_IP}"
+if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
+	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
+fi
 retry 5 5 hcloud server ssh "${HETZNER_NODE_NAME}" \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" > "${KUBECONFIG}"
 
