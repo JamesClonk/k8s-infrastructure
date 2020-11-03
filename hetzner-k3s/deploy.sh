@@ -61,6 +61,12 @@ if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 		&& sleep 15)
 		# wait 15 seconds for floating-ip to be ready for sure
 
+	# is it now assigned?
+	hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.Server.ID}}' 2>/dev/null \
+		|| (hcloud floating-ip assign "${HETZNER_FLOATING_IP_NAME}" "${HETZNER_NODE_NAME}" \
+		&& sleep 15)
+		# wait 15 seconds for floating-ip to be assigned for sure
+
 	# add floating-ip to server network interfaces
 	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.IP}}')
 	hcloud server ssh "${HETZNER_NODE_NAME}" "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" \
