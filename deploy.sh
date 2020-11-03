@@ -10,6 +10,7 @@ deployments=(
 	"ingress-nginx"
 
 	# and automatic let's encrypt certificate management
+	exit 1 # abort for now, let's work on above stuff first
 	"cert-manager"
 
 	# it also never hurts to have a dashboard!
