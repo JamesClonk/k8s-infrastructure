@@ -1,0 +1,14 @@
+name: Kubernetes Infrastructure
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Provision Kubernetes
+      run: ./deploy.sh
