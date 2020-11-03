@@ -23,7 +23,10 @@ export HETZNER_NODE_TYPE="cx11" # https://www.hetzner.com/cloud#pricing
 export HETZNER_NODE_IMAGE="ubuntu-20.04"
 export HETZNER_NODE_LOCATION="nbg1" # https://docs.hetzner.com/general/others/data-centers-and-connection
 
-export HETZNER_LOADBALANCER_ENABLED="false" # set to 'true' if you want a Hetzner LoadBalancer in front of your server
+export HETZNER_FLOATING_IP_ENABLED="false" # set to 'true' if you want a floating-ip assigned to your server
+export HETZNER_FLOATING_IP_NAME="kubernetes-vip"
+
+export HETZNER_LOADBALANCER_ENABLED="false" # set to 'true' if you want a Hetzner load-balancer in front of your server
 export HETZNER_LOADBALANCER_NAME="kubernetes-lb"
 export HETZNER_LOADBALANCER_TYPE="lb11" # https://www.hetzner.com/cloud/load-balancer#pricing
 

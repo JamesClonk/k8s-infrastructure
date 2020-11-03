@@ -46,15 +46,28 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 echo " "
 
 ########################################################################################################################
-####### loadbalancer####################################################################################################
+####### floating-ip ####################################################################################################
+########################################################################################################################
+if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
+	echo "checking for floating-ip [${HETZNER_FLOATING_IP_NAME}] ..."
+	hcloud floating-ip list -o noheader | grep "${HETZNER_FLOATING_IP_NAME}" 1>/dev/null \
+		|| (hcloud floating-ip create --name "${HETZNER_FLOATING_IP_NAME}" --type "ipv4" \
+		--home-location "${HETZNER_NODE_LOCATION}" --server "${HETZNER_NODE_NAME}" \
+		&& sleep 10)
+		# wait 10 seconds for floating-ip to be ready for sure
+	echo " "
+fi
+
+########################################################################################################################
+####### load-balancer ###################################################################################################
 ########################################################################################################################
 if [ "${HETZNER_LOADBALANCER_ENABLED}" == "true" ]; then
-	echo "checking for loadbalancer [${HETZNER_LOADBALANCER_NAME}] ..."
+	echo "checking for load-balancer [${HETZNER_LOADBALANCER_NAME}] ..."
 	hcloud load-balancer list -o noheader | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null \
 		|| (hcloud load-balancer create --name "${HETZNER_LOADBALANCER_NAME}" --type "${HETZNER_LOADBALANCER_TYPE}" \
 		--location "${HETZNER_NODE_LOCATION}" --network-zone "${HETZNER_PRIVATE_NETWORK_ZONE}" \
 		&& sleep 10)
-		# wait 10 seconds for loadbalancer to be ready for sure
+		# wait 10 seconds for load-balancer to be ready for sure
 
 	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null \
 		|| hcloud load-balancer attach-to-network --network "${HETZNER_PRIVATE_NETWORK_NAME}" "${HETZNER_LOADBALANCER_NAME}"
