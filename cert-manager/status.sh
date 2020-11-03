@@ -4,5 +4,5 @@ set -u
 source ../setup.sh
 
 # status
-kapp --color app-change list -a cert-manager
-kapp --color inspect -a cert-manager --tree
+kapp --tty --color app-change list -a cert-manager
+kapp --tty --color inspect -a cert-manager --tree

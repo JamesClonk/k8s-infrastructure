@@ -10,5 +10,5 @@ cat values.yml |
 	envsubst -no-unset -no-empty |
 	ytt --ignore-unknown-comments -f templates -f - |
 	kbld -f - -f image.lock.yml |
-	kapp --color deploy -a kubernetes-dashboard -c -y -f -
-kapp --color app-change garbage-collect -a kubernetes-dashboard --max 5 -y
+	kapp --tty --color deploy -a kubernetes-dashboard -c -y -f -
+kapp --tty --color app-change garbage-collect -a kubernetes-dashboard --max 5 -y
