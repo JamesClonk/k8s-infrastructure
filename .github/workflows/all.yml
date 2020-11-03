@@ -14,7 +14,8 @@ jobs:
     - name: Provision whole Kubernetes infrastructure
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+        HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
+        HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
         INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
         LETS_ENCRYPT_EMAIL_ADDRESS: ${{ secrets.LETS_ENCRYPT_EMAIL_ADDRESS }}
         DASHBOARD_BASIC_AUTH_USERNAME: ${{ secrets.DASHBOARD_BASIC_AUTH_USERNAME }}
