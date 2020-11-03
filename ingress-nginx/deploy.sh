@@ -7,5 +7,5 @@ source ../setup.sh
 echo "deploying [ingress-nginx] ..."
 ytt --ignore-unknown-comments -f templates -f values.yml |
 	kbld -f - -f image.lock.yml |
-	kapp deploy -a ingress-nginx -c -y -f -
-kapp -y app-change garbage-collect -a ingress-nginx --max 5
+	kapp --color deploy -a ingress-nginx -c -y -f -
+kapp --color app-change garbage-collect -a ingress-nginx --max 5 -y

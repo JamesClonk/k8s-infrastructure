@@ -47,7 +47,7 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 # add server-ip to ssh known_hosts
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
-cat "$HOME/.ssh/known_hosts" 1>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts"
+cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts"
 echo " "
 
 ########################################################################################################################
@@ -77,7 +77,7 @@ EOF" \
 		# wait half a minute for server to be ready for sure
 
 	# add floating-ip to ssh known_hosts
-	cat "$HOME/.ssh/known_hosts" 1>/dev/null | grep "${HETZNER_FLOATING_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_FLOATING_IP}" >> "$HOME/.ssh/known_hosts"
+	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_FLOATING_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_FLOATING_IP}" >> "$HOME/.ssh/known_hosts"
 	echo " "
 fi
 
