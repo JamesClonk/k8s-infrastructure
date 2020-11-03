@@ -4,5 +4,5 @@ set -u
 source ../setup.sh
 
 # status
-kapp --tty --color app-change list -a ingress-nginx
-kapp --tty --color inspect -a ingress-nginx --tree
+kapp app-change list -a ingress-nginx
+kapp inspect -a ingress-nginx --tree
