@@ -1,0 +1,10 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+overrides:
+- image: kubernetesui/dashboard:v2.0.4
+  newImage: index.docker.io/kubernetesui/dashboard@sha256:c557b14b678739c91cb5e7874f47dc6a2c160749aa0cb750217d94e10481b511
+  preresolved: true
+- image: kubernetesui/metrics-scraper:v1.0.4
+  newImage: index.docker.io/kubernetesui/metrics-scraper@sha256:555981a24f184420f3be0c79d4efb6c948a85cfce84034f85a563f4151a81cbf
+  preresolved: true

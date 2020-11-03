@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Merge pull request #6326 from kolorful/master...'
-      sha: 9b683e40555fdfaba453d826306bc9c03880dc16
+      commitTitle: Release 0.41.0 chart
+      sha: 8aefb97fea4ebc429bb59921c82fdee0ab4d2a18
       tags:
-      - ingress-nginx-3.7.1
+      - controller-v0.41.0
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:

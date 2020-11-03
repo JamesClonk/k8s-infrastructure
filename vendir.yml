@@ -9,7 +9,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/ingress-nginx
-      ref: ingress-nginx-3.7.1
+      ref: ingress-nginx-3.8.0
     includePaths:
     - deploy/static/provider/baremetal/*
 - path: ingress-nginx/templates/upstream
