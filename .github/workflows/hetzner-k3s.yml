@@ -1,0 +1,15 @@
+name: Provision Hetzner K3s
+
+on:
+  workflow_dispatch:
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Provision Kubernetes
+      working-directory: hetzner-k3s
+      run: ./deploy.sh
+      
