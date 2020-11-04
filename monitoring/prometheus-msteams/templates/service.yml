@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-msteams
+  namespace: prometheus-msteams
+  labels: #@ labels()
+spec:
+  ports:
+  - port: 2000
+    targetPort: 2000
+  selector: #@ labels()

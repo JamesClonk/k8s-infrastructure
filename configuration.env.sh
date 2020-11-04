@@ -48,3 +48,24 @@ export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD}" # for exampl
 ########################################################################################################################
 export LETS_ENCRYPT_EMAIL_ADDRESS="${LETS_ENCRYPT_EMAIL_ADDRESS}" # for example "admin@mydomain.org"
 ########################################################################################################################
+
+
+########################################################################################################################
+####### grafana ########################################################################################################
+########################################################################################################################
+export GRAFANA_USERNAME="${GRAFANA_USERNAME:=${INGRESS_BASIC_AUTH_USERNAME}}" # for example "my-username"
+export GRAFANA_PASSWORD="${GRAFANA_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
+########################################################################################################################
+
+
+########################################################################################################################
+####### prometheus #####################################################################################################
+########################################################################################################################
+export PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED="${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED:=false}" # false or true
+export PROMETHEUS_ALERTMANAGER_EMAIL_HOST="${PROMETHEUS_ALERTMANAGER_EMAIL_HOST:=smtp.gmail.com:587}"
+export PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD="${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD:=my-password}"
+export PROMETHEUS_ALERTMANAGER_EMAIL_FROM="${PROMETHEUS_ALERTMANAGER_EMAIL_FROM:=nobody@nobody}"
+export PROMETHEUS_ALERTMANAGER_EMAIL_TO="${PROMETHEUS_ALERTMANAGER_EMAIL_TO:=nobody@nobody}"
+export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED:=false}" # false or true
+export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL:=http://example/deadbeef}" # https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
+########################################################################################################################

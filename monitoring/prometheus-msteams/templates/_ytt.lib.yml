@@ -1,0 +1,27 @@
+#@ load("@ytt:data", "data")
+
+#@ def labels():
+  app.kubernetes.io/name: prometheus-msteams
+  app.kubernetes.io/instance: prometheus-msteams
+#@ end
+
+#@ def labelSelector():
+  matchExpressions:
+  - key: app.kubernetes.io/name
+    operator: In
+    values:
+    - prometheus-msteams
+  - key: app.kubernetes.io/instance
+    operator: In
+    values:
+    - prometheus-msteams
+#@ end
+
+#@ def podAntiAffinity():
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector: #@ labelSelector()
+#@ end

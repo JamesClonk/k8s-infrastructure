@@ -15,6 +15,9 @@ deployments=(
 
 	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"
+
+	# metrics, monitoring, alerting, logs, what would we do without those?
+	"monitoring"
 )
 
 # deploy it all, all of it!

@@ -1,0 +1,66 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels", "podAntiAffinity")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-msteams
+  namespace: prometheus
+  labels: #@ labels()
+spec:
+  selector:
+    matchLabels: #@ labels()
+  replicas: 1
+  template:
+    metadata:
+      labels: #@ labels()
+    spec:
+      serviceAccountName: prometheus-msteams
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+      affinity: #@ podAntiAffinity()
+      containers:
+      - name: msteams
+        image: "quay.io/prometheusmsteams/prometheus-msteams:v1.4.1"
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+        ports:
+        - name: http
+          containerPort: 2000
+          protocol: TCP
+        args:
+        - -config-file=/etc/config/connectors.yml
+        - -template-file=/etc/template/card.tmpl
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "10m"
+          limits:
+            memory: "32Mi"
+            cpu: "50m"
+        readinessProbe:
+          httpGet:
+            path: /config
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /config
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        volumeMounts:
+        - name: prometheus-msteams-config
+          mountPath: /etc/config
+        - name: prometheus-msteams-card-template
+          mountPath: /etc/template
+      volumes:
+      - name: prometheus-msteams-config
+        secret:
+          secretName: prometheus-msteams-config
+      - name: prometheus-msteams-card-template
+        configMap:
+          name: prometheus-msteams-card-template
