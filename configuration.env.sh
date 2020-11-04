@@ -38,6 +38,8 @@ export HETZNER_K3S_VERSION="v1.19.3+k3s2" # https://github.com/rancher/k3s/relea
 ####### ingress-nginx ##################################################################################################
 ########################################################################################################################
 export INGRESS_DOMAIN="${INGRESS_DOMAIN}" # for example "mydomain.org"
+export INGRESS_BASIC_AUTH_USERNAME="${INGRESS_BASIC_AUTH_USERNAME}" # for example "my-username"
+export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD}" # for example "my-super-secret-password"
 ########################################################################################################################
 
 
@@ -46,12 +48,3 @@ export INGRESS_DOMAIN="${INGRESS_DOMAIN}" # for example "mydomain.org"
 ########################################################################################################################
 export LETS_ENCRYPT_EMAIL_ADDRESS="${LETS_ENCRYPT_EMAIL_ADDRESS}" # for example "admin@mydomain.org"
 ########################################################################################################################
-
-
-########################################################################################################################
-####### kubernetes-dashboard ###########################################################################################
-########################################################################################################################
-export DASHBOARD_BASIC_AUTH_USERNAME="${DASHBOARD_BASIC_AUTH_USERNAME}" # for example "my-username"
-export DASHBOARD_BASIC_AUTH_PASSWORD="${DASHBOARD_BASIC_AUTH_PASSWORD}" # for example "my-super-secret-password"
-########################################################################################################################
-
