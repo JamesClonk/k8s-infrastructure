@@ -1,0 +1,7 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+overrides:
+- image: quay.io/coreos/kube-state-metrics:v2.0.0-alpha.2
+  newImage: quay.io/coreos/kube-state-metrics@sha256:6effd2126f7972638cf6c77b2fef889b8361977f02e8e13c8f068f06ac770bc6
+  preresolved: true

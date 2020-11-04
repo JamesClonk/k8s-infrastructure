@@ -1,0 +1,24 @@
+#@data/values
+---
+domains:
+- "${INGRESS_DOMAIN}"
+
+ingress:
+  auth: "${INGRESS_BASIC_AUTH}"
+  username: "${INGRESS_BASIC_AUTH_USERNAME}"
+  password: "${INGRESS_BASIC_AUTH_PASSWORD}"
+
+grafana:
+  username: "${GRAFANA_USERNAME}"
+  password: "${GRAFANA_PASSWORD}"
+
+alertmanager:
+  email:
+    enabled: ${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED}
+    host: "${PROMETHEUS_ALERTMANAGER_EMAIL_HOST}"
+    from: "${PROMETHEUS_ALERTMANAGER_EMAIL_FROM}"
+    to: "${PROMETHEUS_ALERTMANAGER_EMAIL_TO}"
+    password: "${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD}"
+  webhook:
+    enabled: ${PROMETHEUS_ALERTMANAGER_WEBHOOK_ENABLED}
+    url: "${PROMETHEUS_ALERTMANAGER_WEBHOOK_URL}"

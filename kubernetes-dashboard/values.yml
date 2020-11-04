@@ -3,7 +3,7 @@
 domains:
 - "${INGRESS_DOMAIN}"
 
-dashboard:
-  auth: "${DASHBOARD_BASIC_AUTH}"
-  username: "${DASHBOARD_BASIC_AUTH_USERNAME}"
-  password: "${DASHBOARD_BASIC_AUTH_PASSWORD}"
+ingress:
+  auth: "${INGRESS_BASIC_AUTH}"
+  username: "${INGRESS_BASIC_AUTH_USERNAME}"
+  password: "${INGRESS_BASIC_AUTH_PASSWORD}"

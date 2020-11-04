@@ -13,6 +13,15 @@ directories:
     path: .
   path: ingress-nginx/templates/upstream
 - contents:
+  - githubRelease:
+      url: https://api.github.com/repos/jetstack/cert-manager/releases/33227877
+    path: .
+  path: vendor/github.com/jetstack/cert-manager
+- contents:
+  - directory: {}
+    path: .
+  path: cert-manager/templates/upstream
+- contents:
   - git:
       commitTitle: Bump version to 2.0.4 (#5498)...
       sha: 4da3dfcd15a11011f950d63ba76c03f73b33fe96
@@ -25,12 +34,15 @@ directories:
     path: .
   path: kubernetes-dashboard/templates/upstream
 - contents:
-  - githubRelease:
-      url: https://api.github.com/repos/jetstack/cert-manager/releases/33227877
+  - git:
+      commitTitle: 'Merge pull request #1285 from lilic/merge-master-2.0...'
+      sha: 9862ba2f1e98afaf4f4e92c9aae6ba8af12eb995
+      tags:
+      - v2.0.0-alpha.2
     path: .
-  path: vendor/github.com/jetstack/cert-manager
+  path: vendor/github.com/kubernetes/kube-state-metrics
 - contents:
   - directory: {}
     path: .
-  path: cert-manager/templates/upstream
+  path: monitoring/kube-state-metrics/templates/upstream
 kind: LockConfig

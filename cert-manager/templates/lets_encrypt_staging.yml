@@ -1,3 +1,4 @@
+#@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
 ---
 apiVersion: cert-manager.io/v1alpha2
@@ -14,6 +15,9 @@ spec:
     # The ACME server URL
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     # Email address used for ACME registration
+    #@ if len(data.values.lets_encrypt.email) == 0:
+    #@  assert.fail("lets_encrypt.email be empty")
+    #@ end
     email: #@ data.values.lets_encrypt.email
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:

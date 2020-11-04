@@ -8,3 +8,10 @@ metadata:
     app: cert-manager
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: cert-manager

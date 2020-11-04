@@ -1,0 +1,20 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"ingress-nginx-controller"}}), expects=1
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"controller"}), expects=1
+      - name: controller
+        ports:
+        #@overlay/append
+        - name: metrics
+          containerPort: 10254
+          protocol: TCP

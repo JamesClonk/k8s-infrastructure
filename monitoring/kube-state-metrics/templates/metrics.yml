@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name":"kube-state-metrics"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"

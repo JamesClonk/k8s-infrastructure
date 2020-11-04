@@ -1,7 +1,7 @@
 ---
 apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.11.0
+minimumRequiredVersion: 0.12.0
 
 directories:
 - path: vendor/github.com/kubernetes/ingress-nginx
@@ -23,6 +23,25 @@ directories:
     - LICENSE
     - kustomization.yaml
 
+- path: vendor/github.com/jetstack/cert-manager
+  contents:
+  - path: .
+    githubRelease:
+      slug: jetstack/cert-manager
+      tag: v1.0.4
+      disableAutoChecksumValidation: true
+    includePaths:
+    - cert-manager.yaml
+- path: cert-manager/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/jetstack/cert-manager
+    includePaths:
+    - cert-manager.yaml
+    excludePaths:
+    - LICENSE
+
 - path: vendor/github.com/kubernetes/dashboard
   contents:
   - path: .
@@ -41,21 +60,18 @@ directories:
     excludePaths:
     - LICENSE
 
-- path: vendor/github.com/jetstack/cert-manager
+- path: vendor/github.com/kubernetes/kube-state-metrics
   contents:
   - path: .
-    githubRelease:
-      slug: jetstack/cert-manager
-      tag: v1.0.4
-      disableAutoChecksumValidation: true
+    git:
+      url: https://github.com/kubernetes/kube-state-metrics
+      ref: v2.0.0-alpha.2
     includePaths:
-    - cert-manager.yaml
-- path: cert-manager/templates/upstream
+    - examples/standard/*
+- path: monitoring/kube-state-metrics/templates/upstream
   contents:
   - path: .
     directory:
-      path: vendor/github.com/jetstack/cert-manager
-    includePaths:
-    - cert-manager.yaml
+      path: vendor/github.com/kubernetes/kube-state-metrics/examples/standard
     excludePaths:
     - LICENSE

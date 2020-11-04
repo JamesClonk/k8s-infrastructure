@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"kube-state-metrics"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kube-state-metrics"}), expects=1
+      - name: kube-state-metrics
+        #@overlay/match missing_ok=True
+        resources: #@ data.values.kube_state_metrics.resources
