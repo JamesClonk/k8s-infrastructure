@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"ingress-nginx-controller"}}), expects=1
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"ingress-nginx-controller"}}), expects=1
 ---
 spec:
   template:

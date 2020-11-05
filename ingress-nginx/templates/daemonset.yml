@@ -1,0 +1,20 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"ingress-nginx-controller"}}), expects=1
+---
+kind: DaemonSet
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"controller"}), expects=1
+      - name: controller
+        #@overlay/replace
+        args:
+        - /nginx-ingress-controller
+        - --election-id=ingress-controller-leader
+        - --ingress-class=nginx
+        - --configmap=ingress-nginx/ingress-nginx-controller
+        - --validating-webhook=:8443
+        - --validating-webhook-certificate=/usr/local/certificates/cert
+        - --validating-webhook-key=/usr/local/certificates/key
