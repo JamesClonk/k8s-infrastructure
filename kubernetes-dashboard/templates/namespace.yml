@@ -6,3 +6,11 @@
 metadata:
   #@overlay/match missing_ok=True
   namespace: kubernetes-dashboard
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"kubernetes-dashboard"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: kubernetes-dashboard

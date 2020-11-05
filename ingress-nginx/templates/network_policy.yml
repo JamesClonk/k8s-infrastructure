@@ -1,0 +1,42 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.ingress.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+      app.kubernetes.io/instance: ingress-nginx
+      app.kubernetes.io/component: controller
+  ingress:
+  - from: #! allow metrics access for all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 10254
+  - from: #! allow metrics access for all kube-system components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: kube-system
+      podSelector: {}
+    ports:
+    - port: 10254
+  - from: #! allow metrics access for kubernetes-dashboard
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: kubernetes-dashboard
+      podSelector: {}
+    ports:
+    - port: 10254
+#@ end

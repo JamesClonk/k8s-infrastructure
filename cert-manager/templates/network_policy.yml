@@ -1,0 +1,50 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.cert_manager.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+  labels:
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: controller
+      app.kubernetes.io/instance: cert-manager
+      app.kubernetes.io/name: cert-manager
+  ingress:
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 9402
+    - port: 10250
+  - from: #! allow metrics access for all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9402
+  - from: #! allow metrics access for all kube-system components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: kube-system
+      podSelector: {}
+    ports:
+    - port: 9402
+  - from: #! allow metrics access for kubernetes-dashboard
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: kubernetes-dashboard
+      podSelector: {}
+    ports:
+    - port: 9402
+#@ end

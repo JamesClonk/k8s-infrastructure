@@ -1,4 +1,7 @@
 #@data/values
 ---
+cert_manager:
+  enable_network_policy: true
+
 lets_encrypt:
   email: "${LETS_ENCRYPT_EMAIL_ADDRESS}"

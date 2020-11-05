@@ -6,6 +6,9 @@ deployments=(
 	# setup cluster on hetzner cloud
 	"hetzner-k3s"
 
+	# let's own the kube-system namespace
+	"kube-system"
+
 	# we need some fancy ingress routing
 	"ingress-nginx"
 

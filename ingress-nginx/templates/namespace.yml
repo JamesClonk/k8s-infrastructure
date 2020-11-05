@@ -6,3 +6,11 @@
 metadata:
   #@overlay/match missing_ok=True
   namespace: ingress-nginx
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"ingress-nginx"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: ingress-nginx
