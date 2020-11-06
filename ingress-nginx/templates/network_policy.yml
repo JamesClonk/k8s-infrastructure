@@ -15,13 +15,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
       app.kubernetes.io/instance: ingress-nginx
-      app.kubernetes.io/component: controller
   ingress:
-  - from: #! allow metrics access for prometheus
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: prometheus
-      podSelector: {}
-    ports:
-    - port: 10254
+  - {} #! allow all incoming traffic to ingress-controller
 #@ end
