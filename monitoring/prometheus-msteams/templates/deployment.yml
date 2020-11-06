@@ -1,5 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yml", "labels", "podAntiAffinity")
+
+#@ if data.values.msteams.enabled:
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -10,7 +12,7 @@ metadata:
 spec:
   selector:
     matchLabels: #@ labels()
-  replicas: 1
+  replicas: #@ data.values.msteams.replicas
   template:
     metadata:
       labels: #@ labels()
@@ -64,3 +66,4 @@ spec:
       - name: prometheus-msteams-card-template
         configMap:
           name: prometheus-msteams-card-template
+#@ end

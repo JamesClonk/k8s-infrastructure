@@ -1,5 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.msteams.enabled:
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -62,3 +64,4 @@ data:
       ]
     }
     {{ end }}
+#@ end

@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.msteams.enabled:
+#@ if data.values.msteams.replicas > 1:
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: prometheus-msteams
+  namespace: prometheus
+  labels: #@ labels()
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels: #@ labels()
+#@ end
+#@ end
