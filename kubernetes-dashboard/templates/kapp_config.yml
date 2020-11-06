@@ -1,0 +1,38 @@
+---
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: kapp-config
+
+rebaseRules:
+- paths:
+  - [data]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: Secret
+      name: kubernetes-dashboard-certs
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: Secret
+      name: kubernetes-dashboard-csrf
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: Secret
+      name: kubernetes-dashboard-key-holder
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: ConfigMap
+      name: kubernetes-dashboard-settings
+
+#! - paths:
+#!   - [stringData, auth]
+#!   type: copy
+#!   sources: [existing, new]
+#!   resourceMatchers:
+#!   - apiVersionKindMatcher:
+#!       apiVersion: v1
+#!       kind: Secret
+#!       name: kubernetes-dashboard-basic-auth
