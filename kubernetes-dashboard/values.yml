@@ -3,6 +3,9 @@
 domains:
 - "${INGRESS_DOMAIN}"
 
+dashboard:
+  enable_network_policy: true
+
 ingress:
   auth: "${INGRESS_BASIC_AUTH}"
   username: "${INGRESS_BASIC_AUTH_USERNAME}"

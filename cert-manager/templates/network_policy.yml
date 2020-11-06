@@ -1,5 +1,4 @@
 #@ load("@ytt:data", "data")
-#@ load("_ytt.lib.yml", "labels")
 
 #@ if data.values.cert_manager.enable_network_policy:
 ---
@@ -26,24 +25,10 @@ spec:
     ports:
     - port: 9402
     - port: 10250
-  - from: #! allow metrics access for all prometheus components
+  - from: #! allow metrics access for prometheus
     - namespaceSelector:
         matchLabels:
           namespace.kubernetes.io/name: prometheus
-      podSelector: {}
-    ports:
-    - port: 9402
-  - from: #! allow metrics access for all kube-system components
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: kube-system
-      podSelector: {}
-    ports:
-    - port: 9402
-  - from: #! allow metrics access for kubernetes-dashboard
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: kubernetes-dashboard
       podSelector: {}
     ports:
     - port: 9402

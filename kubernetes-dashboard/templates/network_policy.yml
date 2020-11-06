@@ -1,0 +1,24 @@
+#@ load("@ytt:data", "data")
+
+#@ if data.values.dashboard.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+spec:
+  podSelector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
+  ingress:
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 8443
+#@ end

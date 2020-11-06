@@ -1,21 +1,18 @@
 #@ load("@ytt:data", "data")
 
-#@ if data.values.ingress.enable_network_policy:
+#@ if data.values.monitoring.enable_network_policy:
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: ingress-nginx
-  namespace: ingress-nginx
+  name: kube-state-metrics
+  namespace: kube-system
   labels:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: kube-state-metrics
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: ingress-nginx
-      app.kubernetes.io/instance: ingress-nginx
-      app.kubernetes.io/component: controller
+      app.kubernetes.io/name: kube-state-metrics
   ingress:
   - from: #! allow metrics access for prometheus
     - namespaceSelector:
@@ -23,5 +20,5 @@ spec:
           namespace.kubernetes.io/name: prometheus
       podSelector: {}
     ports:
-    - port: 10254
+    - port: 8080
 #@ end
