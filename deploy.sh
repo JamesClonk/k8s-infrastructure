@@ -13,8 +13,7 @@ deployments=(
 	"ingress-nginx"
 
 	# and automatic let's encrypt certificate management
-	exit 1 # abort for now, let's work on above stuff first
-	"cert-manager"
+	# "cert-manager" - no cert-manager for now, we'll enabled it once everything is prod ready
 
 	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"

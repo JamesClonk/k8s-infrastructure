@@ -19,7 +19,7 @@ export HETZNER_PRIVATE_NETWORK_SUBNET="10.8.0.0/24"
 export HETZNER_PRIVATE_NETWORK_ZONE="eu-central"
 
 export HETZNER_NODE_NAME="kubernetes-server"
-export HETZNER_NODE_TYPE="cx11" # https://www.hetzner.com/cloud#pricing
+export HETZNER_NODE_TYPE="cpx21" # https://www.hetzner.com/cloud#pricing
 export HETZNER_NODE_IMAGE="ubuntu-20.04"
 export HETZNER_NODE_LOCATION="nbg1" # https://docs.hetzner.com/general/others/data-centers-and-connection
 
