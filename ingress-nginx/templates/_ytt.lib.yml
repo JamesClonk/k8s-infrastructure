@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+
+#@ def labels(component):
+  app.kubernetes.io/name: ingress-nginx
+  app.kubernetes.io/instance: ingress-nginx
+  app.kubernetes.io/component: #@ component
+#@ end
+
+#@ def labelSelector(component):
+  matchExpressions:
+  - key: app.kubernetes.io/name
+    operator: In
+    values:
+    - ingress-nginx
+  - key: app.kubernetes.io/instance
+    operator: In
+    values:
+    - ingress-nginx
+  - key: app.kubernetes.io/component
+    operator: In
+    values:
+    - #@ component
+#@ end
+
+#@ def podAntiAffinity(component):
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector: #@ labelSelector(component)
+#@ end

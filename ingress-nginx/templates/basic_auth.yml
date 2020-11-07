@@ -1,0 +1,97 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yml", "labels", "podAntiAffinity")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: ingress-nginx
+  labels: #@ labels("basic-auth-http-service")
+  annotations:
+    kapp.k14s.io/versioned: ""
+type: Opaque
+stringData:
+  #@ if len(data.values.basic_auth.username) == 0:
+  #@  assert.fail("basic_auth.username cannot be empty")
+  #@ end
+  #@ if len(data.values.basic_auth.password) == 0:
+  #@  assert.fail("basic_auth.password cannot be empty")
+  #@ end
+  AUTH_USERNAME: #@ data.values.basic_auth.username
+  AUTH_PASSWORD: #@ data.values.basic_auth.password
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: basic-auth
+  namespace: ingress-nginx
+  labels: #@ labels("basic-auth-http-service")
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector: #@ labels("basic-auth-http-service")
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basic-auth
+  namespace: ingress-nginx
+  labels: #@ labels("basic-auth-http-service")
+spec:
+  selector:
+    matchLabels: #@ labels("basic-auth-http-service")
+  replicas: #@ data.values.basic_auth.replicas
+  template:
+    metadata:
+      labels: #@ labels("basic-auth-http-service")
+    spec:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+      affinity: #@ podAntiAffinity("basic-auth-http-service")
+      containers:
+      - name: basic-auth
+        image: #@ data.values.basic_auth.image
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: basic-auth
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "10m"
+          limits:
+            memory: "32Mi"
+            cpu: "50m"
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+
+#@ if data.values.basic_auth.replicas > 1:
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: basic-auth
+  namespace: ingress-nginx
+  labels: #@ labels("basic-auth-http-service")
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels: #@ labels("basic-auth-http-service")
+#@ end
