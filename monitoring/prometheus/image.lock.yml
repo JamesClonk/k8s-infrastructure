@@ -1,0 +1,19 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+overrides:
+- image: jimmidyson/configmap-reload:v0.4.0
+  newImage: index.docker.io/jimmidyson/configmap-reload@sha256:17d34fd73f9e8a78ba7da269d96822ce8972391c2838e08d92a990136adb8e4a
+  preresolved: true
+- image: prom/alertmanager:v0.21.0
+  newImage: index.docker.io/prom/alertmanager@sha256:24a5204b418e8fa0214cfb628486749003b039c279c56b5bddb5b10cd100d926
+  preresolved: true
+- image: prom/node-exporter:v1.0.1
+  newImage: index.docker.io/prom/node-exporter@sha256:cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+  preresolved: true
+- image: prom/prometheus:v2.21.0
+  newImage: index.docker.io/prom/prometheus@sha256:d43417c260e516508eed1f1d59c10c49d96bbea93eafb4955b0df3aea5908971
+  preresolved: true
+- image: prom/pushgateway:v1.2.0
+  newImage: index.docker.io/prom/pushgateway@sha256:0a9031142481adfb964fe7f65e698d01a6260de982f0322bc44496c3dcc866f1
+  preresolved: true

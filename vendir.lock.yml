@@ -45,4 +45,44 @@ directories:
   - directory: {}
     path: .
   path: monitoring/kube-state-metrics/templates/upstream
+- contents:
+  - git:
+      commitTitle: 'charts/prometheus-pingdom-exporter: fix typo (#317)...'
+      sha: 5e43255f64b53d3689d33b79074608be305d2f2d
+      tags:
+      - prometheus-11.16.8
+    path: .
+  path: vendor/github.com/prometheus-community/helm-charts
+- contents:
+  - directory: {}
+    path: .
+  path: monitoring/prometheus/build/chart
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #81 from unitygilles/https-servicemonitor...'
+      sha: ca6fd684ac63e492d81590c7daf74bbbfdda9f90
+      tags:
+      - grafana-6.1.3
+    path: .
+  path: vendor/github.com/grafana/helm-charts
+- contents:
+  - directory: {}
+    path: .
+  path: monitoring/grafana/build/chart
+- contents:
+  - git:
+      commitTitle: 'Loki Release: update release notes and docs (#2808)...'
+      sha: 6978ee5d73878d7406bda68296a3dd8ecda4d538
+      tags:
+      - v2.0.0
+    path: .
+  path: vendor/github.com/grafana/loki
+- contents:
+  - directory: {}
+    path: .
+  path: monitoring/loki/build/charts/loki
+- contents:
+  - directory: {}
+    path: .
+  path: monitoring/loki/build/charts/promtail
 kind: LockConfig

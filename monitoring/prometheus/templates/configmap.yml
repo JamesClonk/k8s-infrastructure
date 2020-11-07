@@ -1,0 +1,102 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/versioned: ""
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"prometheus-alertmanager"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      volumes: #! force recreate of prometheus-alertmanager if alerting-rules inside prometheus-server configmap change
+      #@overlay/append
+      - name: prometheus-config-volume
+        configMap:
+          name: prometheus-server
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"prometheus-server"}}), expects=1
+---
+data:
+  #@overlay/match expects=1
+  alerting_rules.yml: |
+    groups:
+    - name: instances
+      rules:
+      - alert: Instance_Down
+        expr: up == 0
+        for: 5m
+        annotations:
+          title: 'Instance {{ $labels.instance }} / {{ $labels.job }} down'
+          description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+        labels:
+          severity: warning
+
+    - name: cpu
+      rules:
+      - alert: CPU_Requests
+        expr: (sum(kube_pod_container_resource_requests_cpu_cores) by (node) / sum(kube_node_status_allocatable_cpu_cores) by (node) * 100) > 85
+        for: 5m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} CPU resource requests > 85%'
+          description: 'Kubernetes node {{ $labels.instance }} has resource requests on CPU shares over 85% for more than 5 minutes.'
+        labels:
+          severity: warning
+      - alert: CPU_Limits
+        expr: (sum(kube_pod_container_resource_limits_cpu_cores) by (node) / sum(kube_node_status_allocatable_cpu_cores) by (node) * 100) > 100
+        for: 5m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} CPU resource limits > 100%'
+          description: 'Kubernetes node {{ $labels.instance }} has resource limits on CPU shares over 100% for more than 5 minutes.'
+        labels:
+          severity: warning
+      - alert: CPU_Usage
+        expr: ceil(sum (rate (container_cpu_usage_seconds_total{id="/"}[5m])) by (instance) / 2 * 100) > 70
+        for: 10m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} CPU usage > 70%'
+          description: 'Kubernetes node {{ $labels.instance }} has a CPU usage of `{{ $value }}%` for more than 10 minutes.'
+        labels:
+          severity: critical
+
+    - name: memory
+      rules:
+      - alert: Memory_Requests
+        expr: (sum(kube_pod_container_resource_requests_memory_bytes) by (node) / sum(kube_node_status_allocatable_memory_bytes) by (node) * 100) > 75
+        for: 5m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} memory resource requests > 75%'
+          description: 'Kubernetes node {{ $labels.instance }} has resource requests on memory over 75% for more than 5 minutes.'
+        labels:
+          severity: warning
+      - alert: Memory_Limits
+        expr: (sum(kube_pod_container_resource_limits_memory_bytes) by (node) / sum(kube_node_status_allocatable_memory_bytes) by (node) * 100) > 95
+        for: 5m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} memory resource limits > 95%'
+          description: 'Kubernetes node {{ $labels.instance }} has resource limits on memory over 95% for more than 5 minutes.'
+        labels:
+          severity: warning
+      - alert: Memory_Usage
+        expr: ceil(sum(container_memory_working_set_bytes{id="/"}) by (instance) / 3000000000 * 100) > 70
+        for: 10m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} memory usage > 70%'
+          description: 'Kubernetes node {{ $labels.instance }} has a memory usage of `{{ $value }}%` for more than 10 minutes.'
+        labels:
+          severity: critical
+
+    - name: disk
+      rules:
+      - alert: Disk_Usage
+        expr: ceil(sum (container_fs_usage_bytes{device=~"^/dev/.*$",id="/"}) by (instance) / sum (container_fs_limit_bytes{device=~"^/dev/.*$",id="/"}) by (instance) * 100) > 70
+        for: 10m
+        annotations:
+          title: 'K8s node {{ $labels.instance }} disk usage > 70%'
+          description: 'Kubernetes node {{ $labels.instance }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+        labels:
+          severity: critical

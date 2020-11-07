@@ -1,0 +1,78 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"prometheus-node-exporter"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"prometheus-node-exporter"}), expects=1
+      - name: prometheus-node-exporter
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"prometheus-alertmanager"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"prometheus-alertmanager-configmap-reload"}), expects=1
+      - name: prometheus-alertmanager-configmap-reload
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+      #@overlay/match by=overlay.subset({"name":"prometheus-alertmanager"}), expects=1
+      - name: prometheus-alertmanager
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"prometheus-pushgateway"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"prometheus-pushgateway"}), expects=1
+      - name: prometheus-pushgateway
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"prometheus-server"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"prometheus-server-configmap-reload"}), expects=1
+      - name: prometheus-server-configmap-reload
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+      #@overlay/match by=overlay.subset({"name":"prometheus-server"}), expects=1
+      - name: prometheus-server
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false

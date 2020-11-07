@@ -1,0 +1,83 @@
+rbac:
+  create: true
+
+podSecurityPolicy:
+  enabled: false
+
+serviceAccounts:
+  alertmanager:
+    create: true
+  nodeExporter:
+    create: true
+  pushgateway:
+    create: true
+  server:
+    create: true
+
+alertmanager:
+  enabled: true
+  configFromSecret: "prometheus-alertmanager"
+  ingress:
+    enabled: false
+  persistentVolume:
+    enabled: false
+    size: 1Gi
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+kubeStateMetrics:
+  enabled: false
+
+nodeExporter:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi
+
+server:
+  enabled: true
+  ingress:
+    enabled: false
+  strategy:
+    type: Recreate
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+  emptyDir:
+    sizeLimit: 10Gi
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  retention: "7d"
+
+pushgateway:
+  enabled: true
+  ingress:
+    enabled: false
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+  persistentVolume:
+    enabled: false
+
+networkPolicy:
+  enabled: true
+
+forceNamespace: prometheus

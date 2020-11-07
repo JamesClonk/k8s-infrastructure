@@ -5,6 +5,9 @@ overrides:
 - image: docker.io/jettech/kube-webhook-certgen:v1.5.0
   newImage: index.docker.io/jettech/kube-webhook-certgen@sha256:fb7c2cd46ccfdd2809165152ec3f2cd0ae1dfc74cc74671b1dea73f034a87acf
   preresolved: true
+- image: jamesclonk/basic-auth:678636aaca212f20c4e263d05b75efabdc6aef2c
+  newImage: index.docker.io/jamesclonk/basic-auth@sha256:16808463ecb5319a04347f97a4cb3a1d8a9fbdd63b9119f546daf97e4dc8adc9
+  preresolved: true
 - image: k8s.gcr.io/ingress-nginx/controller:v0.41.0@sha256:e6019e536cfb921afb99408d5292fa88b017c49dd29d05fc8dbc456aa770d590
   newImage: k8s.gcr.io/ingress-nginx/controller@sha256:e6019e536cfb921afb99408d5292fa88b017c49dd29d05fc8dbc456aa770d590
   preresolved: true

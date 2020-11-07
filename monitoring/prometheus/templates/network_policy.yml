@@ -1,0 +1,51 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.monitoring.enable_network_policy:
+#@overlay/match by=overlay.subset({"kind": "NetworkPolicy", "metadata":{"name":"prometheus-server"}}), expects=1
+---
+spec:
+  #@overlay/replace, expects=1
+  ingress:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9090
+  - from: #! allow access for grafana
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: grafana
+      podSelector: {}
+    ports:
+    - port: 9090
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 9090
+
+#@overlay/match by=overlay.subset({"kind": "NetworkPolicy", "metadata":{"name":"prometheus-alertmanager"}}), expects=1
+---
+spec:
+  #@overlay/replace, expects=1
+  ingress:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9093
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 9093
+#@ end

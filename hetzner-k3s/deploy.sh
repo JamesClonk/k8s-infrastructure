@@ -133,6 +133,7 @@ if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 fi
 retry 5 5 hcloud server ssh "${HETZNER_NODE_NAME}" \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" > "${KUBECONFIG}"
+chmod 600 "${KUBECONFIG}"
 
 retry 10 30 kubectl cluster-info
 echo " "

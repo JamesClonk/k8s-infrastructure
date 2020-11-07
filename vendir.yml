@@ -75,3 +75,59 @@ directories:
       path: vendor/github.com/kubernetes/kube-state-metrics/examples/standard
     excludePaths:
     - LICENSE
+
+- path: vendor/github.com/prometheus-community/helm-charts
+  contents:
+  - path: .
+    git:
+      url: https://github.com/prometheus-community/helm-charts
+      ref: prometheus-11.16.8
+    includePaths:
+    - charts/prometheus/**/*
+- path: monitoring/prometheus/build/chart
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/prometheus-community/helm-charts/charts/prometheus
+    excludePaths:
+    - LICENSE
+
+- path: vendor/github.com/grafana/helm-charts
+  contents:
+  - path: .
+    git:
+      url: https://github.com/grafana/helm-charts
+      ref: grafana-6.1.3
+    includePaths:
+    - charts/grafana/**/*
+- path: monitoring/grafana/build/chart
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/grafana/helm-charts/charts/grafana
+    excludePaths:
+    - LICENSE
+
+- path: vendor/github.com/grafana/loki
+  contents:
+  - path: .
+    git:
+      url: https://github.com/grafana/loki
+      ref: v2.0.0
+    includePaths:
+    - production/helm/loki/**/*
+    - production/helm/promtail/**/*
+- path: monitoring/loki/build/charts/loki
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/grafana/loki/production/helm/loki
+    excludePaths:
+    - LICENSE
+- path: monitoring/loki/build/charts/promtail
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/grafana/loki/production/helm/promtail
+    excludePaths:
+    - LICENSE
