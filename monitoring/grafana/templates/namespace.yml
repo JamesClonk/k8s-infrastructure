@@ -1,0 +1,24 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yml", "labels")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana
+  labels: #@ labels()
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: grafana
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"grafana"}}), expects=1
+---
+metadata:
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: grafana

@@ -1,0 +1,17 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"grafana"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"grafana"}), expects=1
+      - name: grafana
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false

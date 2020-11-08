@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.monitoring.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  podSelector:
+    matchLabels: #@ labels()
+  ingress:
+  - from: #! allow access for prometheus
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 3000
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 3000
+#@ end

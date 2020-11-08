@@ -1,0 +1,113 @@
+rbac:
+  create: true
+  pspEnabled: false
+
+serviceAccount:
+  create: true
+
+testFramework:
+  enabled: false
+
+serviceMonitor:
+  enabled: false
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 192Mi
+  requests:
+    cpu: 100m
+    memory: 192Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+
+initChownData:
+  resources:
+    limits:
+      cpu: 150m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+admin:
+  existingSecret: grafana-credentials
+  userKey: admin-user
+  passwordKey: admin-password
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.prometheus.svc.cluster.local
+      access: proxy
+      isDefault: true
+    - name: Loki
+      type: loki
+      url: http://loki.loki.svc.cluster.local:3100
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      updateIntervalSeconds: 180
+      options:
+        path: /var/lib/grafana/dashboards/default
+
+dashboardsConfigMaps:
+  default: grafana-dashboards
+
+grafana.ini:
+  paths:
+    data: /var/lib/grafana/data
+    logs: /var/log/grafana
+    plugins: /var/lib/grafana/plugins
+    provisioning: /etc/grafana/provisioning
+  analytics:
+    check_for_updates: false
+  log:
+    mode: console
+  grafana_net:
+    url: https://grafana.net
+  auth.basic:
+    enabled: false
+  auth.anonymous:
+    enabled: true
+    org_name: Main Org.
+    org_role: Admin
+  auth:
+    disable_login_form: true
+    disable_signout_menu: true
+
+sidecar:
+  dashboards:
+    enabled: false
+  datasources:
+    enabled: false
+  notifiers:
+    enabled: false
+  resources:
+    limits:
+      cpu: 150m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+namespaceOverride: grafana
+
+imageRenderer:
+  enabled: false
