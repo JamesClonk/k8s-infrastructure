@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-msteams-card-template
-  namespace: prometheus-msteams
+  namespace: prometheus
   labels: #@ labels()
   annotations:
     kapp.k14s.io/versioned: ""
