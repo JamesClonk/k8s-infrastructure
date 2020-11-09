@@ -100,3 +100,125 @@ data:
           description: 'Kubernetes node {{ $labels.instance }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
         labels:
           severity: critical
+
+    - name: backman
+      rules:
+      - alert: Backup_Failure
+        expr: sum(rate(backman_scheduler_backup_failures_total[24h])) by (job) > 0
+        for: 10m
+        annotations:
+          title: '{{ $labels.job }}: backup failure'
+          description: '{{ $labels.job }} is reporting `{{ $value }}%` failed backups!'
+        labels:
+          severity: critical
+      - alert: Backup_Filesize
+        expr: min(backman_backup_filesize_last) by (name, type) < 100000
+        for: 10m
+        annotations:
+          title: 'backman filesize issue detected'
+          description: '{{ $labels.type }} backup {{ $labels.name }} is reporting a filesize of only `{{ $value | humanize1024 }}` for its last backup!'
+        labels:
+          severity: critical
+
+    - name: jcio
+      rules:
+      - alert: Frontend_Newsfeed_Failure
+        expr: rate(jcio_frontend_newsfeed_failures[10m]) > 0
+        for: 10m
+        annotations:
+          title: '{{ $labels.app }}: newsfeed failure'
+          description: '{{ $labels.app }} is reporting newsfeed failures!'
+        labels:
+          severity: warning
+      - alert: Stdlib_Newsreader_Failure
+        expr: rate(jcio_stdlib_newsreader_feed_failures[10m]) > 0
+        for: 10m
+        annotations:
+          title: '{{ $labels.app }}: newsreader feed failure'
+          description: '{{ $labels.app }} is reporting newsreader feed failures!'
+        labels:
+          severity: warning
+
+    - name: home-info
+      rules:
+      - alert: Alerting_Error
+        expr: rate(homeinfo_dashboard_alerting_errors_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app }}: home-info alerting error'
+          description: '{{ $labels.app }} is reporting home-info alerting errors!'
+        labels:
+          severity: warning
+      - alert: Sensor_Error
+        expr: rate(homeinfo_dashboard_sensor_errors_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app }}: home-info sensor error'
+          description: '{{ $labels.app }} is reporting home-info sensor errors!'
+        labels:
+          severity: warning
+
+    - name: irvisualizer
+      rules:
+      - alert: Visualizer_Error
+        expr: rate(irvisualizer_errors_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app_service }}: visualizer error'
+          description: '{{ $labels.app_service }} is reporting visualizer errors!'
+        labels:
+          severity: warning
+
+    - name: ircollector
+      rules:
+      - alert: Client_Login_Failure
+        expr: rate(ircollector_api_client_login_error_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app_service }}: API client login failure'
+          description: '{{ $labels.app_service }} is reporting API client login failures!'
+        labels:
+          severity: warning
+      - alert: Client_Error
+        expr: rate(ircollector_api_client_request_error_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app_service }}: API client error'
+          description: '{{ $labels.app_service }} is reporting API client request errors!'
+        labels:
+          severity: warning
+      - alert: Collector_Error
+        expr: rate(ircollector_errors_total[5m]) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app_service }}: collector error'
+          description: '{{ $labels.app_service }} is reporting collector errors!'
+        labels:
+          severity: warning
+
+    - name: promtail
+      rules:
+      - alert: GolangPanic
+        expr: avg(promtail_custom_app_panic_total) by (app, app_service, app_service_component) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app }}: Golang panic'
+          description: '{{ $labels.app }}/{{ $labels.app_service }} is reporting Golang panics!'
+        labels:
+          severity: critical
+      - alert: Error
+        expr: avg(promtail_custom_app_error_total) by (app, app_service, app_service_component) > 0
+        for: 5m
+        annotations:
+          title: '{{ $labels.app }}: error'
+          description: '{{ $labels.app }}/{{ $labels.app_service }} is reporting errors.'
+        labels:
+          severity: info
+      - alert: PushFailure
+        expr: avg(promtail_custom_repo_mirrorer_failed_push) by (job) > 0
+        for: 10m
+        annotations:
+          title: '{{ $labels.job }}: push failure'
+          description: '{{ $labels.job }} is reporting push failures.'
+        labels:
+          severity: warning

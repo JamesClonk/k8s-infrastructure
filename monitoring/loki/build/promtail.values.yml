@@ -1,0 +1,57 @@
+loki:
+  serviceName: "loki"
+  servicePort: 3100
+  serviceScheme: http
+
+nameOverride: loki
+
+pipelineStages:
+- docker: {}
+- match:
+    selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
+    stages:
+    - metrics:
+        app_panic_total:
+          type: Counter
+          description: "Total app panics"
+          config:
+            match_all: true
+            action: inc
+- match:
+    selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
+    stages:
+    - metrics:
+        app_error_total:
+          type: Counter
+          description: "Total app errors"
+          config:
+            match_all: true
+            action: inc
+- match:
+    selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
+    stages:
+    - metrics:
+        repo_mirrorer_failed_push:
+          type: Counter
+          description: "Total repo-mirrorer failed pushes"
+          config:
+            match_all: true
+            action: inc
+
+rbac:
+  create: true
+  pspEnabled: false
+
+resources:
+  limits:
+    cpu: 150m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+serviceAccount:
+  create: true
+
+serviceMonitor:
+  enabled: false

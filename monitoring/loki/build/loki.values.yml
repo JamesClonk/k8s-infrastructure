@@ -1,0 +1,27 @@
+ingress:
+  enabled: false
+
+networkPolicy:
+  enabled: true
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+rbac:
+  create: true
+  pspEnabled: false
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+serviceAccount:
+  create: true
+
+serviceMonitor:
+  enabled: false

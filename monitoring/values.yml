@@ -24,12 +24,3 @@ alertmanager:
 msteams:
   enabled: ${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED}
   replicas: 1
-
-kube_state_metrics:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 64Mi

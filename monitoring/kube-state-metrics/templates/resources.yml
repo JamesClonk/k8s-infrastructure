@@ -10,4 +10,10 @@ spec:
       #@overlay/match by=overlay.subset({"name":"kube-state-metrics"}), expects=1
       - name: kube-state-metrics
         #@overlay/match missing_ok=True
-        resources: #@ data.values.kube_state_metrics.resources
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
