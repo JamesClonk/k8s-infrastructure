@@ -29,3 +29,5 @@ for deployment in ${deployments[@]}; do
 	popd
 	echo -e "\n\n"
 done
+kapp list
+echo " "
