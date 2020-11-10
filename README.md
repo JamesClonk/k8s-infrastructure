@@ -3,7 +3,7 @@ Create your own personal Kubernetes infrastructure, the quick and easy way
 
 ## Quick start
 
-```
+```bash
 ## get this repository here
 git clone https://github.com/JamesClonk/k8s-infrastructure
 cd k8s-infrastructure
@@ -12,7 +12,7 @@ cd k8s-infrastructure
 # HCLOUD_TOKEN, HETZNER_PUBLIC_SSH_KEY
 # INGRESS_DOMAIN, INGRESS_BASIC_AUTH_USERNAME, INGRESS_BASIC_AUTH_PASSWORD
 # LETS_ENCRYPT_EMAIL_ADDRESS
-vi configuration.env.sh`
+vi configuration.env.sh
 
 # provision Kubernetes on Hetzner Cloud, install basic tools and software:
 # ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana
