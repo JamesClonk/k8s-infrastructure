@@ -37,13 +37,15 @@ function install_tool {
 }
 
 function install_tool_from_tarball {
+	local -r tool_path="$1"; shift
 	local -r tool_name="$1"; shift
 	local -r tool_url="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
 		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
 		echo "unpacking [${tool_name}.tgz] ..."
-		tar -xvzf "$HOME/bin/${tool_name}.tgz" -C "$HOME/bin/" "${tool_name}"
+		STRIP_COMPONENTS=$(echo "${tool_path}" | awk -F"/" '{print NF-1}')
+		tar -xvzf "$HOME/bin/${tool_name}.tgz" --strip-components=${STRIP_COMPONENTS} -C "$HOME/bin/" "${tool_path}"
 		chmod +x "$HOME/bin/${tool_name}"
 		rm -f "$HOME/bin/${tool_name}.tgz"
 	fi
@@ -72,5 +74,6 @@ install_tool "kapp" "https://github.com/k14s/kapp/releases/download/v0.34.0/kapp
 install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.30.0/ytt-linux-amd64"
 install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.12.0/vendir-linux-amd64"
 install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.27.0/kbld-linux-amd64"
-install_tool_from_tarball "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz"
-install_tool_from_tarball "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
+install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz"
+install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz"
+install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
