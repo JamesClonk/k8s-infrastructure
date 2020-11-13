@@ -1,6 +1,6 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.24.0
+minimumRequiredVersion: 0.27.0
 overrides:
 - image: docker.io/jettech/kube-webhook-certgen:v1.5.0
   newImage: index.docker.io/jettech/kube-webhook-certgen@sha256:fb7c2cd46ccfdd2809165152ec3f2cd0ae1dfc74cc74671b1dea73f034a87acf
@@ -8,6 +8,6 @@ overrides:
 - image: jamesclonk/basic-auth:678636aaca212f20c4e263d05b75efabdc6aef2c
   newImage: index.docker.io/jamesclonk/basic-auth@sha256:16808463ecb5319a04347f97a4cb3a1d8a9fbdd63b9119f546daf97e4dc8adc9
   preresolved: true
-- image: k8s.gcr.io/ingress-nginx/controller:v0.41.0@sha256:e6019e536cfb921afb99408d5292fa88b017c49dd29d05fc8dbc456aa770d590
-  newImage: k8s.gcr.io/ingress-nginx/controller@sha256:e6019e536cfb921afb99408d5292fa88b017c49dd29d05fc8dbc456aa770d590
+- image: k8s.gcr.io/ingress-nginx/controller:v0.41.1@sha256:595f5c08aaa2bdfd1afdfb2e0f1a668bc85d96f80c097ddb3d4241f0c9122549
+  newImage: k8s.gcr.io/ingress-nginx/controller@sha256:595f5c08aaa2bdfd1afdfb2e0f1a668bc85d96f80c097ddb3d4241f0c9122549
   preresolved: true

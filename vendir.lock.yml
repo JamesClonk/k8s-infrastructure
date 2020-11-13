@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Release 0.41.0 chart
-      sha: 8aefb97fea4ebc429bb59921c82fdee0ab4d2a18
+      commitTitle: Release chart 3.10.1
+      sha: 96fba478fe1801ad1cf5df1491f8dc1ce0993659
       tags:
-      - controller-v0.41.0
+      - ingress-nginx-3.10.1
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
