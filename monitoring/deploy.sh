@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 set -u
+source ../setup.sh
 
 # deploy
 echo "deploying [monitoring] ..."
