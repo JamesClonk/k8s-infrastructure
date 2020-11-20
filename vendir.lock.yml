@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Release chart 3.10.1
-      sha: 96fba478fe1801ad1cf5df1491f8dc1ce0993659
+      commitTitle: 'Merge pull request #6493 from bpinske/master...'
+      sha: b482b5dd32bbc853e277d2c2bc1d4bde2538f0f9
       tags:
-      - ingress-nginx-3.10.1
+      - ingress-nginx-3.11.0
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
