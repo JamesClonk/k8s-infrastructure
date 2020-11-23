@@ -14,7 +14,7 @@ deployments=(
 	"ingress-nginx"
 
 	# and automatic let's encrypt certificate management
-	# "cert-manager" - TODO: no cert-manager for now, we'll enabled it once everything is prod ready
+	"cert-manager"
 
 	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"
