@@ -9,7 +9,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/ingress-nginx
-      ref: ingress-nginx-3.11.0
+      ref: ingress-nginx-3.12.0
     includePaths:
     - deploy/static/provider/baremetal/*
 - path: ingress-nginx/templates/upstream
@@ -28,7 +28,7 @@ directories:
   - path: .
     githubRelease:
       slug: jetstack/cert-manager
-      tag: v1.0.4
+      tag: v1.1.0
       disableAutoChecksumValidation: true
     includePaths:
     - cert-manager.yaml

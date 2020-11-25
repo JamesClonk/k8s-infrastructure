@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Merge pull request #6493 from bpinske/master...'
-      sha: b482b5dd32bbc853e277d2c2bc1d4bde2538f0f9
+      commitTitle: 'Merge pull request #6514 from aledbf/helm...'
+      sha: 8bba70b3b57a6ebf1caeb011c03ab74839bd0567
       tags:
-      - ingress-nginx-3.11.0
+      - ingress-nginx-3.12.0
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
@@ -14,7 +14,7 @@ directories:
   path: ingress-nginx/templates/upstream
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/jetstack/cert-manager/releases/33227877
+      url: https://api.github.com/repos/jetstack/cert-manager/releases/34373236
     path: .
   path: vendor/github.com/jetstack/cert-manager
 - contents:
