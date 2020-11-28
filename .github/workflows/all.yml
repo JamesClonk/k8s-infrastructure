@@ -1,4 +1,4 @@
-name: Kubernetes Infrastructure
+name: kubernetes infrastructure
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Provision K3s on Hetzner Cloud
+    - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
       env:
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Prepare kube-system namespace
+    - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
 
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Kubernetes Ingress controller
+    - name: deploy kubernetes ingress controller
       working-directory: ingress-nginx
       run: ./deploy.sh
 
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy cert-manager for Let's Encrypt
+    - name: deploy cert-manager for let's encrypt
       working-directory: cert-manager
       run: ./deploy.sh
 
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Kubernetes Dashboard
+    - name: deploy kubernetes dashboard
       working-directory: kubernetes-dashboard
       run: ./deploy.sh
 
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy kube-state-metrics
+    - name: deploy kube-state-metrics
       working-directory: monitoring/kube-state-metrics
       run: ./deploy.sh
 
@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Prometheus
+    - name: deploy prometheus
       working-directory: monitoring/prometheus
       run: ./deploy.sh
 
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Prometheus-MSTeams proxy
+    - name: deploy prometheus-msteams proxy
       working-directory: monitoring/prometheus-msteams
       run: ./deploy.sh
 
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Loki
+    - name: deploy loki
       working-directory: monitoring/loki
       run: ./deploy.sh
 
@@ -133,6 +133,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Deploy Grafana
+    - name: deploy grafana
       working-directory: monitoring/grafana
       run: ./deploy.sh

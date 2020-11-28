@@ -1,4 +1,4 @@
-name: K3s on Hetzner Cloud
+name: k3s on hetzner cloud
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Provision K3s on Hetzner Cloud
+    - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
       env:
