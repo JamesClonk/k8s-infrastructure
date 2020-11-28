@@ -19,7 +19,7 @@ export HETZNER_PRIVATE_NETWORK_SUBNET="10.8.0.0/24"
 export HETZNER_PRIVATE_NETWORK_ZONE="eu-central"
 
 export HETZNER_NODE_NAME="kubernetes-server"
-export HETZNER_NODE_TYPE="cpx21" # https://www.hetzner.com/cloud#pricing
+export HETZNER_NODE_TYPE="cpx41" # https://www.hetzner.com/cloud#pricing
 export HETZNER_NODE_IMAGE="ubuntu-20.04"
 export HETZNER_NODE_LOCATION="nbg1" # https://docs.hetzner.com/general/others/data-centers-and-connection
 
@@ -30,7 +30,7 @@ export HETZNER_LOADBALANCER_ENABLED="false" # set to 'true' if you want a Hetzne
 export HETZNER_LOADBALANCER_NAME="kubernetes-lb"
 export HETZNER_LOADBALANCER_TYPE="lb11" # https://www.hetzner.com/cloud/load-balancer#pricing
 
-export HETZNER_K3S_VERSION="v1.19.3+k3s2" # https://github.com/rancher/k3s/releases
+export HETZNER_K3S_VERSION="v1.19.4+k3s1" # https://github.com/rancher/k3s/releases
 ########################################################################################################################
 
 

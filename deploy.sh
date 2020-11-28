@@ -14,7 +14,7 @@ deployments=(
 	"ingress-nginx"
 
 	# and automatic let's encrypt certificate management
-	"cert-manager"
+	# "cert-manager"
 
 	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"
