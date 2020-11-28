@@ -1,4 +1,5 @@
 #@ load("@ytt:assert", "assert")
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
 #@ if len(data.values.lets_encrypt.prod_key) > 0 and data.values.lets_encrypt.prod_key != "NONE":
@@ -12,13 +13,16 @@ metadata:
     app: cert-manager
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-prod: secret
+    kapp.k14s.io/change-rule.letsencrypt: upsert after upserting deployments
 type: Opaque
 data:
   tls.key: #@ data.values.lets_encrypt.prod_key
 #@ end
 
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
@@ -27,20 +31,37 @@ metadata:
     app: cert-manager
     app.kubernetes.io/name: cert-manager
     app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-prod: clusterissuer
+    kapp.k14s.io/change-rule.letsencrypt-prod: upsert after upserting secret
 spec:
   acme:
-    # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
-    # Email address used for ACME registration
     #@ if len(data.values.lets_encrypt.email) == 0:
     #@  assert.fail("lets_encrypt.email be empty")
     #@ end
     email: #@ data.values.lets_encrypt.email
-    # Name of a secret used to store the ACME account private key
+    #@ if/end len(data.values.lets_encrypt.prod_key) > 0 and data.values.lets_encrypt.prod_key != "NONE":
+    disableAccountKeyGeneration: true
     privateKeySecretRef:
       name: letsencrypt-prod
-    # Enable the HTTP-01 challenge provider
     solvers:
     - http01:
         ingress:
           class: nginx
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group.letsencrypt: deployments
+
+#@overlay/match by=overlay.subset({"kind":"Service"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group.letsencrypt: deployments
