@@ -4,11 +4,11 @@ on:
   push:
     branches: [ master ]
 
-jobs:
-  env:
-    KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
-    INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
+env:
+  KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+  INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
 
+jobs:
   hetzner-k3s:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: kubernetes
