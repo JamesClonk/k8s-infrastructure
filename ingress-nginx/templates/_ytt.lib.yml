@@ -1,6 +1,5 @@
-#@ load("@ytt:data", "data")
-
 #@ def labels(component):
+  app: ingress-nginx
   app.kubernetes.io/name: ingress-nginx
   app.kubernetes.io/instance: ingress-nginx
   app.kubernetes.io/component: #@ component
@@ -8,6 +7,10 @@
 
 #@ def labelSelector(component):
   matchExpressions:
+  - key: app
+    operator: In
+    values:
+    - ingress-nginx
   - key: app.kubernetes.io/name
     operator: In
     values:

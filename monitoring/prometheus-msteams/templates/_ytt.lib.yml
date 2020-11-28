@@ -1,10 +1,15 @@
 #@ def labels():
+  app: prometheus-msteams
   app.kubernetes.io/name: prometheus-msteams
   app.kubernetes.io/instance: prometheus-msteams
 #@ end
 
 #@ def labelSelector():
   matchExpressions:
+  - key: app
+    operator: In
+    values:
+    - prometheus-msteams
   - key: app.kubernetes.io/name
     operator: In
     values:

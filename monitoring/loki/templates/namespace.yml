@@ -14,3 +14,11 @@ metadata:
 metadata:
   #@overlay/match missing_ok=True
   namespace: loki
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"loki"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: loki

@@ -18,6 +18,7 @@ metadata:
 #@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"prometheus"}}), expects=1
 ---
 metadata:
+  #@overlay/match missing_ok=True
   labels:
     #@overlay/match missing_ok=True
     namespace.kubernetes.io/name: prometheus
