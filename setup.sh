@@ -57,13 +57,29 @@ export PATH="$HOME/bin:$PATH"
 
 # $HOME/.ssh
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
-chmod 700 "$HOME/.ssh"
+chmod 700 "$HOME/.ssh" || true
 set +u
 if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then
 	cat > "$HOME/.ssh/id_rsa" << EOF
 ${HETZNER_PRIVATE_SSH_KEY}
 EOF
 	chmod 600 "$HOME/.ssh/id_rsa"
+fi
+set -u
+
+# kubectl config
+if [ ! -d "$HOME/.kube" ]; then mkdir "$HOME/.kube"; fi
+chmod 700 "$HOME/.kube" || true
+set +u
+if [ ! -f "${KUBECONFIG}" ]; then
+	if [ -z "${KUBECONFIG_DATA}" ]; then
+		if [ "${KUBECONFIG_DATA}" != "NONE" ]; then
+			cat > "${KUBECONFIG}" << EOF
+${KUBECONFIG_DATA}
+EOF
+			chmod 600 "${KUBECONFIG}"
+		fi
+	fi
 fi
 set -u
 
