@@ -5,6 +5,10 @@ on:
     branches: [ master ]
 
 jobs:
+  env:
+    KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+    INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
+
   hetzner-k3s:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: kubernetes
@@ -15,6 +19,7 @@ jobs:
       working-directory: hetzner-k3s
       run: ./deploy.sh
       env:
+        KUBECONFIG_DATA: NONE
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
         HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
@@ -41,7 +46,6 @@ jobs:
       working-directory: ingress-nginx
       run: ./deploy.sh
       env:
-        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
         INGRESS_BASIC_AUTH_USERNAME: ${{ secrets.INGRESS_BASIC_AUTH_USERNAME }}
         INGRESS_BASIC_AUTH_PASSWORD: ${{ secrets.INGRESS_BASIC_AUTH_PASSWORD }}
 
@@ -70,8 +74,6 @@ jobs:
     - name: Deploy Kubernetes Dashboard
       working-directory: kubernetes-dashboard
       run: ./deploy.sh
-      env:
-        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
 
   kube-state-metrics:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -95,7 +97,6 @@ jobs:
       working-directory: monitoring/prometheus
       run: ./deploy.sh
       env:
-        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
         PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED }}
         PROMETHEUS_ALERTMANAGER_EMAIL_HOST: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_HOST }}
         PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD }}
@@ -128,15 +129,6 @@ jobs:
     - name: Deploy Loki
       working-directory: monitoring/loki
       run: ./deploy.sh
-      env:
-        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
-        PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED }}
-        PROMETHEUS_ALERTMANAGER_EMAIL_HOST: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_HOST }}
-        PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD }}
-        PROMETHEUS_ALERTMANAGER_EMAIL_FROM: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_FROM }}
-        PROMETHEUS_ALERTMANAGER_EMAIL_TO: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_TO }}
-        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED }}
-        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL }}
 
   grafana:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -148,5 +140,3 @@ jobs:
     - name: Deploy Grafana
       working-directory: monitoring/grafana
       run: ./deploy.sh
-      env:
-        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
