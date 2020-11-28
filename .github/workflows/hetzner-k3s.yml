@@ -13,6 +13,7 @@ jobs:
       working-directory: hetzner-k3s
       run: ./deploy.sh
       env:
+        KUBECONFIG_DATA: NONE
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
         HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
