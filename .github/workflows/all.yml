@@ -45,9 +45,6 @@ jobs:
     - name: Deploy Kubernetes Ingress controller
       working-directory: ingress-nginx
       run: ./deploy.sh
-      env:
-        INGRESS_BASIC_AUTH_USERNAME: ${{ secrets.INGRESS_BASIC_AUTH_USERNAME }}
-        INGRESS_BASIC_AUTH_PASSWORD: ${{ secrets.INGRESS_BASIC_AUTH_PASSWORD }}
 
   cert-manager:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -140,3 +137,6 @@ jobs:
     - name: Deploy Grafana
       working-directory: monitoring/grafana
       run: ./deploy.sh
+      env:
+        GRAFANA_USERNAME: ${{ secrets.INGRESS_BASIC_AUTH_USERNAME }}
+        GRAFANA_PASSWORD: ${{ secrets.INGRESS_BASIC_AUTH_PASSWORD }}
