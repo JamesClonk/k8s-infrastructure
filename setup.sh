@@ -72,8 +72,10 @@ if [ ! -d "$HOME/.kube" ]; then mkdir "$HOME/.kube"; fi
 chmod 700 "$HOME/.kube" || true
 set +u
 if [ ! -f "${KUBECONFIG}" ]; then
-	if [ -z "${KUBECONFIG_DATA}" ]; then
+	echo "have to write [${KUBECONFIG}]"
+	if [ -n "${KUBECONFIG_DATA}" ]; then
 		if [ "${KUBECONFIG_DATA}" != "NONE" ]; then
+			echo "writing [${KUBECONFIG}] ..."
 			cat > "${KUBECONFIG}" << EOF
 ${KUBECONFIG_DATA}
 EOF
