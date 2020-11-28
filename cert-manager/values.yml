@@ -5,3 +5,5 @@ cert_manager:
 
 lets_encrypt:
   email: "${LETS_ENCRYPT_EMAIL_ADDRESS}"
+  prod_key: "${LETS_ENCRYPT_PROD_KEY}"
+  staging_key: "${LETS_ENCRYPT_STAGING_KEY}"

@@ -1,5 +1,22 @@
 #@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
+
+#@ if len(data.values.lets_encrypt.staging_key) > 0 and data.values.lets_encrypt.staging_key != "NONE":
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: letsencrypt-staging
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+type: Opaque
+data:
+  tls.key: #@ data.values.lets_encrypt.staging_key
+#@ end
+
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer

@@ -47,6 +47,8 @@ export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD}" # for exampl
 ####### cert-manager ###################################################################################################
 ########################################################################################################################
 export LETS_ENCRYPT_EMAIL_ADDRESS="${LETS_ENCRYPT_EMAIL_ADDRESS}" # for example "admin@mydomain.org"
+export LETS_ENCRYPT_PROD_KEY="${LETS_ENCRYPT_PROD_KEY:=NONE}" # base64 encoded tls key
+export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=NONE}" # base64 encoded tls key
 ########################################################################################################################
 
 
