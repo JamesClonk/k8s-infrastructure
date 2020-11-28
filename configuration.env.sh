@@ -54,14 +54,6 @@ export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=NONE}" # base64 enc
 
 
 ########################################################################################################################
-####### grafana ########################################################################################################
-########################################################################################################################
-export GRAFANA_USERNAME="${GRAFANA_USERNAME:=${INGRESS_BASIC_AUTH_USERNAME}}" # for example "my-username"
-export GRAFANA_PASSWORD="${GRAFANA_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
-########################################################################################################################
-
-
-########################################################################################################################
 ####### prometheus #####################################################################################################
 ########################################################################################################################
 export PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED="${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED:=false}" # false or true
@@ -71,4 +63,12 @@ export PROMETHEUS_ALERTMANAGER_EMAIL_FROM="${PROMETHEUS_ALERTMANAGER_EMAIL_FROM:
 export PROMETHEUS_ALERTMANAGER_EMAIL_TO="${PROMETHEUS_ALERTMANAGER_EMAIL_TO:=nobody@nobody}"
 export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED:=true}" # false or true
 export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL:=http://example/deadbeef}" # https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
+########################################################################################################################
+
+
+########################################################################################################################
+####### grafana ########################################################################################################
+########################################################################################################################
+export GRAFANA_USERNAME="${GRAFANA_USERNAME:=${INGRESS_BASIC_AUTH_USERNAME}}" # for example "my-username"
+export GRAFANA_PASSWORD="${GRAFANA_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
 ########################################################################################################################
