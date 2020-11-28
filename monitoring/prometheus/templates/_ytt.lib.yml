@@ -1,5 +1,3 @@
-#@ load("@ytt:data", "data")
-
 #@ def labels(component):
   component: #@ component
   app: prometheus

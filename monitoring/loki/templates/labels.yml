@@ -1,4 +1,3 @@
-#@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"promtail-loki"}}), expects=1

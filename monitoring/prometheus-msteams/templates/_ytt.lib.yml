@@ -1,5 +1,3 @@
-#@ load("@ytt:data", "data")
-
 #@ def labels():
   app.kubernetes.io/name: prometheus-msteams
   app.kubernetes.io/instance: prometheus-msteams

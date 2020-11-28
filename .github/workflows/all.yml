@@ -5,24 +5,97 @@ on:
     branches: [ master ]
 
 jobs:
-  provision:
+  hetzner-k3s:
     if: "!contains(github.event.head_commit.message, 'skip')"
+    name: kubernetes
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-
-    - name: Provision whole Kubernetes infrastructure
+    - name: Provision K3s on Hetzner Cloud
+      working-directory: hetzner-k3s
+      run: ./deploy.sh
       env:
         HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
         HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
         HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+
+  kube-system:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: kube-system
+    needs: [ hetzner-k3s ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Prepare kube-system namespace
+      working-directory: kube-system
+      run: ./deploy.sh
+
+  ingress-nginx:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: ingress-nginx
+    needs: [ kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Kubernetes Ingress controller
+      working-directory: ingress-nginx
+      run: ./deploy.sh
+      env:
         INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
         INGRESS_BASIC_AUTH_USERNAME: ${{ secrets.INGRESS_BASIC_AUTH_USERNAME }}
         INGRESS_BASIC_AUTH_PASSWORD: ${{ secrets.INGRESS_BASIC_AUTH_PASSWORD }}
+
+  cert-manager:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: cert-manager
+    needs: [ ingress-nginx ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy cert-manager for Let's Encrypt
+      working-directory: cert-manager
+      run: ./deploy.sh
+      env:
         LETS_ENCRYPT_EMAIL_ADDRESS: ${{ secrets.LETS_ENCRYPT_EMAIL_ADDRESS }}
         LETS_ENCRYPT_PROD_KEY: ${{ secrets.LETS_ENCRYPT_PROD_KEY }}
         LETS_ENCRYPT_STAGING_KEY: ${{ secrets.LETS_ENCRYPT_STAGING_KEY }}
+
+  kubernetes-dashboard:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: kubernetes-dashboard
+    needs: [ ingress-nginx, cert-manager ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Kubernetes Dashboard
+      working-directory: kubernetes-dashboard
+      run: ./deploy.sh
+      env:
+        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
+
+  kube-state-metrics:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: kube-state-metrics
+    needs: [ kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy kube-state-metrics
+      working-directory: monitoring/kube-state-metrics
+      run: ./deploy.sh
+
+  prometheus:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: prometheus
+    needs: [ ingress-nginx, cert-manager, kube-state-metrics ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Prometheus
+      working-directory: monitoring/prometheus
+      run: ./deploy.sh
+      env:
+        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
         PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED }}
         PROMETHEUS_ALERTMANAGER_EMAIL_HOST: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_HOST }}
         PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD }}
@@ -30,4 +103,50 @@ jobs:
         PROMETHEUS_ALERTMANAGER_EMAIL_TO: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_TO }}
         PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED }}
         PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL }}
+
+  prometheus-msteams:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: prometheus-msteams
+    needs: [ ingress-nginx, cert-manager, kube-state-metrics ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Prometheus-MSTeams proxy
+      working-directory: monitoring/prometheus-msteams
       run: ./deploy.sh
+      env:
+        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED }}
+        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL }}
+
+  loki:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: loki
+    needs: [ ingress-nginx, cert-manager ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Loki
+      working-directory: monitoring/loki
+      run: ./deploy.sh
+      env:
+        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
+        PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED }}
+        PROMETHEUS_ALERTMANAGER_EMAIL_HOST: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_HOST }}
+        PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD }}
+        PROMETHEUS_ALERTMANAGER_EMAIL_FROM: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_FROM }}
+        PROMETHEUS_ALERTMANAGER_EMAIL_TO: ${{ secrets.PROMETHEUS_ALERTMANAGER_EMAIL_TO }}
+        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED }}
+        PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL }}
+
+  grafana:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: grafana
+    needs: [ prometheus, loki ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy Grafana
+      working-directory: monitoring/grafana
+      run: ./deploy.sh
+      env:
+        INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}

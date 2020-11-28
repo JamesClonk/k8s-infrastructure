@@ -1,4 +1,3 @@
-#@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"kube-state-metrics"}}), expects=1
