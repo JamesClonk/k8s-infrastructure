@@ -5,4 +5,4 @@ domains:
 
 dashboard:
   enable_network_policy: true
-  kubeconfig: "${KUBECONFIG_DATA}"
+  kubeconfig: ""

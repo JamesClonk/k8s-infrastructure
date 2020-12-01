@@ -51,7 +51,7 @@ cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null
 echo " "
 
 # what is the current SSH port?
-nc -vz 168.119.238.48 "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22" # fallback to default
+nc -vz "${HETZNER_NODE_IP}" "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22" # fallback to default
 
 # custom SSH configuration
 echo "configuring sshd ..."
