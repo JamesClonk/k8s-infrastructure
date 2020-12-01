@@ -44,14 +44,18 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 	&& rm -f "${KUBECONFIG}" && sleep 30)
 	# wait half a minute for server to be ready for sure
 
-# add server-ip to ssh known_hosts
+# get server-ip
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
-cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts"
-echo " "
 
 # what is the current SSH port?
 nc -vz "${HETZNER_NODE_IP}" "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22" # fallback to default
+
+# add server-ip to ssh known_hosts
+cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null \
+	|| (echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." \
+		&& ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts")
+echo " "
 
 # custom SSH configuration
 echo "configuring sshd ..."
@@ -134,7 +138,8 @@ EOF" \
 		# wait half a minute for server to be ready for sure
 
 	# add floating-ip to ssh known_hosts
-	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_FLOATING_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_FLOATING_IP}" >> "$HOME/.ssh/known_hosts"
+	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_FLOATING_IP}" 1>/dev/null \
+		|| ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_FLOATING_IP}" >> "$HOME/.ssh/known_hosts"
 	echo " "
 fi
 
