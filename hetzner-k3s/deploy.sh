@@ -50,6 +50,57 @@ HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null || ssh-keyscan "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts"
 echo " "
 
+# what is the current SSH port?
+nc -vz 168.119.238.48 "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22" # fallback to default
+
+# custom SSH configuration
+echo "configuring sshd ..."
+retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+"cat > /etc/ssh/sshd_config << EOF
+Include /etc/ssh/sshd_config.d/*.conf
+Port 22333
+PermitRootLogin yes
+MaxAuthTries 2
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+EOF"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart sshd" && sleep 5
+export HETZNER_SSH_PORT="22333" # now the port definitely should have changed
+
+# setup fail2ban
+echo "installing fail2ban ..."
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install fail2ban; systemctl enable fail2ban"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+"cat > /etc/fail2ban/jail.d/defaults-debian.conf << EOF
+[DEFAULT]
+bantime  = 1h
+[sshd]
+enabled = true
+port = 22333
+EOF"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart fail2ban"
+echo " "
+
+# setup firewall
+echo "setting up firewall ..."
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+	"ufw default deny incoming \
+	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
+	  && ufw allow 80/tcp \
+	  && ufw allow 443/tcp \
+	  && ufw allow 6443/tcp \
+	  && ufw allow 32222/tcp \
+	  && ufw allow 32222/udp \
+	  && ufw --force enable"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw reload; ufw status"
+echo " "
+
 ########################################################################################################################
 ####### floating-ip ####################################################################################################
 ########################################################################################################################
@@ -69,8 +120,8 @@ if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 
 	# add floating-ip to server network interfaces
 	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.IP}}')
-	hcloud server ssh "${HETZNER_NODE_NAME}" "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" \
-		|| (hcloud server ssh "${HETZNER_NODE_NAME}" \
+	hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" \
+		|| (hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	"cat > /etc/netplan/60-floating-ip.yaml << EOF
 network:
   version: 2
@@ -121,7 +172,7 @@ fi
 ########################################################################################################################
 echo "installing/upgrading k3s on server [${HETZNER_NODE_NAME}] ..."
 
-retry 10 10 hcloud server ssh "${HETZNER_NODE_NAME}" \
+retry 10 10 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
 test -f "${KUBECONFIG}" || sleep 30 # wait a moment if this looks like it is k3s' first startup
@@ -131,7 +182,7 @@ HETZNER_K3S_IP="${HETZNER_NODE_IP}"
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
-retry 5 5 hcloud server ssh "${HETZNER_NODE_NAME}" \
+retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" > "${KUBECONFIG}"
 chmod 600 "${KUBECONFIG}"
 

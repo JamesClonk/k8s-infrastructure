@@ -11,6 +11,7 @@ export KUBECONFIG_DATA="${KUBECONFIG_DATA:=NONE}" # your kubeconfig
 ########################################################################################################################
 export HCLOUD_TOKEN="${HCLOUD_TOKEN:=invalid}" # https://docs.hetzner.cloud/#getting-started
 
+export HETZNER_SSH_PORT="22333"
 export HETZNER_SSH_KEY_NAME="kubernetes"
 export HETZNER_PUBLIC_SSH_KEY="${HETZNER_PUBLIC_SSH_KEY:=invalid}" # your _public_ ssh-key
 
