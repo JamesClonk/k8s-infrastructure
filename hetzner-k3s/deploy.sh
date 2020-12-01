@@ -54,7 +54,7 @@ nc -vz "${HETZNER_NODE_IP}" "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null \
 	|| (echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." \
-		&& ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_IP}" >> "$HOME/.ssh/known_hosts")
+		&& ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_IP}" 2>/dev/null >> "$HOME/.ssh/known_hosts")
 echo " "
 
 # custom SSH configuration
@@ -139,7 +139,7 @@ EOF" \
 
 	# add floating-ip to ssh known_hosts
 	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_FLOATING_IP}" 1>/dev/null \
-		|| ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_FLOATING_IP}" >> "$HOME/.ssh/known_hosts"
+		|| ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_FLOATING_IP}" 2>/dev/null >> "$HOME/.ssh/known_hosts"
 	echo " "
 fi
 
