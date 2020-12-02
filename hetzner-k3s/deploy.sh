@@ -101,6 +101,8 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	  && ufw allow 6443/tcp \
 	  && ufw allow 32222/tcp \
 	  && ufw allow 32222/udp \
+	  && ufw logging off \
+	  && ufw disable \
 	  && sleep 2 \
 	  && ufw --force enable"
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
