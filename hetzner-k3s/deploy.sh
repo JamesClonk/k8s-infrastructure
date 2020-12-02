@@ -93,6 +93,7 @@ echo " "
 # setup firewall
 echo "setting up firewall ..."
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	"ufw default deny incoming \
 	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
