@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 set -u
-source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any optional/hidden env config files first if available
-source $(dirname ${BASH_SOURCE[0]})/configuration.env.sh # source main configuration file
+source $(dirname ${BASH_SOURCE[0]})/env.sh # source all configuration files
 
 function basic_auth() {
 	local -r username="$1"; shift
