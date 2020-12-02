@@ -2,3 +2,21 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.27.0
 overrides:
+- image: hetznercloud/hcloud-csi-driver:1.5.1
+  newImage: index.docker.io/hetznercloud/hcloud-csi-driver@sha256:41dce5b33644629b069170bb2b2087dd92b9238c5bc16de0a1bfdfbf78e318ba
+  preresolved: true
+- image: quay.io/k8scsi/csi-attacher:v2.2.0
+  newImage: quay.io/k8scsi/csi-attacher@sha256:2ffa647e8107cfd39e5f464e738dce014c9f5e51b108da36c3ab621048d0bbab
+  preresolved: true
+- image: quay.io/k8scsi/csi-node-driver-registrar:v1.3.0
+  newImage: quay.io/k8scsi/csi-node-driver-registrar@sha256:9622c6a6dac7499a055a382930f4de82905a3c5735c0753f7094115c9c871309
+  preresolved: true
+- image: quay.io/k8scsi/csi-provisioner:v1.6.0
+  newImage: quay.io/k8scsi/csi-provisioner@sha256:78e3393f5fd5ff6c1e5dada2478cfa456fb7164929e573cf9a87bf6532730679
+  preresolved: true
+- image: quay.io/k8scsi/csi-resizer:v0.3.0
+  newImage: quay.io/k8scsi/csi-resizer@sha256:eff2d6a215efd9450d90796265fc4d8832a54a3a098df06edae6ff3a5072b08f
+  preresolved: true
+- image: quay.io/k8scsi/livenessprobe:v1.1.0
+  newImage: quay.io/k8scsi/livenessprobe@sha256:dde617756e0f602adc566ab71fd885f1dad451ad3fb063ac991c95a2ff47aea5
+  preresolved: true
