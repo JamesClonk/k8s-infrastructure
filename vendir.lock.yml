@@ -2,6 +2,18 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
+      commitTitle: Prepare Release v1.5.1
+      sha: d9e6109e55e037e92d35156ecb9b883e1d7c3f90
+      tags:
+      - v1.5.1
+    path: .
+  path: vendor/github.com/hetznercloud/csi-driver
+- contents:
+  - directory: {}
+    path: .
+  path: hetzner-csi/templates/upstream
+- contents:
+  - git:
       commitTitle: 'Merge pull request #6514 from aledbf/helm...'
       sha: 8bba70b3b57a6ebf1caeb011c03ab74839bd0567
       tags:

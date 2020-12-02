@@ -4,6 +4,24 @@ kind: Config
 minimumRequiredVersion: 0.12.0
 
 directories:
+- path: vendor/github.com/hetznercloud/csi-driver
+  contents:
+  - path: .
+    git:
+      url: https://github.com/hetznercloud/csi-driver
+      ref: v1.5.1
+    includePaths:
+    - deploy/kubernetes/*
+- path: hetzner-csi/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/hetznercloud/csi-driver/deploy/kubernetes
+    includePaths:
+    - hcloud-csi.yml
+    excludePaths:
+    - LICENSE
+
 - path: vendor/github.com/kubernetes/ingress-nginx
   contents:
   - path: .

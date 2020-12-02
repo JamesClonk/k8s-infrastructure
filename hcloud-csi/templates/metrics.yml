@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata":{"name":"hcloud-csi-node"}}), expects=1
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        #@overlay/match missing_ok=True
+        prometheus.io/scrape: "true"
+        #@overlay/match missing_ok=True
+        prometheus.io/port: "9189"
+
+#@overlay/match by=overlay.subset({"kind":"StatefulSet", "metadata":{"name":"hcloud-csi-controller"}}), expects=1
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        #@overlay/match missing_ok=True
+        prometheus.io/scrape: "true"
+        #@overlay/match missing_ok=True
+        prometheus.io/port: "9189"

@@ -190,13 +190,13 @@ HETZNER_K3S_IP="${HETZNER_NODE_IP}"
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
-retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+retry 5 10 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" > "${KUBECONFIG}"
 chmod 600 "${KUBECONFIG}"
 
 retry 10 30 kubectl cluster-info
 echo " "
-retry 10 30 kubectl get nodes
+retry 10 60 kubectl get nodes
 echo " "
-retry 10 30 kubectl top nodes
+retry 10 60 kubectl top nodes
 echo " "

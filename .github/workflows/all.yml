@@ -46,6 +46,17 @@ jobs:
       working-directory: kube-system
       run: ./deploy.sh
 
+  hcloud-csi:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: hcloud-csi
+    needs: [ kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install hetzner csi driver
+      working-directory: hcloud-csi
+      run: ./deploy.sh
+
   ingress-nginx:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: ingress-nginx
@@ -93,7 +104,7 @@ jobs:
   prometheus:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: prometheus
-    needs: [ ingress-nginx, cert-manager, kube-state-metrics ]
+    needs: [ ingress-nginx, cert-manager, kube-state-metrics, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -115,7 +126,7 @@ jobs:
   loki:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: loki
-    needs: [ ingress-nginx, cert-manager ]
+    needs: [ ingress-nginx, cert-manager, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -126,7 +137,7 @@ jobs:
   grafana:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: grafana
-    needs: [ prometheus, loki ]
+    needs: [ prometheus, loki, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

@@ -7,6 +7,9 @@ deployments=(
 	# setup cluster on hetzner cloud
 	"hetzner-k3s"
 
+	# we want to use some hetzner cloud volumes
+	"hcloud-csi"
+
 	# let's own the kube-system namespace
 	"kube-system"
 

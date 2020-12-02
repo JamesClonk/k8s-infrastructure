@@ -3,6 +3,11 @@ name: k3s on hetzner cloud
 on:
   workflow_dispatch:
 
+env:
+  HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+  HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
+  HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+
 jobs:
   hetzner-k3s:
     name: kubernetes
@@ -12,7 +17,25 @@ jobs:
     - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
-      env:
-        HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
-        HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
-        HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+
+  kube-system:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: kube-system
+    needs: [ hetzner-k3s ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: prepare kube-system namespace
+      working-directory: kube-system
+      run: ./deploy.sh
+
+  hcloud-csi:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: hcloud-csi
+    needs: [ kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: install hetzner csi driver
+      working-directory: hcloud-csi
+      run: ./deploy.sh

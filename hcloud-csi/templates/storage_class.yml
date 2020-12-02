@@ -1,0 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"StorageClass", "metadata":{"name":"hcloud-volumes"}}), expects=1
+---
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
