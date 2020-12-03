@@ -3,28 +3,6 @@
 #@ load("_ytt.lib.yml", "labels")
 
 #@ if data.values.monitoring.enable_network_policy:
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: prometheus-node-exporter
-  namespace: prometheus
-  labels: #@ labels("node-exporter")
-spec:
-  podSelector:
-    matchLabels:
-      component: node-exporter
-      app: prometheus
-      release: prometheus
-  ingress:
-  - from: #! allow ingress traffic from all prometheus components
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: prometheus
-      podSelector: {}
-  - ports:
-    - port: 9100
-
 #@overlay/match by=overlay.subset({"kind": "NetworkPolicy", "metadata":{"name":"prometheus-server"}}), expects=1
 ---
 spec:
