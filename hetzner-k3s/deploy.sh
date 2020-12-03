@@ -90,25 +90,23 @@ EOF"
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart fail2ban"
 echo " "
 
-# disable ufw for now, it causes massive headaches with xtables locks
-# # setup firewall
-# echo "setting up firewall ..."
-# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
-# # 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
-# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
-# 	"ufw default deny incoming \
-# 	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
-# 	  && ufw allow 80/tcp \
-# 	  && ufw allow 443/tcp \
-# 	  && ufw allow 6443/tcp \
-# 	  && ufw allow 32222/tcp \
-# 	  && ufw allow 32222/udp \
-# 	  && ufw logging off \
-# 	  && ufw disable \
-# 	  && sleep 2 \
-# 	  && ufw --force enable"
-# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
-# echo " "
+# setup firewall
+echo "setting up firewall ..."
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+	"ufw default deny incoming \
+	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
+	  && ufw allow 80/tcp \
+	  && ufw allow 443/tcp \
+	  && ufw allow 6443/tcp \
+	  && ufw allow 32222/tcp \
+	  && ufw allow 32222/udp \
+	  && ufw logging off"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "ufw disable || true"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "ufw --force enable"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
+echo " "
 
 ########################################################################################################################
 ####### floating-ip ####################################################################################################

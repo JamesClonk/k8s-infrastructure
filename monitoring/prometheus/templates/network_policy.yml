@@ -1,5 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yml", "labels")
 
 #@ if data.values.monitoring.enable_network_policy:
 ---
