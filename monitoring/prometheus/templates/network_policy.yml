@@ -17,12 +17,11 @@ spec:
       app: prometheus
       release: prometheus
   ingress:
-  - from: #! allow ingress traffic from prometheus server to node-exporter
-    - podSelector:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
         matchLabels:
-          component: server
-          app: prometheus
-          release: prometheus
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
   - ports:
     - port: 9100
 
