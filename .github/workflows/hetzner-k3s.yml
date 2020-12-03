@@ -1,4 +1,4 @@
-name: k3s on hetzner cloud
+name: deploy k3s on hetzner cloud
 
 on:
   workflow_dispatch:

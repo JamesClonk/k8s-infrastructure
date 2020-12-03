@@ -1,0 +1,19 @@
+name: restart k3s service
+
+on:
+  workflow_dispatch:
+
+env:
+  HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+  HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
+  HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+
+jobs:
+  restart-k3s:
+    name: kubernetes
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: restart k3s service
+      working-directory: hetzner-k3s
+      run: ./restart.sh
