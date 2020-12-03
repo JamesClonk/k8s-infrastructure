@@ -92,9 +92,9 @@ echo " "
 
 # setup firewall
 echo "setting up firewall ..."
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+retry 5 1 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
 # 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+retry 5 1 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	"ufw default deny incoming \
 	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
 	  && ufw allow 80/tcp \
@@ -103,9 +103,9 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	  && ufw allow 32222/tcp \
 	  && ufw allow 32222/udp \
 	  && ufw logging off"
-#hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw disable || true"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw --force enable"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
+#retry 5 1 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw disable || true"
+retry 5 1 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw --force enable"
+retry 5 1 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
 echo " "
 
 ########################################################################################################################
