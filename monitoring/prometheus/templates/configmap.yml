@@ -77,11 +77,22 @@ data:
     - name: disk
       rules:
       - alert: Disk_Usage
-        expr: ceil(sum (container_fs_usage_bytes{device=~"^/dev/.*$",id="/"}) by (instance) / sum (container_fs_limit_bytes{device=~"^/dev/.*$",id="/"}) by (instance) * 100) > 70
+        expr: ceil(sum (container_fs_usage_bytes{device=~"^/dev/.*$",id="/"}) by (device, instance) / sum (container_fs_limit_bytes{device=~"^/dev/.*$",id="/"}) by (device, instance) * 100) > 70
         for: 10m
         annotations:
-          title: 'K8s node {{ $labels.instance }} disk usage > 70%'
-          description: 'Kubernetes node {{ $labels.instance }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+          title: 'K8s {{ $labels.instance }}:{{ $labels.device }} disk usage > 70%'
+          description: 'Kubernetes node {{ $labels.instance }} / device {{ $labels.device }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+        labels:
+          severity: critical
+
+    - name: certificate
+      rules:
+      - alert: Certificate_Expiration
+        expr: min(nginx_ingress_controller_ssl_expire_time_seconds) by (host) - time() < 1234567
+        for: 10m
+        annotations:
+          title: 'K8s host {{ $labels.host }} certificate expiration'
+          description: 'The certificate of Kubernetes host/ingress {{ $labels.host }} is about to expire!'
         labels:
           severity: critical
 
