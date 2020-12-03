@@ -17,7 +17,7 @@ spec:
       app: prometheus
       release: prometheus
   ingress:
-  - from:
+  - from: #! allow ingress traffic from prometheus server to node-exporter
     - podSelector:
         matchLabels:
           component: server
