@@ -82,7 +82,7 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get updat
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 "cat > /etc/fail2ban/jail.d/defaults-debian.conf << EOF
 [DEFAULT]
-bantime  = 1h
+bantime  = 15m
 [sshd]
 enabled = true
 port = 22333
@@ -90,25 +90,25 @@ EOF"
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart fail2ban"
 echo " "
 
-# setup firewall
-echo "setting up firewall ..."
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw disable || true"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
-# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
-	"ufw default deny incoming \
-	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
-	  && ufw allow 80/tcp \
-	  && ufw allow 443/tcp \
-	  && ufw allow 6443/tcp \
-	  && ufw allow 32222/tcp \
-	  && ufw allow 32222/udp \
-	  && ufw logging off \
-	  && ufw disable \
-	  && sleep 2 \
-	  && ufw --force enable"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
-echo " "
+# disable ufw for now, it causes massive headaches with xtables locks
+# # setup firewall
+# echo "setting up firewall ..."
+# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+# # 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
+# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+# 	"ufw default deny incoming \
+# 	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
+# 	  && ufw allow 80/tcp \
+# 	  && ufw allow 443/tcp \
+# 	  && ufw allow 6443/tcp \
+# 	  && ufw allow 32222/tcp \
+# 	  && ufw allow 32222/udp \
+# 	  && ufw logging off \
+# 	  && ufw disable \
+# 	  && sleep 2 \
+# 	  && ufw --force enable"
+# hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
+# echo " "
 
 ########################################################################################################################
 ####### floating-ip ####################################################################################################
