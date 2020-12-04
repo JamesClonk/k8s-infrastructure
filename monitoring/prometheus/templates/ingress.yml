@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
-#@ load("_ytt.lib.yml", "labels")
 #@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yml", "labels")
 
 #@ if len(data.values.domains) == 0 or len(data.values.domains[0]) == 0 or data.values.domains[0] == "example.org":
 #@  assert.fail("domain is missing or invalid")
