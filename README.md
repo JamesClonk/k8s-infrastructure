@@ -26,6 +26,10 @@ vi configuration.env.sh
 
 ## Configuration
 
+## Architecture
+
+![Kubernetes](docs/architecture.png)
+
 ### Thoughts & considerations
 
 #### Why not using operators?
