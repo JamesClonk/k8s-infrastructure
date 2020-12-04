@@ -1,7 +1,7 @@
 #@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
 
-#@ if len(data.values.lets_encrypt.staging_key) > 0 and data.values.lets_encrypt.staging_key != "NONE":
+#@ if len(data.values.lets_encrypt.staging_key) > 0 and data.values.lets_encrypt.staging_key != "none":
 ---
 apiVersion: v1
 kind: Secret
@@ -36,11 +36,11 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    #@ if len(data.values.lets_encrypt.email) == 0:
-    #@  assert.fail("lets_encrypt.email be empty")
+    #@ if len(data.values.lets_encrypt.email) == 0 or data.values.lets_encrypt.email == "nobody@nobody":
+    #@  assert.fail("lets_encrypt.email is missing or invalid")
     #@ end
     email: #@ data.values.lets_encrypt.email
-    #@ if/end len(data.values.lets_encrypt.staging_key) > 0 and data.values.lets_encrypt.staging_key != "NONE":
+    #@ if/end len(data.values.lets_encrypt.staging_key) > 0 and data.values.lets_encrypt.staging_key != "none":
     disableAccountKeyGeneration: true
     privateKeySecretRef:
       name: letsencrypt-staging

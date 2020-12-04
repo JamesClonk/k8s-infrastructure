@@ -48,8 +48,8 @@ export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD:=not-secret}" 
 ####### cert-manager ###################################################################################################
 ########################################################################################################################
 export LETS_ENCRYPT_EMAIL_ADDRESS="${LETS_ENCRYPT_EMAIL_ADDRESS:=nobody@nobody}" # for example "admin@mydomain.org"
-export LETS_ENCRYPT_PROD_KEY="${LETS_ENCRYPT_PROD_KEY:=NONE}" # base64 encoded tls key
-export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=NONE}" # base64 encoded tls key
+export LETS_ENCRYPT_PROD_KEY="${LETS_ENCRYPT_PROD_KEY:=none}" # optional, base64 encoded tls key of existing account
+export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=none}" # optional, base64 encoded tls key of existing account
 ########################################################################################################################
 
 
@@ -58,7 +58,7 @@ export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=NONE}" # base64 enc
 ########################################################################################################################
 export PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED="${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED:=false}" # false or true
 export PROMETHEUS_ALERTMANAGER_EMAIL_HOST="${PROMETHEUS_ALERTMANAGER_EMAIL_HOST:=smtp.gmail.com:587}"
-export PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD="${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD:=my-password}"
+export PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD="${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD:=not-secret}"
 export PROMETHEUS_ALERTMANAGER_EMAIL_FROM="${PROMETHEUS_ALERTMANAGER_EMAIL_FROM:=nobody@nobody}"
 export PROMETHEUS_ALERTMANAGER_EMAIL_TO="${PROMETHEUS_ALERTMANAGER_EMAIL_TO:=nobody@nobody}"
 export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED:=true}" # false or true

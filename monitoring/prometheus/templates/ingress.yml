@@ -1,6 +1,10 @@
 #@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yml", "labels")
+#@ load("@ytt:assert", "assert")
 
+#@ if len(data.values.domains) == 0 or len(data.values.domains[0]) == 0 or data.values.domains[0] == "example.org":
+#@  assert.fail("domain is missing or invalid")
+#@ end
 ---
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress

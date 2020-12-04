@@ -2,6 +2,12 @@
 #@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yml", "labels", "podAntiAffinity")
 
+#@ if len(data.values.basic_auth.username) == 0 or data.values.basic_auth.username == "username":
+#@  assert.fail("basic_auth.username is missing or invalid")
+#@ end
+#@ if len(data.values.basic_auth.password) == 0 or data.values.basic_auth.password == "not-secret":
+#@  assert.fail("basic_auth.password is missing or invalid")
+#@ end
 ---
 apiVersion: v1
 kind: Secret
@@ -13,12 +19,6 @@ metadata:
     kapp.k14s.io/versioned: ""
 type: Opaque
 stringData:
-  #@ if len(data.values.basic_auth.username) == 0:
-  #@  assert.fail("basic_auth.username cannot be empty")
-  #@ end
-  #@ if len(data.values.basic_auth.password) == 0:
-  #@  assert.fail("basic_auth.password cannot be empty")
-  #@ end
   AUTH_USERNAME: #@ data.values.basic_auth.username
   AUTH_PASSWORD: #@ data.values.basic_auth.password
 
