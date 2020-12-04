@@ -5,7 +5,7 @@
 #@ if len(data.values.basic_auth.username) == 0 or data.values.basic_auth.username == "username":
 #@  assert.fail("basic_auth.username is missing or invalid")
 #@ end
-#@ if len(data.values.basic_auth.password) == 0 or data.values.basic_auth.password == "not-secret":
+#@ if len(data.values.basic_auth.password) == 0 or data.values.basic_auth.password == "password":
 #@  assert.fail("basic_auth.password is missing or invalid")
 #@ end
 ---

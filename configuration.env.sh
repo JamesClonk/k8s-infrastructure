@@ -40,7 +40,7 @@ export HETZNER_K3S_VERSION="v1.19.4+k3s1" # https://github.com/rancher/k3s/relea
 ########################################################################################################################
 export INGRESS_DOMAIN="${INGRESS_DOMAIN:=example.org}" # for example "mydomain.org"
 export INGRESS_BASIC_AUTH_USERNAME="${INGRESS_BASIC_AUTH_USERNAME:=username}" # for example "my-username"
-export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD:=not-secret}" # for example "my-super-secret-password"
+export INGRESS_BASIC_AUTH_PASSWORD="${INGRESS_BASIC_AUTH_PASSWORD:=password}" # for example "my-super-secret-password"
 ########################################################################################################################
 
 
@@ -58,7 +58,7 @@ export LETS_ENCRYPT_STAGING_KEY="${LETS_ENCRYPT_STAGING_KEY:=none}" # optional, 
 ########################################################################################################################
 export PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED="${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED:=false}" # false or true
 export PROMETHEUS_ALERTMANAGER_EMAIL_HOST="${PROMETHEUS_ALERTMANAGER_EMAIL_HOST:=smtp.gmail.com:587}"
-export PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD="${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD:=not-secret}"
+export PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD="${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD:=password}"
 export PROMETHEUS_ALERTMANAGER_EMAIL_FROM="${PROMETHEUS_ALERTMANAGER_EMAIL_FROM:=nobody@nobody}"
 export PROMETHEUS_ALERTMANAGER_EMAIL_TO="${PROMETHEUS_ALERTMANAGER_EMAIL_TO:=nobody@nobody}"
 export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED="${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED:=true}" # false or true
