@@ -8,13 +8,14 @@ Create your own personal Kubernetes infrastructure, the quick and easy way
 git clone https://github.com/JamesClonk/k8s-infrastructure
 cd k8s-infrastructure
 
-# adjust the following variables:
+# adjust at minimum the following variables:
 # HCLOUD_TOKEN, HETZNER_PUBLIC_SSH_KEY
 # INGRESS_DOMAIN, INGRESS_BASIC_AUTH_USERNAME, INGRESS_BASIC_AUTH_PASSWORD
 # LETS_ENCRYPT_EMAIL_ADDRESS
 vi configuration.env.sh
 
-# provision Kubernetes on Hetzner Cloud, install basic tools and software:
+# provision Kubernetes on Hetzner Cloud with CSI driver for persistent volumes
+# and install these basic tools and software:
 # ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana
 ./deploy.sh
 ```
@@ -33,7 +34,7 @@ Well, this is meant to for a single-user Kubernetes cluster, whether with only a
 
 #### Why using simple basic-auth for all ingresses?
 
-I was considering and experimenting with using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) and [authelia](https://github.com/authelia/authelia), but ultimately made the same decision as with regards to using operators. It simply doesn't make much sense for a single-user Kubernetes cluster, the engineering and operational overhead was not worth it.
+I was considering and experimenting with using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) and [authelia](https://github.com/authelia/authelia), but ultimately made the same decision as with regards to using operators. It simply doesn't make much sense for a single-user Kubernetes cluster, the engineering and operational overhead was not worth it. All I needed are static username+password credentials for securing my applications.
 
 My recommendation would be to use one of these two if you have more requirements than me:
 - https://github.com/oauth2-proxy/oauth2-proxy (Simple oauth2 proxy to be used with GitHub for example)
