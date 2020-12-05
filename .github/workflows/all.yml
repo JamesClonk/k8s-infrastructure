@@ -23,6 +23,7 @@ env:
   PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL: ${{ secrets.PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL }}
   GRAFANA_USERNAME: ${{ secrets.INGRESS_BASIC_AUTH_USERNAME }}
   GRAFANA_PASSWORD: ${{ secrets.INGRESS_BASIC_AUTH_PASSWORD }}
+  POSTGRES_SUPERUSER_PASSWORD: ${{ secrets.POSTGRES_SUPERUSER_PASSWORD }}
 
 jobs:
   hetzner-k3s:
@@ -143,4 +144,15 @@ jobs:
     - uses: actions/checkout@v2
     - name: deploy grafana
       working-directory: monitoring/grafana
+      run: ./deploy.sh
+
+  postgres:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: postgres
+    needs: [ kube-system, hcloud-csi ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: deploy postgres database
+      working-directory: postgres
       run: ./deploy.sh

@@ -24,6 +24,9 @@ deployments=(
 
 	# metrics, monitoring, alerting, logs, what would we do without those?
 	"monitoring"
+
+	# we can always use a good database..
+	"postgres"
 )
 
 # deploy it all, all of it!
