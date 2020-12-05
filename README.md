@@ -86,7 +86,7 @@ Both can be configured easily to work well together with *ingress-nginx*.
 
 ### Tools used
 
-- #### https://www.hetzner.com/cloud
+- #### [Hetzner Cloud](https://www.hetzner.com/cloud)
   - ###### https://github.com/hetznercloud/cli
     Command-line interface for interacting with Hetzner Cloud
 
