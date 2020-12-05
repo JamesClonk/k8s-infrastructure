@@ -34,7 +34,7 @@ vi configuration.env.sh
 
 #### Why not using operators?
 
-Well, this is meant to for a single-user Kubernetes cluster, whether with only a single or multiple nodes, self-deployed or managed.  While operators are certainly cool pieces of software they don't really make much sense for a single-user scenario, hence I saw no reason to use the prometheus, grafana and postgres operators for those parts of this Kubernetes-infrastructure-as-code project.
+Well, this is meant to be used for a *single-user* Kubernetes cluster, whether with only a one or multiple nodes, self-deployed or managed.  While operators are certainly cool pieces of software they don't really make much sense for a single-user scenario, hence I saw no reason to use the prometheus, grafana and postgres operators for those parts of this Kubernetes-infrastructure-as-code project.
 
 #### Why using simple basic-auth for all ingresses?
 
