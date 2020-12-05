@@ -40,6 +40,7 @@ spec:
       - name: postgres
         image: #@ data.values.postgres.image
         securityContext:
+          runAsUser: 999
           privileged: false
           allowPrivilegeEscalation: false
         ports:
@@ -47,6 +48,10 @@ spec:
         args:
         - -c
         - #@ "shared_buffers={}MB".format(shared_memory())
+        - -c
+        - shared_preload_libraries=pg_stat_statements
+        - -c
+        - pg_stat_statements.track=all
         env:
         - name: TZ
           value: "Europe/Zurich"
@@ -81,10 +86,20 @@ spec:
           name: dshm
         - mountPath: /var/lib/postgresql/data
           name: data
+        - name: config
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
       - name: metrics
         image: #@ data.values.exporter.image
+        securityContext:
+          runAsUser: 20001
+          privileged: false
+          allowPrivilegeEscalation: false
         ports:
         - containerPort: 9187
+        args:
+        - --auto-discover-databases
+        - --extend.query-path=/etc/queries.yml
         env:
         - name: DATA_SOURCE_URI
           value: 127.0.0.1:5432/postgres?sslmode=disable
@@ -113,7 +128,15 @@ spec:
           httpGet:
             path: /
             port: 9187
+        volumeMounts:
+        - name: config
+          mountPath: /etc/queries.yml
+          subPath: queries.yml
       volumes:
+      - name: config
+        configMap:
+          defaultMode: 420
+          name: postgres
       - name: dshm
         emptyDir:
           medium: Memory
