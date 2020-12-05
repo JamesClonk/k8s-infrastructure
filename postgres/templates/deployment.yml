@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
-#@ load("_ytt.lib.yml", "labels", "resources", "shared_buffers", "shared_memory")
+#@ load("_ytt.lib.yml", "labels", "resources", "shared_memory")
 
 #@ if len(data.values.postgres.storage.class_name) == 0:
 #@  assert.fail("data.values.postgres.storage.class_name cannot be empty")
@@ -25,6 +25,10 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9187"
+        prometheus.io/scrape: "true"
       labels: #@ labels("database")
     spec:
       serviceAccountName: postgres
@@ -41,7 +45,8 @@ spec:
         ports:
         - containerPort: 5432
         args:
-        - #@ "-c shared_buffers=" + shared_buffers()
+        - -c
+        - #@ "shared_buffers={}MB".format(shared_memory())
         env:
         - name: TZ
           value: "Europe/Zurich"
@@ -112,7 +117,7 @@ spec:
       - name: dshm
         emptyDir:
           medium: Memory
-          sizeLimit: #@ shared_memory()
+          sizeLimit: #@ "{}Mi".format(shared_memory())
       - name: data
         persistentVolumeClaim:
           claimName: postgres

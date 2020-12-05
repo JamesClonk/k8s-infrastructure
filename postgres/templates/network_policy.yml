@@ -6,36 +6,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: default-deny-ingress
+  name: postgres
   namespace: postgres
   labels: #@ labels("netpol")
 spec:
   podSelector: {}
-  #! deny all access by default
-  policyTypes:
-  - Ingress
-
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: postgres-metrics
-  namespace: postgres
-  labels: #@ labels("netpol")
-spec:
-  podSelector:
-    matchLabels:
-      labels: #@ labels("database")
   ingress:
-  - from: #! allow database access for exporter
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: prometheus
-      podSelector:
-        matchLabels:
-          labels: #@ labels("database")
-    ports:
-    - port: 5432
   - from: #! allow metrics access for prometheus
     - namespaceSelector:
         matchLabels:

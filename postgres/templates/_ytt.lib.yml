@@ -49,21 +49,12 @@
 #@ end
 
 #@ def shared_memory():
-#@ requested_memory = int(data.values.postgres.memory_in_mb)
-#@ shm = int(requested_memory / 4)
-#@ if shm < 64:
-#@   shm = 64
-#@ end
-#@   return "{}Mi".format(shm)
-#@ end
-
-#@ def shared_buffers():
-#@ requested_memory = int(data.values.postgres.memory_in_mb)
-#@ shm = int(requested_memory / 4)
-#@ if shm < 64:
-#@   shm = 64
-#@ end
-#@   return "{}MB".format(shm)
+#@   requested_memory = int(data.values.postgres.memory_in_mb)
+#@   shm = int(requested_memory / 4)
+#@   if shm < 64:
+#@     shm = 64
+#@   end
+#@   return shm
 #@ end
 
 #@ def resources(base_cpu, memory_in_mb):

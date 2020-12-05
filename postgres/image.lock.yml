@@ -2,9 +2,9 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.27.0
 overrides:
-- image: bitnami/postgres-exporter:0.8.0
-  newImage: index.docker.io/bitnami/postgres-exporter@sha256:48ac4adac07793592e1876823181781246ce2536dcf3eacc8ac4a4ae2ada2eb6
-  preresolved: true
 - image: postgres:12
   newImage: index.docker.io/library/postgres@sha256:62ae78ebf6903c47ff40273e1266173d224ee1bc2c000805cc4e0c4470305f57
+  preresolved: true
+- image: wrouesnel/postgres_exporter:v0.8.0
+  newImage: index.docker.io/wrouesnel/postgres_exporter@sha256:520fcd04d6c8f922d800d89ae96c021f4afd22e376c4b88260a8b780e3375dbe
   preresolved: true
