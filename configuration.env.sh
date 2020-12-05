@@ -72,3 +72,10 @@ export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL="${PROMETHEUS_ALERTMANAGER_TEAM
 export GRAFANA_USERNAME="${GRAFANA_USERNAME:=${INGRESS_BASIC_AUTH_USERNAME}}" # for example "my-username"
 export GRAFANA_PASSWORD="${GRAFANA_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
 ########################################################################################################################
+
+
+########################################################################################################################
+####### postgres #######################################################################################################
+########################################################################################################################
+export POSTGRES_SUPERUSER_PASSWORD="${POSTGRES_SUPERUSER_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
+########################################################################################################################

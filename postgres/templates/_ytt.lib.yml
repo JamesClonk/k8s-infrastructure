@@ -1,0 +1,81 @@
+#@ load("@ytt:data", "data")
+
+#@ def labels(component):
+  app: postgres
+  app.kubernetes.io/name: postgres
+  app.kubernetes.io/instance: postgres
+  app.kubernetes.io/component: #@ component
+#@ end
+
+#@ def labelSelector(component):
+  matchExpressions:
+  - key: app
+    operator: In
+    values:
+    - postgres
+  - key: app.kubernetes.io/name
+    operator: In
+    values:
+    - postgres
+  - key: app.kubernetes.io/instance
+    operator: In
+    values:
+    - postgres
+  - key: app.kubernetes.io/component
+    operator: In
+    values:
+    - #@ component
+#@ end
+
+#@ def podAntiAffinity(component):
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: kubernetes.io/hostname
+        labelSelector: #@ labelSelector(component)
+#@ end
+
+#@ def connstr(username, password, host, db_name):
+#@   return "postgres://{}:{}@{}/{}?sslmode=require".format(username, password, host, db_name)
+#@ end
+
+#@ def cpu(n):
+#@   return str(n)+"m"
+#@ end
+
+#@ def memory(n):
+#@   return "{}Mi".format(n)
+#@ end
+
+#@ def shared_memory():
+#@ requested_memory = int(data.values.postgres.memory_in_mb)
+#@ shm = int(requested_memory / 4)
+#@ if shm < 64:
+#@   shm = 64
+#@ end
+#@   return "{}Mi".format(shm)
+#@ end
+
+#@ def shared_buffers():
+#@ requested_memory = int(data.values.postgres.memory_in_mb)
+#@ shm = int(requested_memory / 4)
+#@ if shm < 64:
+#@   shm = 64
+#@ end
+#@   return "{}MB".format(shm)
+#@ end
+
+#@ def resources(base_cpu, memory_in_mb):
+#@   requested_memory = int(memory_in_mb)
+#@   resource = {
+#@     "cpu": int((requested_memory / 128) * int(base_cpu)),
+#@     "memory": requested_memory
+#@   }
+  requests:
+    cpu: #@ cpu(resource["cpu"])
+    memory: #@ memory(resource["memory"])
+  limits:
+    cpu: #@ cpu(1.5 * resource["cpu"])
+    memory: #@ memory(1.5 * resource["memory"])
+#@ end

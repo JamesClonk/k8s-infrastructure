@@ -1,0 +1,23 @@
+#@data/values
+---
+domains:
+- "${INGRESS_DOMAIN}"
+
+enable_network_policy: true
+
+postgres:
+  image: "postgres:12"
+
+  password: "${POSTGRES_SUPERUSER_PASSWORD}"
+
+  memory_in_mb: 512
+  storage:
+    #! class_name: hcloud-volumes
+    class_name: local-path
+    driver: csi.hetzner.cloud
+    size: 10Gi
+    reclaim: false
+    volume_handle: "" # <-- must be set if 'reclaim=true'
+
+exporter:
+  image: "wrouesnel/postgres_exporter:v0.8.0"

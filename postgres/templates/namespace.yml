@@ -1,0 +1,24 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yml", "labels")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres
+  labels: #@ labels("namespace")
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: postgres
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"postgres"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: postgres

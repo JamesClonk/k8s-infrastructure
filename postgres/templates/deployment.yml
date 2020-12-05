@@ -1,0 +1,118 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yml", "labels", "resources", "shared_buffers", "shared_memory")
+
+#@ if len(data.values.postgres.storage.class_name) == 0:
+#@  assert.fail("data.values.postgres.storage.class_name cannot be empty")
+#@ end
+#@ if len(data.values.postgres.storage.size) == 0:
+#@  assert.fail("data.values.postgres.storage.size cannot be empty")
+#@ end
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: postgres
+  labels: #@ labels("database")
+spec:
+  serviceName: postgres-headless
+  selector:
+    matchLabels: #@ labels("database")
+  replicas: 1
+  revisionHistoryLimit: 5
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: #@ labels("database")
+    spec:
+      serviceAccountName: postgres
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+      - name: postgres
+        image: #@ data.values.postgres.image
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 5432
+        args:
+        - #@ "-c shared_buffers=" + shared_buffers()
+        env:
+        - name: TZ
+          value: "Europe/Zurich"
+        envFrom:
+        - secretRef:
+            name: postgres
+        resources: #@ resources(125, data.values.postgres.memory_in_mb)
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+          failureThreshold: 5
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /var/lib/postgresql/data
+          name: data
+      - name: metrics
+        image: #@ data.values.exporter.image
+        ports:
+        - containerPort: 9187
+        env:
+        - name: DATA_SOURCE_URI
+          value: 127.0.0.1:5432/postgres?sslmode=disable
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: POSTGRES_PASSWORD
+        - name: DATA_SOURCE_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: POSTGRES_USER
+        resources:
+          limits:
+            cpu: 150m
+            memory: 128Mi
+          requests:
+            cpu: 150m
+            memory: 128Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9187
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9187
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: #@ shared_memory()
+      - name: data
+        persistentVolumeClaim:
+          claimName: postgres

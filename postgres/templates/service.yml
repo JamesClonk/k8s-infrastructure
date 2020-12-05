@@ -1,0 +1,28 @@
+#@ load("_ytt.lib.yml", "labels")
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: postgres
+  labels: #@ labels("svc")
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector: #@ labels("database")
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+  namespace: postgres
+  labels: #@ labels("svc")
+spec:
+  clusterIP: None
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector: #@ labels("database")
