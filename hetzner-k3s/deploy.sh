@@ -76,6 +76,17 @@ EOF"
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart sshd" && sleep 5
 export HETZNER_SSH_PORT="22333" # now the port definitely should have changed
 
+# get rid of idiotic systemd-resolved
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+"cat > /etc/resolv.conf << EOF
+nameserver 1.1.1.1
+nameserver 8.8.8.8
+nameserver 1.0.0.1
+nameserver 8.8.4.4
+EOF"
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
+echo " "
+
 # setup fail2ban
 echo "installing fail2ban ..."
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install fail2ban; systemctl enable fail2ban"
