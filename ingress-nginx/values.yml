@@ -9,7 +9,7 @@ ingress:
       memory: 128Mi
     limits:
       cpu: 2000m
-      memory: 256Mi
+      memory: 320Mi
 
 basic_auth:
   image: "jamesclonk/basic-auth:678636aaca212f20c4e263d05b75efabdc6aef2c"

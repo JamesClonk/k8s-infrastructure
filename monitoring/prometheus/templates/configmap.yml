@@ -84,6 +84,14 @@ data:
           description: 'Kubernetes node {{ $labels.instance }} / device {{ $labels.device }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
         labels:
           severity: critical
+      - alert: PVC_Usage
+        expr: (max(kubelet_volume_stats_used_bytes) by (persistentvolumeclaim, namespace) / min(kubelet_volume_stats_capacity_bytes) by (persistentvolumeclaim, namespace)) * 100 > 75
+        for: 10m
+        annotations:
+          title: 'K8s {{ $labels.namespace }}:{{ $labels.persistentvolumeclaim }} pvc usage > 75%'
+          description: 'Kubernetes PVC {{ $labels.namespace }} / {{ $labels.persistentvolumeclaim }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+        labels:
+          severity: critical
 
     - name: certificate
       rules:
