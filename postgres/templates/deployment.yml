@@ -103,7 +103,6 @@ spec:
             drop: [ "ALL" ]
         ports:
         - containerPort: 5432
-        #! command: [ "/usr/bin/pgbouncer", "/var/run/pgbouncer/pgbouncer.ini" ]
         env:
         - name: POOL_MODE
           value: session
@@ -140,8 +139,6 @@ spec:
             exec: #! allow existing queries / clients to complete within 120 seconds
               command: [ "/bin/sh", "-c", "killall -INT pgbouncer && sleep 120" ]
         volumeMounts:
-#!        - name: tmp
-#!          mountPath: /etc/pgbouncer
         - name: config
           mountPath: /etc/pgbouncer/pgbouncer.ini
           subPath: pgbouncer.ini
@@ -197,8 +194,6 @@ spec:
         emptyDir:
           medium: Memory
           sizeLimit: #@ "{}Mi".format(shared_memory())
-      - name: tmp
-        emptyDir: {}
       - name: data
         persistentVolumeClaim:
           claimName: postgres
