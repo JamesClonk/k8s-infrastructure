@@ -1,0 +1,19 @@
+name: configure firewall
+
+on:
+  workflow_dispatch:
+
+env:
+  HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+  HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
+  HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+
+jobs:
+  firewall:
+    name: firewall
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure firewall
+      working-directory: hetzner-k3s
+      run: ./firewall.sh

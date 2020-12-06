@@ -102,22 +102,29 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl res
 echo " "
 
 # setup firewall
-echo "setting up firewall ..."
-retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
-# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
-retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
-	"ufw default deny incoming \
-	  && ufw allow ${HETZNER_SSH_PORT}/tcp \
-	  && ufw allow 80/tcp \
-	  && ufw allow 443/tcp \
-	  && ufw allow 6443/tcp \
-	  && ufw allow 32222/tcp \
-	  && ufw allow 32222/udp \
-	  && ufw allow from 10.0.0.0/8 \
-	  && ufw logging off"
-#retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw disable || true"
-retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw --force enable"
-retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload; sleep 2 && ufw status"
+echo "checking firewall ..."
+# check if ufw is already installed and in status active, only setup if not
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status | grep active 1>/dev/null" ||
+	(
+	# why this?
+	# because ufw is extremely flaky and has a lot of problems with xtables locks from docker/kubernetes,
+	# so we want to avoid running ufw commands at all cost
+	retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+	# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
+	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+		"ufw default deny incoming \
+		  && ufw allow ${HETZNER_SSH_PORT}/tcp \
+		  && ufw allow 80/tcp \
+		  && ufw allow 443/tcp \
+		  && ufw allow 6443/tcp \
+		  && ufw allow 32222/tcp \
+		  && ufw allow 32222/udp \
+		  && ufw allow from 10.0.0.0/8 \
+		  && ufw logging off"
+	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw --force enable"
+	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload && sleep 1"
+	)
+retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status"
 echo " "
 
 ########################################################################################################################

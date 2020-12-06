@@ -17,7 +17,7 @@ function retry() {
 		if (( attempt_num == max_attempts ))
 	then
 		echo "#$attempt_num failures!"
-		return 1
+		exit 1
 	else
 		echo "#$(( attempt_num++ )): trying again in $sleep_time seconds ..."
 		sleep $sleep_time
