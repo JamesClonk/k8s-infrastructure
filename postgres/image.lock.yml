@@ -2,6 +2,9 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.27.0
 overrides:
+- image: edoburu/pgbouncer:1.12.0
+  newImage: index.docker.io/edoburu/pgbouncer@sha256:9575399033c1eee3ba90c4f8365bb2c0c0fed3df590e703230c3ce850cd32837
+  preresolved: true
 - image: postgres:12
   newImage: index.docker.io/library/postgres@sha256:62ae78ebf6903c47ff40273e1266173d224ee1bc2c000805cc4e0c4470305f57
   preresolved: true

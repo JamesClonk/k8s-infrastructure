@@ -44,7 +44,7 @@ spec:
           privileged: false
           allowPrivilegeEscalation: false
         ports:
-        - containerPort: 5432
+        - containerPort: 6432
         args:
         - -c
         - #@ "shared_buffers={}MB".format(shared_memory())
@@ -52,6 +52,8 @@ spec:
         - shared_preload_libraries=pg_stat_statements
         - -c
         - pg_stat_statements.track=all
+        - -p
+        - "6432"
         env:
         - name: TZ
           value: "Europe/Zurich"
@@ -64,7 +66,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 6432
           failureThreshold: 5
           initialDelaySeconds: 15
           periodSeconds: 15
@@ -75,7 +77,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 6432
           failureThreshold: 5
           initialDelaySeconds: 30
           periodSeconds: 15
@@ -89,6 +91,60 @@ spec:
         - name: config
           mountPath: /docker-entrypoint-initdb.d/init.sql
           subPath: init.sql
+      - name: pgbouncer
+        image: #@ data.values.pgbouncer.image
+        securityContext:
+          runAsUser: 70
+          runAsGroup: 70
+          fsGroup: 70
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ "ALL" ]
+        ports:
+        - containerPort: 5432
+        #! command: [ "/usr/bin/pgbouncer", "/var/run/pgbouncer/pgbouncer.ini" ]
+        env:
+        - name: POOL_MODE
+          value: session
+        - name: SERVER_RESET_QUERY
+          value: DISCARD ALL
+        envFrom:
+        - secretRef:
+            name: postgres
+        resources:
+          requests:
+            cpu: 150m
+            memory: 32Mi
+          limits:
+            cpu: 500m
+            memory: 64Mi
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 5
+          initialDelaySeconds: 15
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        lifecycle:
+          preStop:
+            exec: #! allow existing queries / clients to complete within 120 seconds
+              command: [ "/bin/sh", "-c", "killall -INT pgbouncer && sleep 120" ]
+        volumeMounts:
+#!        - name: tmp
+#!          mountPath: /etc/pgbouncer
+        - name: config
+          mountPath: /etc/pgbouncer/pgbouncer.ini
+          subPath: pgbouncer.ini
       - name: metrics
         image: #@ data.values.exporter.image
         securityContext:
@@ -102,7 +158,7 @@ spec:
         - --extend.query-path=/etc/queries.yml
         env:
         - name: DATA_SOURCE_URI
-          value: 127.0.0.1:5432/postgres?sslmode=disable
+          value: 127.0.0.1:6432/postgres?sslmode=disable
         - name: DATA_SOURCE_PASS
           valueFrom:
             secretKeyRef:
@@ -114,12 +170,12 @@ spec:
               name: postgres
               key: POSTGRES_USER
         resources:
-          limits:
-            cpu: 150m
-            memory: 128Mi
           requests:
-            cpu: 150m
-            memory: 128Mi
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
         readinessProbe:
           httpGet:
             path: /
@@ -141,6 +197,8 @@ spec:
         emptyDir:
           medium: Memory
           sizeLimit: #@ "{}Mi".format(shared_memory())
+      - name: tmp
+        emptyDir: {}
       - name: data
         persistentVolumeClaim:
           claimName: postgres

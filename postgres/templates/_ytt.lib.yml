@@ -37,7 +37,7 @@
 #@ end
 
 #@ def connstr(username, password, host, db_name):
-#@   return "postgres://{}:{}@{}/{}?sslmode=require".format(username, password, host, db_name)
+#@   return "postgres://{}:{}@{}/{}".format(username, password, host, db_name)
 #@ end
 
 #@ def cpu(n):
