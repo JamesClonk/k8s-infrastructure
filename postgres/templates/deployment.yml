@@ -1,13 +1,6 @@
 #@ load("@ytt:data", "data")
-#@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yml", "labels", "resources", "shared_memory")
 
-#@ if len(data.values.postgres.storage.class_name) == 0:
-#@  assert.fail("data.values.postgres.storage.class_name cannot be empty")
-#@ end
-#@ if len(data.values.postgres.storage.size) == 0:
-#@  assert.fail("data.values.postgres.storage.size cannot be empty")
-#@ end
 ---
 apiVersion: apps/v1
 kind: StatefulSet
