@@ -47,6 +47,10 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 # get server-ip
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
+echo " "
+
+# SSH configuration
+echo "checking ssh ..."
 
 # what is the current SSH port?
 nc -vz "${HETZNER_NODE_IP}" "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22" # fallback to default
@@ -54,12 +58,12 @@ nc -vz "${HETZNER_NODE_IP}" "${HETZNER_SSH_PORT}" || export HETZNER_SSH_PORT="22
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null \
 	|| (echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." \
-		&& ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_IP}" 2>/dev/null >> "$HOME/.ssh/known_hosts")
-echo " "
+		&& ssh-keyscan -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_IP}" 2>/dev/null >> "$HOME/.ssh/known_hosts" && echo " ")
 
 # custom SSH configuration
-echo "configuring sshd ..."
-retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+if [ "${HETZNER_SSH_PORT}" -eq "22" ]; then
+	echo "configuring sshd ..."
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 "cat > /etc/ssh/sshd_config << EOF
 Include /etc/ssh/sshd_config.d/*.conf
 Port 22333
@@ -73,24 +77,30 @@ PrintMotd no
 AcceptEnv LANG LC_*
 Subsystem       sftp    /usr/lib/openssh/sftp-server
 EOF"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart sshd" && sleep 5
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart sshd"
+	sleep 5
+fi
 export HETZNER_SSH_PORT="22333" # now the port definitely should have changed
 
 # get rid of idiotic systemd-resolved
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 "cat > /etc/resolv.conf << EOF
 nameserver 1.1.1.1
 nameserver 8.8.8.8
 nameserver 1.0.0.1
 nameserver 8.8.4.4
 EOF"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
+retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
 echo " "
 
 # setup fail2ban
-echo "installing fail2ban ..."
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install fail2ban; systemctl enable fail2ban"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+echo "checking fail2ban ..."
+# check if fail2ban is already installed and in status active, only setup if not
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl status fail2ban | grep 'active (running)' 1>/dev/null" ||
+	(
+	echo "installing fail2ban ..."
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install fail2ban; systemctl enable fail2ban"
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 "cat > /etc/fail2ban/jail.d/defaults-debian.conf << EOF
 [DEFAULT]
 bantime  = 15m
@@ -98,21 +108,25 @@ bantime  = 15m
 enabled = true
 port = 22333
 EOF"
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart fail2ban"
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart fail2ban"
+	)
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl status fail2ban"
 echo " "
 
 # setup firewall
 echo "checking firewall ..."
 # check if ufw is already installed and in status active, only setup if not
-hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status | grep active 1>/dev/null" ||
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl status ufw | grep 'active (exited)' 1>/dev/null" ||
 	(
 	# why this?
 	# because ufw is extremely flaky and has a lot of problems with xtables locks from docker/kubernetes,
-	# so we want to avoid running ufw commands at all cost
-	retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get install ufw"
+	# so we want to avoid running ufw commands at all cost. check firewall.sh if you want to reapply/modify the firewall rules on your node.
+	echo "setting up firewall ..."
+	retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install ufw"
 	# 22333: ssh, 80/443: ingress, 6443: kube-api, 32222: syncthing
 	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
-		"ufw default deny incoming \
+		"ufw allow ${HETZNER_SSH_PORT}/tcp \
+		  && ufw default deny incoming \
 		  && ufw allow ${HETZNER_SSH_PORT}/tcp \
 		  && ufw allow 80/tcp \
 		  && ufw allow 443/tcp \
@@ -120,11 +134,11 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status | 
 		  && ufw allow 32222/tcp \
 		  && ufw allow 32222/udp \
 		  && ufw allow from 10.0.0.0/8 \
-		  && ufw logging off"
-	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw --force enable"
+		  && ufw logging off \
+		  && sleep 2 && ufw --force enable"
 	retry 10 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "sleep 2 && ufw reload && sleep 1"
 	)
-retry 5 5 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status"
+retry 10 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "ufw status"
 echo " "
 
 ########################################################################################################################
