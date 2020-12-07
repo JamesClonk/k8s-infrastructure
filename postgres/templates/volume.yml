@@ -3,18 +3,18 @@
 #@ load("_ytt.lib.yml", "labels")
 
 #@ if len(data.values.postgres.storage.class_name) == 0:
-#@  assert.fail("data.values.postgres.storage.class_name cannot be empty")
+#@  assert.fail("postgres.storage.class_name cannot be empty")
 #@ end
 #@ if len(data.values.postgres.storage.size) == 0:
-#@  assert.fail("data.values.postgres.storage.size cannot be empty")
+#@  assert.fail("postgres.storage.size cannot be empty")
 #@ end
 
 #@ if data.values.postgres.storage.reclaim:
 #@ if len(data.values.postgres.storage.volume_handle) == 0:
-#@  assert.fail("data.values.postgres.storage.volume_handle cannot be empty")
+#@  assert.fail("postgres.storage.volume_handle cannot be empty")
 #@ end
 #@ if len(data.values.postgres.storage.driver) == 0:
-#@  assert.fail("data.values.postgres.storage.driver cannot be empty")
+#@  assert.fail("postgres.storage.driver cannot be empty")
 #@ end
 ---
 apiVersion: v1
@@ -51,3 +51,57 @@ spec:
   storageClassName: #@ data.values.postgres.storage.class_name
   #@ if/end data.values.postgres.storage.reclaim:
   volumeName: pvc-postgres
+
+#@ if data.values.pgbackup.enabled:
+#@ if len(data.values.pgbackup.storage.class_name) == 0:
+#@  assert.fail("pgbackup.storage.class_name cannot be empty")
+#@ end
+#@ if len(data.values.pgbackup.storage.size) == 0:
+#@  assert.fail("pgbackup.storage.size cannot be empty")
+#@ end
+
+#@ if data.values.pgbackup.storage.reclaim:
+#@ if len(data.values.pgbackup.storage.volume_handle) == 0:
+#@  assert.fail("pgbackup.storage.volume_handle cannot be empty")
+#@ end
+#@ if len(data.values.pgbackup.storage.driver) == 0:
+#@  assert.fail("pgbackup.storage.driver cannot be empty")
+#@ end
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-pgbackup
+  namespace: postgres
+  labels: #@ labels("pv")
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: #@ data.values.pgbackup.storage.size
+  csi:
+    driver: #@ data.values.pgbackup.storage.driver
+    fsType: ext4
+    volumeHandle: #@ str(data.values.pgbackup.storage.volume_handle)
+  storageClassName: #@ data.values.pgbackup.storage.class_name
+#@ end
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pgbackup
+  namespace: postgres
+  labels: #@ labels("pvc")
+  annotations:
+    kapp.k14s.io/change-group.pgbackup: pgbackup-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: #@ data.values.pgbackup.storage.size
+  storageClassName: #@ data.values.pgbackup.storage.class_name
+  #@ if/end data.values.pgbackup.storage.reclaim:
+  volumeName: pvc-pgbackup
+#@ end

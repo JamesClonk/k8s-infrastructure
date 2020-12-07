@@ -78,4 +78,9 @@ export GRAFANA_PASSWORD="${GRAFANA_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # 
 ####### postgres #######################################################################################################
 ########################################################################################################################
 export POSTGRES_SUPERUSER_PASSWORD="${POSTGRES_SUPERUSER_PASSWORD:=${INGRESS_BASIC_AUTH_PASSWORD}}" # for example "my-super-secret-password"
+export POSTGRES_S3_BACKUP_ENABLED="${POSTGRES_S3_BACKUP_ENABLED:=false}" # optional, false or true, uploads backups onto S3
+export POSTGRES_S3_BACKUP_ACCESS_KEY="${POSTGRES_S3_BACKUP_ACCESS_KEY:=access_key}"
+export POSTGRES_S3_BACKUP_SECRET_KEY="${POSTGRES_S3_BACKUP_SECRET_KEY:=secret_key}"
+export POSTGRES_S3_BACKUP_ENDPOINT="${POSTGRES_S3_BACKUP_ENDPOINT:=http://example/deadbeef}" # your S3 endpoint
+export POSTGRES_S3_BACKUP_BUCKET="${POSTGRES_S3_BACKUP_BUCKET:=bucketname}" # S3 bucket to upload backups to
 ########################################################################################################################

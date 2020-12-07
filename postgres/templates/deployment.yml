@@ -47,9 +47,6 @@ spec:
         - pg_stat_statements.track=all
         - -p
         - "6432"
-        env:
-        - name: TZ
-          value: "Europe/Zurich"
         envFrom:
         - secretRef:
             name: postgres

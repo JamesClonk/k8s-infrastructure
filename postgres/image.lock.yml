@@ -5,6 +5,9 @@ overrides:
 - image: edoburu/pgbouncer:1.12.0
   newImage: index.docker.io/edoburu/pgbouncer@sha256:9575399033c1eee3ba90c4f8365bb2c0c0fed3df590e703230c3ce850cd32837
   preresolved: true
+- image: jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57
+  newImage: index.docker.io/jamesclonk/pgbackup@sha256:878deed9d3d62112584e9be8878b1cfa36a7fa44f3dfb9ecfe3fb1554326963e
+  preresolved: true
 - image: postgres:12
   newImage: index.docker.io/library/postgres@sha256:62ae78ebf6903c47ff40273e1266173d224ee1bc2c000805cc4e0c4470305f57
   preresolved: true

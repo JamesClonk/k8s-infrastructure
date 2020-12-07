@@ -1,0 +1,73 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.pgbackup.enabled:
+#@ if len(data.values.pgbackup.schedule) == 0:
+#@  assert.fail("pgbackup.schedule is missing")
+#@ end
+#@ if len(data.values.pgbackup.file_retention) == 0:
+#@  assert.fail("pgbackup.file_retention is missing")
+#@ end
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: pgbackup
+  namespace: postgres
+  labels: #@ labels("cronjob")
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    kapp.k14s.io/change-rule.pgbackup: upsert after upserting pgbackup-pvc
+spec:
+  schedule: #@ data.values.pgbackup.schedule
+  concurrencyPolicy: Replace
+  successfulJobsHistoryLimit: 10
+  failedJobsHistoryLimit: 10
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        metadata:
+          labels: #@ labels("backup")
+        spec:
+          serviceAccountName: postgres
+          restartPolicy: Never
+          backoffLimit: 1
+          activeDeadlineSeconds: 3500
+          securityContext:
+            runAsUser: 1007
+            runAsGroup: 1007
+            fsGroup: 1007
+          containers:
+          - name: pgbackup
+            image: #@ data.values.pgbackup.image
+            command: ["/home/pgbackup/app/backup.sh"]
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+            env:
+            - name: HOME
+              value: "/var/run/pgbackup"
+            envFrom:
+            - secretRef:
+                name: pgbackup
+            volumeMounts:
+            - name: tmp
+              mountPath: /var/run/pgbackup
+            - name: storage
+              mountPath: /data/pgbackup
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          volumes:
+          - name: tmp
+            emptyDir: {}
+          - name: storage
+            persistentVolumeClaim:
+              claimName: pgbackup
+#@ end

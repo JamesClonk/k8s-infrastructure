@@ -10,7 +10,8 @@ metadata:
   namespace: postgres
   labels: #@ labels("netpol")
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels: #@ labels("database")
   ingress:
   - from: #! allow metrics access for prometheus
     - namespaceSelector:
@@ -19,4 +20,12 @@ spec:
       podSelector: {}
     ports:
     - port: 9187
+  - from: #! allow database access for pgbackup
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: postgres
+      podSelector:
+        matchLabels: #@ labels("backup")
+    ports:
+    - port: 5432
 #@ end

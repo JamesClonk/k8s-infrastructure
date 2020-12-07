@@ -24,3 +24,26 @@ pgbouncer:
 
 exporter:
   image: "wrouesnel/postgres_exporter:v0.8.0"
+
+pgbackup:
+  image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
+
+  enabled: true
+  schedule: "33 3 * * *"
+  file_retention: "21"
+
+  storage:
+    #! class_name: hcloud-volumes
+    class_name: local-path
+    driver: csi.hetzner.cloud
+    size: 10Gi
+    reclaim: false
+    volume_handle: "" # <-- must be set if 'reclaim=true'
+
+  s3:
+    enabled: "${POSTGRES_S3_BACKUP_ENABLED}"
+    access_key_id: "${POSTGRES_S3_BACKUP_ACCESS_KEY}"
+    secret_access_key: "${POSTGRES_S3_BACKUP_SECRET_KEY}"
+    endpoint: "${POSTGRES_S3_BACKUP_ENDPOINT}"
+    bucket: "${POSTGRES_S3_BACKUP_BUCKET}"
+    retention_days: "21d"
