@@ -12,8 +12,8 @@ postgres:
 
   memory_in_mb: 512
   storage:
-    #! class_name: hcloud-volumes
-    class_name: local-path
+    class_name: hcloud-volumes
+    #! class_name: local-path
     driver: csi.hetzner.cloud
     size: 10Gi
     reclaim: false
