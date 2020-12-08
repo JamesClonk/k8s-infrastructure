@@ -28,4 +28,13 @@ spec:
         matchLabels: #@ labels("backup")
     ports:
     - port: 5432
+  - from: #! allow database access for all specifically labeled apps
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/database-access: enabled
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/database-access: enabled
+    ports:
+    - port: 5432
 #@ end
