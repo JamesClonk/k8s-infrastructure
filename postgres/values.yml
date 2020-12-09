@@ -29,7 +29,7 @@ pgbackup:
   image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
 
   enabled: true
-  schedule: "33 3 * * *"
+  schedule: "55 5 * * *"
   file_retention: "21"
 
   storage:
