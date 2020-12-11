@@ -218,8 +218,8 @@ data:
         expr: rate(irvisualizer_errors_total[5m]) > 0
         for: 5m
         annotations:
-          title: '{{ $labels.app_service }}: visualizer error'
-          description: '{{ $labels.app_service }} is reporting visualizer errors!'
+          title: '{{ $labels.app_kubernetes_io_component }}: visualizer error'
+          description: '{{ $labels.app_kubernetes_io_component }} is reporting visualizer errors!'
         labels:
           severity: warning
 
@@ -229,43 +229,43 @@ data:
         expr: rate(ircollector_api_client_login_error_total[5m]) > 0
         for: 5m
         annotations:
-          title: '{{ $labels.app_service }}: API client login failure'
-          description: '{{ $labels.app_service }} is reporting API client login failures!'
+          title: '{{ $labels.app_kubernetes_io_component }}: API client login failure'
+          description: '{{ $labels.app_kubernetes_io_component }} is reporting API client login failures!'
         labels:
           severity: warning
       - alert: Client_Error
         expr: rate(ircollector_api_client_request_error_total[5m]) > 0
         for: 5m
         annotations:
-          title: '{{ $labels.app_service }}: API client error'
-          description: '{{ $labels.app_service }} is reporting API client request errors!'
+          title: '{{ $labels.app_kubernetes_io_component }}: API client error'
+          description: '{{ $labels.app_kubernetes_io_component }} is reporting API client request errors!'
         labels:
           severity: warning
       - alert: Collector_Error
         expr: rate(ircollector_errors_total[5m]) > 0
         for: 5m
         annotations:
-          title: '{{ $labels.app_service }}: collector error'
-          description: '{{ $labels.app_service }} is reporting collector errors!'
+          title: '{{ $labels.app_kubernetes_io_component }}: collector error'
+          description: '{{ $labels.app_kubernetes_io_component }} is reporting collector errors!'
         labels:
           severity: warning
 
     - name: promtail
       rules:
       - alert: GolangPanic
-        expr: avg(promtail_custom_app_panic_total) by (app, app_service, app_service_component) > 0
+        expr: avg(promtail_custom_app_panic_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
         for: 5m
         annotations:
           title: '{{ $labels.app }}: Golang panic'
-          description: '{{ $labels.app }}/{{ $labels.app_service }} is reporting Golang panics!'
+          description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting Golang panics!'
         labels:
           severity: critical
       - alert: Error
-        expr: avg(promtail_custom_app_error_total) by (app, app_service, app_service_component) > 0
+        expr: avg(promtail_custom_app_error_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
         for: 5m
         annotations:
           title: '{{ $labels.app }}: error'
-          description: '{{ $labels.app }}/{{ $labels.app_service }} is reporting errors.'
+          description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting errors.'
         labels:
           severity: info
       - alert: PushFailure
