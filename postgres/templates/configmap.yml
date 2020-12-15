@@ -1,5 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yml", "labels")
 
+#@ if data.values.pgbouncer.pool_size < 5:
+#@  assert.fail("pgbouncer.pool_size is missing or invalid")
+#@ end
+#@ if data.values.pgbouncer.max_clients < 50:
+#@  assert.fail("pgbouncer.max_clients is missing or invalid")
+#@ end
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9,6 +17,7 @@ metadata:
   labels: #@ labels("cm")
   annotations:
     kapp.k14s.io/versioned: ""
+#@yaml/text-templated-strings
 data:
   pgbouncer.ini: |
     [databases]
@@ -23,8 +32,8 @@ data:
     auth_file = /etc/pgbouncer/userlist.txt
     auth_type = md5
     pool_mode = session
-    max_client_conn = 100
-    default_pool_size = 10
+    max_client_conn = (@= str(data.values.pgbouncer.max_clients) @)
+    default_pool_size = (@= str(data.values.pgbouncer.pool_size) @)
     ignore_startup_parameters = extra_float_digits
     admin_users = postgres
     server_reset_query = DISCARD ALL

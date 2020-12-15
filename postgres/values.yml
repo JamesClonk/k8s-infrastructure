@@ -10,7 +10,7 @@ postgres:
 
   password: "${POSTGRES_SUPERUSER_PASSWORD}"
 
-  memory_in_mb: 512
+  memory_in_mb: 1024
   storage:
     class_name: hcloud-volumes
     #! class_name: local-path
@@ -21,6 +21,9 @@ postgres:
 
 pgbouncer:
   image: "edoburu/pgbouncer:1.12.0"
+
+  pool_size: 12
+  max_clients: 100
 
 exporter:
   image: "wrouesnel/postgres_exporter:v0.8.0"
