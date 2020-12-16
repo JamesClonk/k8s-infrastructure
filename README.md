@@ -45,7 +45,7 @@ To do so simply go through each subdirectory and check their respective `values.
 
 #### postgres 🐘
 
-Adjust `postgres.resources.memory_in_mb` to `256` for a minimal database sizing. You can disable the periodic backups by setting `pgbackup.enabled` to `false`, as each backup job can consume up to 1GB of memory while it is running. You can also configure the backup jobs maximum memory consumption via `pgbackup.resources.memory_in_mb`, though decreasing this value to something too low will cause the backup to fail and crash if it runs out of memory while creating a database dump.
+Adjust `postgres.resources.memory_in_mb` to `256` for a minimal database sizing. You can disable the periodic backups by setting `pgbackup.enabled` to `false`, as each backup job can consume up to 1GB of memory while it is running. You can also configure the backup jobs maximum memory consumption via `pgbackup.resources.memory_in_mb`, though decreasing this value too much will cause the backup to fail and crash if it runs out of memory while creating a database dump.
 
 #### prometheus 🔥
 
