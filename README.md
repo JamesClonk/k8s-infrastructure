@@ -24,7 +24,7 @@ vi configuration.env.sh
 
 ## Installation ❗️
 
-Installation? There's nothing to install here. Just run the steps as mentioned above in *Quick start* and off you go, your very own personal Kubernetes cluster will be deployed on Hetzner Cloud. 🥳
+Installation? There's nothing to install here. Just run the steps as mentioned above in "**Quick start**" and off you go, your very own personal Kubernetes cluster will be deployed on Hetzner Cloud. 🥳
 
 ## Configuration 🛠️
 
