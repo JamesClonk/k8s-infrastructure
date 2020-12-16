@@ -1,7 +1,7 @@
-# k8s-infrastructure
+# k8s-infrastructure 🐳
 Create your own personal Kubernetes infrastructure, the quick and easy way
 
-## Quick start
+## Quick start ⏩
 
 ```bash
 ## get this repository here
@@ -16,15 +16,17 @@ vi configuration.env.sh
 
 # provision Kubernetes on Hetzner Cloud with CSI driver for persistent volumes
 # and install these basic tools and software:
-# ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana
+# ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana, postgres
 ./deploy.sh
 ```
 
-## What is this?
+## What is this? ❓️
 
-## Installation
+## Installation ❗️
 
-## Configuration
+Installation? There's nothing to install here. Just run the steps as mentioned above in *Quick start* and off you go, your very own personal Kubernetes cluster will be deployed on Hetzner Cloud. 🥳
+
+## Configuration 🛠️
 
 The provided default configuration inside `configuration.env.sh` is aimed at provisioning and using a type *CX31* or higher Hetzner Cloud virtual machine, with at least 4 CPUs and 8GB of memory.
 You will have to modify at least the following variables before you can provision your own Kubernetes cluster on Hetzner Cloud:
@@ -39,19 +41,19 @@ A *CX31* costs ~10€ per month and is billed hourly, which makes it a very chea
 If you want to use a lower spec machine then you should also adjust resource values for some of the included components, mainly to reduce their memory footprint.
 To do so simply go through each subdirectory and check their respective `values.yml`, if it contains a `__.resources.__` section you can adjust the values there.
 
-#### postgres
+#### postgres 🐘
 
 Adjust `postgres.resources.memory_in_mb` to `256` for a minimal database sizing. You can disable the periodic backups by setting `pgbackup.enabled` to `false`, as each backup job can consume up to 1GB of memory while it is running. You can also configure the backup jobs maximum memory consumption via `pgbackup.resources.memory_in_mb`, though decreasing this value to something too low will cause the backup to fail and crash if it runs out of memory while creating a database dump.
 
-#### prometheus
+#### prometheus 🔥
 
 Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum memory usage. Be careful not to set the limits too low, *prometheus-server* can crash easily due to running out-of-memory while running some heavy metrics queries against it.
 
-## Architecture
+## Architecture 🏛️
 
 ![Kubernetes](docs/architecture.png)
 
-### Components
+### Components 🔋
 
 | Name | Description | URL |
 |-|-|-|
@@ -65,7 +67,7 @@ Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum 
 | [Grafana](https://grafana.com/grafana) | Monitoring and metric analytics & dashboards for Prometheus and Loki | https://github.com/grafana/grafana |
 | [PostgreSQL](https://www.postgresql.org) | The world's most advanced open source relational database | https://www.postgresql.org/docs |
 
-### Tools
+### Tools 🔧
 
 | Name | Description | URL |
 |-|-|-|
@@ -77,13 +79,13 @@ Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum 
 | [kapp-controller](https://github.com/vmware-tanzu/carvel-kapp-controller) | Kubernetes controller for Kapp, provides App CRDs | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
 | [k9s](https://k9scli.io) | Terminal UI to interact with your Kubernetes clusters | https://github.com/derailed/k9s |
 
-### Thoughts & considerations
+### Thoughts & considerations 🤔
 
-#### Why not using operators?
+#### Why not using operators? 🤷
 
 Well, this is meant to be used for a *single-user* Kubernetes cluster, whether with only a one or multiple nodes, self-deployed or managed.  While operators are certainly cool pieces of software they don't really make much sense for a single-user scenario, hence I saw no reason to use the prometheus, grafana and postgres operators for those parts of this Kubernetes-infrastructure-as-code project.
 
-#### Why using simple basic-auth for all ingresses?
+#### Why using simple basic-auth for all ingresses? 🔐
 
 I was considering and experimenting with using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) and [authelia](https://github.com/authelia/authelia), but ultimately made the same decision as with regards to using operators. It simply doesn't make much sense for a single-user Kubernetes cluster, the engineering and operational overhead was not worth it. All I needed are static username+password credentials for securing my applications.
 
