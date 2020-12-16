@@ -22,7 +22,7 @@ vi configuration.env.sh
 
 ## What is this? ❓️
 
-This is a collection of scripts for a fully automated deployment of Kubernetes onto a [Hetzner Cloud](https://www.hetzner.com/cloud) virtual machine. It will use the Hetzner Cloud CLI to create a single VM, deploy [K3s](https://k3s.io) onto it, target the newly installed Kubernetes and deploy various additional components. The deployment process is entirely automated and idempotent, and can also run automatically via the included `.github/workflows`.
+This is a collection of scripts for a fully automated deployment of Kubernetes onto a [Hetzner Cloud](https://www.hetzner.com/cloud) virtual machine. It will use the Hetzner Cloud CLI to create a single VM, deploy [K3s](https://k3s.io) onto it, target the newly installed Kubernetes and deploy various additional components. The whole deployment process is entirely automated and idempotent, and can also run automatically via the included `.github/workflows`.
 
 ## Installation ❗️
 
