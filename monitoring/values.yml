@@ -10,6 +10,41 @@ grafana:
   username: "${GRAFANA_USERNAME}"
   password: "${GRAFANA_PASSWORD}"
 
+  resources:
+    requests:
+      cpu: 100m
+      memory: 192Mi
+    limits:
+      cpu: 200m
+      memory: 192Mi
+
+loki:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+promtail:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+
+prometheus:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
 alertmanager:
   email:
     enabled: ${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED}

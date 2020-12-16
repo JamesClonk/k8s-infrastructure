@@ -50,7 +50,7 @@ spec:
         envFrom:
         - secretRef:
             name: postgres
-        resources: #@ resources(125, data.values.postgres.memory_in_mb)
+        resources: #@ resources(125, data.values.postgres.resources.memory_in_mb)
         readinessProbe:
           exec:
             command:

@@ -10,14 +10,15 @@ postgres:
 
   password: "${POSTGRES_SUPERUSER_PASSWORD}"
 
-  memory_in_mb: 1024
-  storage:
-    class_name: hcloud-volumes
-    #! class_name: local-path
-    driver: csi.hetzner.cloud
-    size: 10Gi
-    reclaim: false
-    volume_handle: "" # <-- must be set if 'reclaim=true'
+  resources:
+    memory_in_mb: 1024
+    storage:
+      class_name: hcloud-volumes
+      #! class_name: local-path
+      driver: csi.hetzner.cloud
+      size: 10Gi
+      reclaim: false
+      volume_handle: "" # <-- must be set if 'reclaim=true'
 
 pgbouncer:
   image: "edoburu/pgbouncer:1.12.0"
@@ -35,13 +36,15 @@ pgbackup:
   schedule: "55 5 * * *"
   file_retention: "21"
 
-  storage:
-    #! class_name: hcloud-volumes
-    class_name: local-path
-    driver: csi.hetzner.cloud
-    size: 10Gi
-    reclaim: false
-    volume_handle: "" # <-- must be set if 'reclaim=true'
+  resources:
+    memory_in_mb: 1024
+    storage:
+      #! class_name: hcloud-volumes
+      class_name: local-path
+      driver: csi.hetzner.cloud
+      size: 10Gi
+      reclaim: false
+      volume_handle: "" # <-- must be set if 'reclaim=true'
 
   s3:
     enabled: "${POSTGRES_S3_BACKUP_ENABLED}"

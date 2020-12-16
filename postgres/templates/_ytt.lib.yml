@@ -49,7 +49,7 @@
 #@ end
 
 #@ def shared_memory():
-#@   requested_memory = int(data.values.postgres.memory_in_mb)
+#@   requested_memory = int(data.values.postgres.resources.memory_in_mb)
 #@   shm = int(requested_memory / 4)
 #@   if shm < 64:
 #@     shm = 64

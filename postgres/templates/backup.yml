@@ -62,7 +62,7 @@ spec:
               memory: "256Mi"
               cpu: "250m"
             limits:
-              memory: "1Gi"
+              memory: #@ str(data.values.pgbackup.resources.memory_in_mb) + "Mi"
               cpu: "500m"
           volumes:
           - name: tmp

@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"kubernetes-dashboard"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kubernetes-dashboard"}), expects=1
+      - name: kubernetes-dashboard
+        #@overlay/match missing_ok=True
+        resources: #@ data.values.dashboard.resources
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"dashboard-metrics-scraper"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"dashboard-metrics-scraper"}), expects=1
+      - name: dashboard-metrics-scraper
+        #@overlay/match missing_ok=True
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            cpu: 50m
+            memory: 64Mi

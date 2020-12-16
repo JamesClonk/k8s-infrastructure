@@ -6,3 +6,11 @@ domains:
 dashboard:
   enable_network_policy: true
   kubeconfig: ""
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 150m
+      memory: 64Mi
