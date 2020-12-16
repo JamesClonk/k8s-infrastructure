@@ -26,13 +26,13 @@ vi configuration.env.sh
 
 ## Configuration
 
-The provided default configuration inside `configuration.env.sh` is aimed at provisioning and using a type *CX31* or higher Hetzner Cloud virtual machine, with at least 4 CPUs and 8GB of memory. A *CX31* costs ~10€ per month and is billed hourly, which makes it very cherap and super convenient for testing purposes.
+The provided default configuration inside `configuration.env.sh` is aimed at provisioning and using a type *CX31* or higher Hetzner Cloud virtual machine, with at least 4 CPUs and 8GB of memory. A *CX31* costs ~10€ per month and is billed hourly, which makes it a very cheap and super convenient option for testing purposes.
 If you want to use a lower spec machine then you should also adjust resource values for some of the included components, mainly to reduce their memory footprint.
-To do so simply go through each sub-directory and check their respective `values.yml`, if it contains a `__.resources.__` section you can adjust the values there.
+To do so simply go through each subdirectory and check their respective `values.yml`, if it contains a `__.resources.__` section you can adjust the values there.
 
 #### postgres
 
-Adjust `postgres.resources.memory_in_mb` to `256` for a minimal database sizing. You can disable the periodic backups by setting `pgbackup.enabled` to `false`, as each backup job can consume up to 1GB of memory while it is running. You can also configure the backup jobs maximum memory consumption via `pgbackup.resources.memory_in_mb`, though decreasing this values to something too low will cause the backup to fail and crash if it runs out of memory while creating a database dump.
+Adjust `postgres.resources.memory_in_mb` to `256` for a minimal database sizing. You can disable the periodic backups by setting `pgbackup.enabled` to `false`, as each backup job can consume up to 1GB of memory while it is running. You can also configure the backup jobs maximum memory consumption via `pgbackup.resources.memory_in_mb`, though decreasing this value to something too low will cause the backup to fail and crash if it runs out of memory while creating a database dump.
 
 #### prometheus
 
