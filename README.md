@@ -46,62 +46,29 @@ My recommendation would be to use one of these two if you have more requirements
 
 Both can be configured easily to work well together with *ingress-nginx*.
 
-### Deployments
+### Components
 
-- #### [K3s](https://k3s.io)
-  - ###### https://github.com/rancher/k3s
-    An easy to install, lightweight, fully compliant Kubernetes distribution packaged as a single binary
-
-- #### [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx)
-  - ###### https://github.com/kubernetes/ingress-nginx
-    An Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer
-
-- #### [cert-manager](https://cert-manager.io)
-  - ###### https://github.com/jetstack/cert-manager
-    Automatic certificate management on top of Kubernetes, using [Let's Encrypt](https://letsencrypt.org)
-
-- #### [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard)
-  - ###### https://github.com/kubernetes/dashboard
-    General-purpose web UI for Kubernetes clusters
-
-- #### [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics)
-  - ###### https://github.com/kubernetes/kube-state-metrics
-    Add-on agent to generate and expose cluster-level metrics
-
-- #### [Prometheus](https://prometheus.io)
-  - ###### https://github.com/prometheus
-    Monitoring & alerting system, and time series database for metrics
-
-- #### [Loki](https://grafana.com/oss/loki)
-  - ###### https://github.com/grafana/loki
-    A horizontally-scalable, highly-available, multi-tenant log aggregation system
-
-- #### [Grafana](https://grafana.com/grafana)
-  - ###### https://github.com/grafana/grafana
-    Monitoring and metric analytics & dashboards for Prometheus and Loki
-
-- #### [PostgreSQL](https://www.postgresql.org)
-  - ###### https://www.postgresql.org/docs
-    The world's most advanced open source relational database
+| Name | Description | URL | 
+|-|-|-|
+| [K3s](https://k3s.io) | An easy to install, lightweight, fully compliant Kubernetes distribution packaged as a single binary | https://github.com/rancher/k3s |
+| [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx) | An Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer | https://github.com/kubernetes/ingress-nginx |
+| [cert-manager](https://cert-manager.io) | Automatic certificate management on top of Kubernetes, using [Let's Encrypt](https://letsencrypt.org) | https://github.com/jetstack/cert-manager |
+| [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard) | General-purpose web UI for Kubernetes clusters | https://github.com/kubernetes/dashboard |
+| [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) | Add-on agent to generate and expose cluster-level metrics | https://github.com/kubernetes/kube-state-metrics |
+| [Prometheus](https://prometheus.io) | Monitoring & alerting system, and time series database for metrics | https://github.com/prometheus |
+| [Loki](https://grafana.com/oss/loki) | A horizontally-scalable, highly-available, multi-tenant log aggregation system | https://github.com/grafana/loki |
+| [Grafana](https://grafana.com/grafana) | Monitoring and metric analytics & dashboards for Prometheus and Loki | https://github.com/grafana/grafana |
+| [PostgreSQL](https://www.postgresql.org) | The world's most advanced open source relational database | https://www.postgresql.org/docs |
 
 ### Tools used
 
-- #### [Hetzner Cloud](https://www.hetzner.com/cloud)
-  - ###### https://github.com/hetznercloud/cli
-    Command-line interface for interacting with Hetzner Cloud
+| Name | Description | URL | 
+|-|-|-|
+| [Hetzner Cloud](https://www.hetzner.com/cloud) | Command-line interface for interacting with Hetzner Cloud | https://github.com/hetznercloud/cli |
+| [kapp](https://get-kapp.io) | Deploy and view groups of Kubernetes resources as applications | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
+| [ytt](https://get-ytt.io) | Template and overlay Kubernetes configuration via YAML structures | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
+| [vendir](https://github.com/vmware-tanzu/carvel-vendir) | Declaratively state what files should be in a directory | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
+| [kbld](https://get-kbld.io) | Seamlessly incorporates image building, pushing, and resolution into deployment workflows | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
+| [kapp-controller](https://github.com/vmware-tanzu/carvel-kapp-controller) | Kubernetes controller for Kapp, provides App CRDs | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
+| [k9s](https://k9scli.io) | Terminal UI to interact with your Kubernetes clusters | https://github.com/derailed/k9s |
 
-- #### [Carvel](https://carvel.dev) (formerly https://k14s.io)
-  - ###### [kapp](https://get-kapp.io)
-    Deploy and view groups of Kubernetes resources as applications
-  - ###### [ytt](https://get-ytt.io)
-    Template and overlay Kubernetes configuration via YAML structures
-  - ###### [vendir](https://github.com/vmware-tanzu/carvel-vendir)
-    Declaratively state what files should be in a directory
-  - ###### [kbld](https://get-kbld.io)
-    Seamlessly incorporates image building, pushing, and resolution into deployment workflows
-  - ###### [kapp-controller](https://github.com/vmware-tanzu/carvel-kapp-controller)
-    Kubernetes controller for Kapp, provides App CRDs
-
-- #### [k9s](https://k9scli.io)
-  - ###### https://github.com/derailed/k9s
-    Terminal UI to interact with your Kubernetes clusters
