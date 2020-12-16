@@ -7,6 +7,7 @@ env:
   HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
   HETZNER_PUBLIC_SSH_KEY: ${{ secrets.HETZNER_PUBLIC_SSH_KEY }}
   HETZNER_PRIVATE_SSH_KEY: ${{ secrets.HETZNER_PRIVATE_SSH_KEY }}
+  INGRESS_DOMAIN: ${{ secrets.INGRESS_DOMAIN }}
 
 jobs:
   hetzner-k3s:
