@@ -18,6 +18,10 @@ vi configuration.env.sh
 # and install these basic tools and software:
 # ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana, postgres
 ./deploy.sh
+
+# configure your DNS provider/entries, with loadbalancer-, floating- or server-ip:
+# A       $INGRESS_DOMAIN     $IP 
+# CNAME   *.$INGRESS_DOMAIN   $INGRESS_DOMAIN
 ```
 
 ## What is this? ❓️
