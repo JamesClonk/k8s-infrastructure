@@ -19,7 +19,7 @@ vi configuration.env.sh
 # ingress-nginx, cert-manager, dashboard, prometheus, loki, grafana, postgres
 ./deploy.sh
 
-# configure your DNS provider/entries, with loadbalancer-, floating- or server-ip:
+# configure DNS provider/entries, with loadbalancer-, floating- or server-ip:
 # A       $INGRESS_DOMAIN     $IP 
 # CNAME   *.$INGRESS_DOMAIN   $INGRESS_DOMAIN
 ```
