@@ -131,6 +131,8 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl sta
 		  && ufw allow 80/tcp \
 		  && ufw allow 443/tcp \
 		  && ufw allow 6443/tcp \
+		  && ufw allow 31337/tcp \
+		  && ufw allow 31337/udp \
 		  && ufw allow 32222/tcp \
 		  && ufw allow 32222/udp \
 		  && ufw allow from 10.0.0.0/8 \
