@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"grafana"}}), expects=1
+---
+metadata:
+  labels:
+    #@overlay/match missing_ok=True
+    app.kubernetes.io/database-access: enabled
+spec:
+  template:
+    metadata:
+      labels:
+        #@overlay/match missing_ok=True
+        app.kubernetes.io/database-access: enabled

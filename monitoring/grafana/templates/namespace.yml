@@ -22,3 +22,5 @@ metadata:
   labels:
     #@overlay/match missing_ok=True
     namespace.kubernetes.io/name: grafana
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/database-access: enabled
