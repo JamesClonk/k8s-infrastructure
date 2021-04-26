@@ -1,0 +1,74 @@
+[
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "${HETZNER_SSH_PORT}"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "80"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "443"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "6443"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "31337"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "udp",
+    "port": "31337"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "tcp",
+    "port": "32222"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
+    "protocol": "udp",
+    "port": "32222"
+  }
+]

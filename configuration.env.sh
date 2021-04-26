@@ -24,6 +24,9 @@ export HETZNER_NODE_TYPE="cpx41" # https://www.hetzner.com/cloud#pricing
 export HETZNER_NODE_IMAGE="ubuntu-20.04"
 export HETZNER_NODE_LOCATION="nbg1" # https://docs.hetzner.com/general/others/data-centers-and-connection
 
+export HETZNER_FIREWALL_ENABLED="true" # set to 'true' if you want to use a Hetzner firewall to protect your server
+export HETZNER_FIREWALL_NAME="kubernetes-firewall"
+
 export HETZNER_FLOATING_IP_ENABLED="true" # set to 'true' if you want a floating-ip assigned to your server
 export HETZNER_FLOATING_IP_NAME="kubernetes-vip"
 
