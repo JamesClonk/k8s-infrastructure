@@ -14,10 +14,10 @@ directories:
   path: hetzner-csi/templates/upstream
 - contents:
   - git:
-      commitTitle: 'Merge pull request #6514 from aledbf/helm...'
-      sha: 8bba70b3b57a6ebf1caeb011c03ab74839bd0567
+      commitTitle: Release v0.47.0 (#7211)...
+      sha: 811ed7be57937f767ff955fc601e9ba571d8014e
       tags:
-      - ingress-nginx-3.12.0
+      - helm-chart-3.33.0
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
