@@ -37,8 +37,8 @@ metadata:
   name: ingress-nginx-controller
   namespace: ingress-nginx
 data:
+  use-proxy-protocol: "false"
 #!  hsts: "false"
-#!  use-proxy-protocol: "false"
 #!  ssl-redirect: "false"
 #!  use-gzip: "false"
 #!  use-http2: "false"
