@@ -17,3 +17,6 @@ jobs:
     - name: restart k3s service
       working-directory: hetzner-k3s
       run: ./restart.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh

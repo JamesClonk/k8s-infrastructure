@@ -18,9 +18,11 @@ jobs:
     - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   kube-system:
-    if: "!contains(github.event.head_commit.message, 'skip')"
     name: kube-system
     needs: [ hetzner-k3s ]
     runs-on: ubuntu-latest
@@ -29,9 +31,11 @@ jobs:
     - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   hcloud-csi:
-    if: "!contains(github.event.head_commit.message, 'skip')"
     name: hcloud-csi
     needs: [ kube-system ]
     runs-on: ubuntu-latest
@@ -40,3 +44,6 @@ jobs:
     - name: install hetzner csi driver
       working-directory: hcloud-csi
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh

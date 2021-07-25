@@ -40,6 +40,9 @@ jobs:
     - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   kube-system:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -51,6 +54,9 @@ jobs:
     - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   hcloud-csi:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -62,6 +68,9 @@ jobs:
     - name: install hetzner csi driver
       working-directory: hcloud-csi
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   ingress-nginx:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -73,6 +82,9 @@ jobs:
     - name: deploy kubernetes ingress controller
       working-directory: ingress-nginx
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   cert-manager:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -84,6 +96,9 @@ jobs:
     - name: deploy cert-manager for let's encrypt
       working-directory: cert-manager
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   kubernetes-dashboard:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -95,6 +110,9 @@ jobs:
     - name: deploy kubernetes dashboard
       working-directory: kubernetes-dashboard
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   kube-state-metrics:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -106,6 +124,9 @@ jobs:
     - name: deploy kube-state-metrics
       working-directory: monitoring/kube-state-metrics
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   prometheus:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -117,6 +138,9 @@ jobs:
     - name: deploy prometheus
       working-directory: monitoring/prometheus
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   prometheus-msteams:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -128,6 +152,9 @@ jobs:
     - name: deploy prometheus-msteams proxy
       working-directory: monitoring/prometheus-msteams
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   loki:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -139,6 +166,9 @@ jobs:
     - name: deploy loki
       working-directory: monitoring/loki
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   grafana:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -150,6 +180,9 @@ jobs:
     - name: deploy grafana
       working-directory: monitoring/grafana
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh
 
   postgres:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -161,3 +194,6 @@ jobs:
     - name: deploy postgres database
       working-directory: postgres
       run: ./deploy.sh
+    - name: cleanup
+      if: ${{ always() }}
+      run: ./cleanup.sh

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 set -u
-source $(dirname ${BASH_SOURCE[0]})/env.sh # source all configuration files
+source $(dirname ${BASH_SOURCE[0]})/env.sh # source env configuration files
 
 function basic_auth() {
 	local -r username="$1"; shift
@@ -28,17 +28,20 @@ function retry() {
 function install_tool {
 	local -r tool_name="$1"; shift
 	local -r tool_url="$1"; shift
+	local -r tool_checksum="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
 		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}"
 		chmod +x "$HOME/bin/${tool_name}"
 	fi
+	sha256sum "$HOME/bin/${tool_name}" | grep "${tool_checksum}" >/dev/null || (echo "checksum failed for [${tool_name}]" && rm -f "$HOME/bin/${tool_name}" && exit 1)
 }
 
 function install_tool_from_tarball {
 	local -r tool_path="$1"; shift
 	local -r tool_name="$1"; shift
 	local -r tool_url="$1"; shift
+	local -r tool_checksum="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
 		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
@@ -48,6 +51,7 @@ function install_tool_from_tarball {
 		chmod +x "$HOME/bin/${tool_name}"
 		rm -f "$HOME/bin/${tool_name}.tgz"
 	fi
+	sha256sum "$HOME/bin/${tool_name}" | grep "${tool_checksum}" >/dev/null || (echo "checksum failed for [${tool_name}]" && rm -f "$HOME/bin/${tool_name}" && exit 1)
 }
 
 # $HOME/bin
@@ -55,15 +59,15 @@ if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
 
 # install tools
-install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.19.3/bin/linux/amd64/kubectl"
-install_tool "envsubst" "https://github.com/JamesClonk/envsubst/releases/download/v1.1.1/envsubst_1.1.1_Linux-64bit"
-install_tool "kapp" "https://github.com/k14s/kapp/releases/download/v0.35.0/kapp-linux-amd64"
-install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.31.0/ytt-linux-amd64"
-install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.16.0/vendir-linux-amd64"
-install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.29.0/kbld-linux-amd64"
-install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.22.1/hcloud-linux-amd64.tar.gz"
-install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz"
-install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz"
+install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.19.13/bin/linux/amd64/kubectl" "275a97f2c825e8148b46b5b7eb62c1c76bdbadcca67f5e81f19a5985078cc185"
+install_tool "kapp" "https://github.com/k14s/kapp/releases/download/v0.35.0/kapp-linux-amd64" "0f9d4daa8c833a8e245362c77e72f4ed06d4f0a12eed6c09813c87a992201676"
+install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.31.0/ytt-linux-amd64" "32e7cdc38202b49fe673442bd22cb2b130e13f0f05ce724222a06522d7618395"
+install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.16.0/vendir-linux-amd64" "05cede475c2b947772a9fe552380927054d48158959c530122a150a93bf542dd"
+install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.29.0/kbld-linux-amd64" "28492a398854e8fec7dd9537243b07af7f43e6598e1e4557312f5481f6840499"
+install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.linux" "185348fd77fc160d5bdf3cd20ecbc796163504fd3df196d7cb29000773657b74"
+install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz" "129c4dadfa4b068e4a89414474796fd12d57f63d3b57f158d2be41ede419e71f"
+install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz" "58550525963821a227307590627d0c266414e4c56247a5c11559e4abd990b0ae"
+install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz" "51eb79a779f372961168b62d584728e478d4c8a447986c2c64ef3892beb0e53e"
 
 # $HOME/.ssh
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
