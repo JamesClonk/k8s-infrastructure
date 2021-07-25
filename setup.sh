@@ -65,7 +65,7 @@ install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.31.0/ytt-li
 install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.16.0/vendir-linux-amd64" "05cede475c2b947772a9fe552380927054d48158959c530122a150a93bf542dd"
 install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.29.0/kbld-linux-amd64" "28492a398854e8fec7dd9537243b07af7f43e6598e1e4557312f5481f6840499"
 install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.linux" "185348fd77fc160d5bdf3cd20ecbc796163504fd3df196d7cb29000773657b74"
-install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.19.1/hcloud-linux-amd64.tar.gz" "129c4dadfa4b068e4a89414474796fd12d57f63d3b57f158d2be41ede419e71f"
+install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.23.0/hcloud-linux-amd64.tar.gz" "500320950002dd9d24eeb47c66b3136c5318fa08c5f73e1b981a16a4dc320cad"
 install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz" "58550525963821a227307590627d0c266414e4c56247a5c11559e4abd990b0ae"
 install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz" "51eb79a779f372961168b62d584728e478d4c8a447986c2c64ef3892beb0e53e"
 
