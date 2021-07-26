@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Redirect output to stderr.
+exec 1>&2
+
+git diff --cached --name-status | while read st file; do
+	if [ "${st}" == 'D' ]; then continue; fi # skip deleted files
+
+	if [[ "${file}" =~ ".sops" ]]; then
+		echo "Checking sops file [${file}] ... ( ${st} )"
+		if ! grep "unencrypted_suffix" ${file}; then
+			echo "ERROR: sops file [${file}] is not encrypted"
+			exit 1
+		fi
+	fi
+done || exit $?
+
+exit 0

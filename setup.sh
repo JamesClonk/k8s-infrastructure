@@ -69,6 +69,9 @@ install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli
 install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz" "58550525963821a227307590627d0c266414e4c56247a5c11559e4abd990b0ae"
 install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz" "51eb79a779f372961168b62d584728e478d4c8a447986c2c64ef3892beb0e53e"
 
+# git hooks
+git config --local core.hooksPath .githooks/
+
 # $HOME/.ssh
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
 chmod 700 "$HOME/.ssh" || true
