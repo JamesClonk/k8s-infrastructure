@@ -19,6 +19,7 @@ export HCLOUD_TOKEN=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.tok
 export HETZNER_SSH_PORT=$(yq -e eval '.configuration.hetzner.ssh.port' ${CONFIGURATION_FILE})
 export HETZNER_SSH_KEY_NAME=$(yq -e eval '.configuration.hetzner.ssh.key_name' ${CONFIGURATION_FILE})
 export HETZNER_PUBLIC_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.public_key' -)
+export HETZNER_PRIVATE_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.private_key' -)
 
 export HETZNER_PRIVATE_NETWORK_NAME=$(yq -e eval '.configuration.hetzner.private_network.name' ${CONFIGURATION_FILE})
 export HETZNER_PRIVATE_NETWORK_RANGE=$(yq -e eval '.configuration.hetzner.private_network.range' ${CONFIGURATION_FILE})
