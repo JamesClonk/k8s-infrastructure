@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 set -u
+source $(dirname ${BASH_SOURCE[0]})/sops.sh # prepare sops
 source $(dirname ${BASH_SOURCE[0]})/env.sh # source env configuration files
 
 function basic_auth() {
@@ -64,8 +65,6 @@ install_tool "kapp" "https://github.com/k14s/kapp/releases/download/v0.35.0/kapp
 install_tool "ytt" "https://github.com/k14s/ytt/releases/download/v0.31.0/ytt-linux-amd64" "32e7cdc38202b49fe673442bd22cb2b130e13f0f05ce724222a06522d7618395"
 install_tool "vendir" "https://github.com/k14s/vendir/releases/download/v0.16.0/vendir-linux-amd64" "05cede475c2b947772a9fe552380927054d48158959c530122a150a93bf542dd"
 install_tool "kbld" "https://github.com/k14s/kbld/releases/download/v0.29.0/kbld-linux-amd64" "28492a398854e8fec7dd9537243b07af7f43e6598e1e4557312f5481f6840499"
-install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.linux" "185348fd77fc160d5bdf3cd20ecbc796163504fd3df196d7cb29000773657b74"
-install_tool "yq" "https://github.com/mikefarah/yq/releases/download/v4.11.2/yq_linux_amd64" "6b891fd5bb13820b2f6c1027b613220a690ce0ef4fc2b6c76ec5f643d5535e61"
 install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.23.0/hcloud-linux-amd64.tar.gz" "500320950002dd9d24eeb47c66b3136c5318fa08c5f73e1b981a16a4dc320cad"
 install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.4.0-linux-amd64.tar.gz" "58550525963821a227307590627d0c266414e4c56247a5c11559e4abd990b0ae"
 install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz" "51eb79a779f372961168b62d584728e478d4c8a447986c2c64ef3892beb0e53e"
@@ -82,29 +81,6 @@ if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then
 ${HETZNER_PRIVATE_SSH_KEY}
 EOF
 	chmod 600 "$HOME/.ssh/id_rsa"
-fi
-set -u
-
-# aws config
-if [ ! -d "$HOME/.aws" ]; then mkdir "$HOME/.aws"; fi
-chmod 700 "$HOME/.aws" || true
-set +u
-if [ ! -f "$HOME/.aws/config" ]; then
-	echo "writing [$HOME/.aws/config] ..."
-	cat > "$HOME/.aws/config" << EOF
-[profile kms]
-region = ${AWS_REGION}
-EOF
-	chmod 600 "$HOME/.aws/config"
-fi
-if [ ! -f "$HOME/.aws/credentials" ]; then
-	echo "writing [$HOME/.aws/credentials] ..."
-	cat > "$HOME/.aws/credentials" << EOF
-[kms]
-aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
-EOF
-	chmod 600 "$HOME/.aws/credentials"
 fi
 set -u
 
