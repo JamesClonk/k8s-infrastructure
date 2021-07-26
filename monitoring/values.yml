@@ -1,15 +1,9 @@
 #@data/values
 ---
-domains:
-- "${INGRESS_DOMAIN}"
-
 monitoring:
   enable_network_policy: true
 
 grafana:
-  username: "${GRAFANA_USERNAME}"
-  password: "${GRAFANA_PASSWORD}"
-
   resources:
     requests:
       cpu: 100m
@@ -45,17 +39,5 @@ prometheus:
       cpu: 500m
       memory: 1Gi
 
-alertmanager:
-  email:
-    enabled: ${PROMETHEUS_ALERTMANAGER_EMAIL_ENABLED}
-    host: "${PROMETHEUS_ALERTMANAGER_EMAIL_HOST}"
-    mail_from: "${PROMETHEUS_ALERTMANAGER_EMAIL_FROM}"
-    mail_to: "${PROMETHEUS_ALERTMANAGER_EMAIL_TO}"
-    password: "${PROMETHEUS_ALERTMANAGER_EMAIL_PASSWORD}"
-  teams_webhook:
-    enabled: ${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED}
-    url: "${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_URL}"
-
 msteams:
-  enabled: ${PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED}
   replicas: 1

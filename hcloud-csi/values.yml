@@ -1,5 +1,3 @@
 #@data/values
 ---
 enable_network_policy: true
-
-hcloud_token: "${HCLOUD_TOKEN}"

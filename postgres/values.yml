@@ -1,14 +1,9 @@
 #@data/values
 ---
-domains:
-- "${INGRESS_DOMAIN}"
-
 enable_network_policy: true
 
 postgres:
   image: "postgres:12"
-
-  password: "${POSTGRES_SUPERUSER_PASSWORD}"
 
   resources:
     memory_in_mb: 1024
@@ -45,11 +40,3 @@ pgbackup:
       size: 10Gi
       reclaim: false
       volume_handle: "" # <-- must be set if 'reclaim=true'
-
-  s3:
-    enabled: "${POSTGRES_S3_BACKUP_ENABLED}"
-    access_key_id: "${POSTGRES_S3_BACKUP_ACCESS_KEY}"
-    secret_access_key: "${POSTGRES_S3_BACKUP_SECRET_KEY}"
-    endpoint: "${POSTGRES_S3_BACKUP_ENDPOINT}"
-    bucket: "${POSTGRES_S3_BACKUP_BUCKET}"
-    retention_days: "21d"

@@ -2,8 +2,8 @@
 #@ load("_ytt.lib.yml", "labels")
 #@ load("@ytt:assert", "assert")
 
-#@ if len(data.values.domains) == 0 or len(data.values.domains[0]) == 0 or data.values.domains[0] == "example.org":
-#@  assert.fail("domain is missing or invalid")
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("configuration.ingress.domain is missing or invalid")
 #@ end
 ---
 apiVersion: networking.k8s.io/v1beta1
@@ -23,10 +23,10 @@ spec:
   tls:
   - secretName: grafana-ingress-tls
     hosts:
-    #@ for/end host in data.values.domains:
+    #@ for/end host in data.values.configuration.ingress.domains:
     - #@ "grafana." + host
   rules:
-  #@ for/end host in data.values.domains:
+  #@ for/end host in data.values.configuration.ingress.domains:
   - host: #@ "grafana." + host
     http:
       paths:

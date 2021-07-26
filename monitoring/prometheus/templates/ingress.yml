@@ -2,8 +2,8 @@
 #@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yml", "labels")
 
-#@ if len(data.values.domains) == 0 or len(data.values.domains[0]) == 0 or data.values.domains[0] == "example.org":
-#@  assert.fail("domain is missing or invalid")
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("configuration.ingress.domain is missing or invalid")
 #@ end
 ---
 apiVersion: networking.k8s.io/v1beta1
@@ -25,19 +25,19 @@ spec:
   tls:
   - secretName: prometheus-ingress-tls
     hosts:
-    #@ for host in data.values.domains:
+    #@ for host in data.values.configuration.ingress.domains:
     - #@ "prometheus." + host
     - #@ "alertmanager." + host
     #@ end
   rules:
-  #@ for/end host in data.values.domains:
+  #@ for/end host in data.values.configuration.ingress.domains:
   - host: #@ "prometheus." + host
     http:
       paths:
       - backend:
           serviceName: prometheus-server
           servicePort: 80
-  #@ for/end host in data.values.domains:
+  #@ for/end host in data.values.configuration.ingress.domains:
   - host: #@ "alertmanager." + host
     http:
       paths:

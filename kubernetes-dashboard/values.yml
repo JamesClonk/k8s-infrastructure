@@ -1,8 +1,5 @@
 #@data/values
 ---
-domains:
-- "${INGRESS_DOMAIN}"
-
 dashboard:
   enable_network_policy: true
   kubeconfig: ""

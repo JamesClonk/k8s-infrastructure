@@ -2,11 +2,11 @@
 #@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yml", "labels", "podAntiAffinity")
 
-#@ if len(data.values.basic_auth.username) == 0 or data.values.basic_auth.username == "username":
-#@  assert.fail("basic_auth.username is missing or invalid")
+#@ if len(data.values.secrets.ingress.basic_auth.username) == 0 or data.values.secrets.ingress.basic_auth.username == "username":
+#@  assert.fail("secrets.ingress.basic_auth.username is missing or invalid")
 #@ end
-#@ if len(data.values.basic_auth.password) == 0 or data.values.basic_auth.password == "password":
-#@  assert.fail("basic_auth.password is missing or invalid")
+#@ if len(data.values.secrets.ingress.basic_auth.password) == 0 or data.values.secrets.ingress.basic_auth.password == "password":
+#@  assert.fail("secrets.ingress.basic_auth.password is missing or invalid")
 #@ end
 ---
 apiVersion: v1
@@ -19,8 +19,8 @@ metadata:
     kapp.k14s.io/versioned: ""
 type: Opaque
 stringData:
-  AUTH_USERNAME: #@ data.values.basic_auth.username
-  AUTH_PASSWORD: #@ data.values.basic_auth.password
+  AUTH_USERNAME: #@ data.values.secrets.ingress.basic_auth.username
+  AUTH_PASSWORD: #@ data.values.secrets.ingress.basic_auth.password
 
 ---
 kind: Service

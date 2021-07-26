@@ -1,0 +1,55 @@
+#@data/values
+---
+#@overlay/match missing_ok=True
+configuration:
+  hetzner:
+    ssh:
+      port: "22333"
+      key_name: kubernetes
+
+    private_network:
+      name: k8s-private
+      range: 10.8.0.0/16
+      subnet: 10.8.0.0/24
+      zone: "eu-central"
+
+    node:
+      name: kubernetes-server
+      type: cpx41 # https://www.hetzner.com/cloud#pricing
+      image: ubuntu-20.04
+      location: nbg1 # https://docs.hetzner.com/general/others/data-centers-and-connection
+
+    firewall:
+      enabled: "true" # set to 'true' if you want to use a Hetzner firewall to protect your server
+      name: kubernetes-firewall
+
+    floating_ip:
+      enabled: "true" # set to 'true' if you want a floating-ip assigned to your server
+      name: kubernetes-vip
+
+    loadbalancer:
+      enabled: "false" # set to 'true' if you want a Hetzner load-balancer in front of your server
+      name: kubernetes-lb
+      type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
+
+    k3s:
+      version: "v1.19.13+k3s1" # https://github.com/rancher/k3s/releases
+
+  ingress:
+    domains:
+    - "jamesclonk.io"
+
+  postgres:
+    backup:
+      s3:
+        enabled: "true"
+        retention_days: "21d"
+
+  alertmanager:
+    email:
+      enabled: "true"
+    teams_webhook:
+      enabled: "true"
+
+  msteams:
+    enabled: "true"
