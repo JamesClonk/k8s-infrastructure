@@ -8,11 +8,11 @@ Create your own personal Kubernetes infrastructure, the quick and easy way
 git clone https://github.com/JamesClonk/k8s-infrastructure
 cd k8s-infrastructure
 
-# adjust at minimum the following variables:
-# HCLOUD_TOKEN, HETZNER_PUBLIC_SSH_KEY
-# INGRESS_DOMAIN, INGRESS_BASIC_AUTH_USERNAME, INGRESS_BASIC_AUTH_PASSWORD
-# LETS_ENCRYPT_EMAIL_ADDRESS
-vi configuration.env.sh
+# adjust main configuration file:
+vi configuration.yml
+
+# adjust secrets file:
+sops secrets.sops
 
 # provision Kubernetes on Hetzner Cloud with CSI driver for persistent volumes
 # and install these basic tools and software:
@@ -34,16 +34,10 @@ Installation? There's nothing to install here. Just run the steps as mentioned a
 
 ## Configuration 🛠️
 
-The provided default configuration inside `configuration.env.sh` is aimed at provisioning and using a type *CX31* or higher Hetzner Cloud virtual machine, with at least 4 CPUs and 8GB of memory.
-You will have to modify at least the following variables before you can provision your own Kubernetes cluster on Hetzner Cloud:
-- **HCLOUD_TOKEN**
-- **HETZNER_PUBLIC_SSH_KEY**
-- **INGRESS_DOMAIN**
-- **INGRESS_BASIC_AUTH_USERNAME**
-- **INGRESS_BASIC_AUTH_PASSWORD**
-- **LETS_ENCRYPT_EMAIL_ADDRESS**
+The provided default configuration inside `configuration.yml` is aimed at provisioning and using a type *CPX41* or higher Hetzner Cloud virtual machine, with at least 8 CPUs and16GB of memory.
+You will have to modify `configuration.yml` and `sops secrets.sops` before you can provision your own Kubernetes cluster on Hetzner Cloud.
 
-A *CX31* costs ~10€ per month and is billed hourly, which makes it a very cheap and super convenient option for testing purposes.
+For example a *CX31* costs ~10€ per month and is billed hourly, which makes it a very cheap and super convenient option for testing purposes.
 If you want to use a lower spec machine then you should also adjust resource values for some of the included components, mainly to reduce their memory footprint.
 To do so simply go through each subdirectory and check their respective `values.yml`, if it contains a `__.resources.__` section you can adjust the values there.
 
@@ -78,6 +72,7 @@ Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum 
 | Name | Description | URL |
 |-|-|-|
 | [Hetzner Cloud](https://www.hetzner.com/cloud) | Command-line interface for interacting with Hetzner Cloud | https://github.com/hetznercloud/cli |
+| [Mozilla SOPS](https://github.com/mozilla/sops) | Encrypt files with AWS KMS, GCP KMS, Azure Key Vault, age, and PGP | https://github.com/mozilla/sops |
 | [kapp](https://get-kapp.io) | Deploy and view groups of Kubernetes resources as applications | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
 | [ytt](https://get-ytt.io) | Template and overlay Kubernetes configuration via YAML structures | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
 | [vendir](https://github.com/vmware-tanzu/carvel-vendir) | Declaratively state what files should be in a directory | [Carvel](https://carvel.dev) (formerly https://k14s.io) |
