@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 set -u
+source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any hidden env config files if available
 
 function install_tool {
 	local -r tool_name="$1"; shift
@@ -23,24 +24,17 @@ install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.1/so
 install_tool "yq" "https://github.com/mikefarah/yq/releases/download/v4.11.2/yq_linux_amd64" "6b891fd5bb13820b2f6c1027b613220a690ce0ef4fc2b6c76ec5f643d5535e61"
 
 # aws config
-if [ ! -d "$HOME/.aws" ]; then mkdir "$HOME/.aws"; fi
-chmod 700 "$HOME/.aws" || true
 set +u
-if [ ! -f "$HOME/.aws/config" ]; then
-	echo "writing [$HOME/.aws/config] ..."
-	cat > "$HOME/.aws/config" << EOF
-[profile kms]
-region = ${AWS_REGION}
-EOF
-	chmod 600 "$HOME/.aws/config"
+if [ -z "${AWS_REGION}" ]; then
+	echo "AWS_REGION must be set!"
+	exit 1
 fi
-if [ ! -f "$HOME/.aws/credentials" ]; then
-	echo "writing [$HOME/.aws/credentials] ..."
-	cat > "$HOME/.aws/credentials" << EOF
-[kms]
-aws_access_key_id = ${AWS_ACCESS_KEY_ID}
-aws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}
-EOF
-	chmod 600 "$HOME/.aws/credentials"
+if [ -z "${AWS_ACCESS_KEY_ID}" ]; then
+	echo "AWS_ACCESS_KEY_ID must be set!"
+	exit 1
+fi
+if [ -z "${AWS_SECRET_ACCESS_KEY}" ]; then
+	echo "AWS_SECRET_ACCESS_KEY must be set!"
+	exit 1
 fi
 set -u
