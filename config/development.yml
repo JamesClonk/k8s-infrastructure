@@ -4,7 +4,7 @@
 configuration:
   ingress:
     domains:
-    - "jamesclonk.com"
+    - "127.0.0.1.nip.io"
 
   postgres:
     backup:

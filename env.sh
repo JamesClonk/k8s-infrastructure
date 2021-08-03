@@ -13,11 +13,11 @@ if [ -z "${ENVIRONMENT}" ]; then
 	fi
 fi
 if [ "${ENVIRONMENT}" == "production" ]; then
-	export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/configuration_production.yml"
-	export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets_production.sops"
+	export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/config/production.yml"
+	export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/config/production.sops"
 else
-	export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/configuration_development.yml"
-	export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets_development.sops"
+	export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/config/development.yml"
+	export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/config/development.sops"
 fi
 set -u
 ########################################################################################################################

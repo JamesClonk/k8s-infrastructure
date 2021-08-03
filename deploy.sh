@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 set -u
-source setup.sh
+source $(dirname ${BASH_SOURCE[0]})/setup.sh
 
 if [ "${ENVIRONMENT}" == "production" ]; then
 	deployments=(
