@@ -3,6 +3,7 @@
 dashboard:
   enable_network_policy: true
   kubeconfig: ""
+  kubeconfig_enabled: "true"
 
   resources:
     requests:

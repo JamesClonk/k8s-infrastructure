@@ -3,13 +3,22 @@ set -e
 set -u
 source setup.sh
 
-deployments=(
+if [ "${ENVIRONMENT}" == "production" ]; then
+	deployments=(
 	# setup cluster on hetzner cloud
 	"hetzner-k3s"
 
 	# we want to use some hetzner cloud volumes
 	"hcloud-csi"
+)
+else
+	deployments=(
+	# setup a local kind cluster
+	"kind"
+)
+fi
 
+deployments+=(
 	# let's own the kube-system namespace
 	"kube-system"
 

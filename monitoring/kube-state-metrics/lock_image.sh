@@ -5,6 +5,6 @@ source ../../setup.sh
 
 # lock image
 echo "locking images for [kube-state-metrics] ..."
-sops -d ../../secrets.sops |
-	ytt --ignore-unknown-comments -f templates -f ../values.yml -f ../../configuration.yml -f - |
+sops -d ${SECRETS_FILE} |
+	ytt --ignore-unknown-comments -f templates -f ../values.yml -f ${CONFIGURATION_FILE}-f - |
 	kbld -f - --lock-output "image.lock.yml"
