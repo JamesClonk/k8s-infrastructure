@@ -6,5 +6,5 @@ source ../../setup.sh
 # lock image
 echo "locking images for [prometheus] ..."
 sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f ../values.yml -f ${CONFIGURATION_FILE}-f - |
+	ytt --ignore-unknown-comments -f templates -f ../values.yml -f ${CONFIGURATION_FILE} -f - |
 	kbld -f - --lock-output "image.lock.yml"
