@@ -14,12 +14,54 @@ jobs:
   kind:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: kind-integration-testing
-    needs: [ hetzner-k3s ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: run complete infrastructure deployment
+
+    - name: prepare kube-system namespace
+      working-directory: kube-system
       run: ./deploy.sh
+
+    - name: deploy metrics-server
+      working-directory: metrics-server
+      run: ./deploy.sh
+
+    - name: deploy kubernetes ingress controller
+      working-directory: ingress-nginx
+      run: ./deploy.sh
+
+    # - name: deploy cert-manager for let's encrypt
+    #   working-directory: cert-manager
+    #   run: ./deploy.sh
+
+    - name: deploy kubernetes dashboard
+      working-directory: kubernetes-dashboard
+      run: ./deploy.sh
+
+    - name: deploy kube-state-metrics
+      working-directory: monitoring/kube-state-metrics
+      run: ./deploy.sh
+
+    # - name: deploy prometheus
+    #   working-directory: monitoring/prometheus
+    #   run: ./deploy.sh
+
+    # - name: deploy prometheus-msteams proxy
+    #   working-directory: monitoring/prometheus-msteams
+    #   run: ./deploy.sh
+
+    # - name: deploy loki
+    #   working-directory: monitoring/loki
+    #   run: ./deploy.sh
+
+    # - name: deploy grafana
+    #   working-directory: monitoring/grafana
+    #   run: ./deploy.sh
+
+    # - name: deploy postgres database
+    #   working-directory: postgres
+    #   run: ./deploy.sh
+
     - name: cleanup
       if: ${{ always() }}
       run: ./cleanup.sh
