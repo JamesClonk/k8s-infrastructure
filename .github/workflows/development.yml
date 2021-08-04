@@ -18,6 +18,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: spin up kind cluster
+      working-directory: kind
+      run: ./deploy.sh
+
     - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
