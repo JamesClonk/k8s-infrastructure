@@ -4,6 +4,23 @@ kind: Config
 minimumRequiredVersion: 0.12.0
 
 directories:
+- path: vendor/github.com/kubernetes-sigs/metrics-server
+  contents:
+  - path: .
+    githubRelease:
+      slug: kubernetes-sigs/metrics-server
+      tag: v0.5.0
+      disableAutoChecksumValidation: true
+    includePaths:
+    - components.yaml
+- path: metrics-server/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/kubernetes-sigs/metrics-server
+    includePaths:
+    - components.yaml
+
 - path: vendor/github.com/hetznercloud/csi-driver
   contents:
   - path: .

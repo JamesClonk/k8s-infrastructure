@@ -15,6 +15,9 @@ else
 	deployments=(
 	# setup a local kind cluster
 	"kind"
+
+	# add metrics-server to our local kind cluster, it feels lonely without it..
+	"metrics-server"
 )
 fi
 
