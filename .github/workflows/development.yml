@@ -1,4 +1,4 @@
-name: kubernetes infrastructure
+name: kubernetes development
 
 on:
   push:
