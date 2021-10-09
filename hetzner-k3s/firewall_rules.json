@@ -78,7 +78,7 @@
       "::/0"
     ],
     "protocol": "tcp",
-    "port": "37777"
+    "port": "32577"
   },
   {
     "direction": "in",
@@ -87,6 +87,6 @@
       "::/0"
     ],
     "protocol": "udp",
-    "port": "37777"
+    "port": "32577"
   }
 ]
