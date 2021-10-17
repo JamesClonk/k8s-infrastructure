@@ -24,7 +24,7 @@ configuration:
       name: kubernetes-firewall
 
     floating_ip:
-      enabled: "true" # set to 'true' if you want a floating-ip assigned to your server
+      enabled: "false" # set to 'true' if you want a floating-ip assigned to your server
       name: kubernetes-vip
 
     loadbalancer:
