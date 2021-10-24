@@ -16,10 +16,8 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/auth-url: http://basic-auth.ingress-nginx.svc.cluster.local:8080
-    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - Ingress"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Authorization "";
+    nginx.ingress.kubernetes.io/auth-signin: #@ "https://oauth2-proxy." + data.values.configuration.ingress.domains[0] + "/oauth2/start"
+    nginx.ingress.kubernetes.io/auth-url: #@ "https://oauth2-proxy." + data.values.configuration.ingress.domains[0] + "/oauth2/auth"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   tls:

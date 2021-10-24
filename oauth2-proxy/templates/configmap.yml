@@ -17,7 +17,7 @@ metadata:
 #@yaml/text-templated-strings
 data:
   oauth2_proxy.cfg: |-
-    reverse_proxy = "true"
+    reverse_proxy = "false"
     redirect_url = "https://oauth2-proxy.(@= data.values.configuration.ingress.domains[0] @)/oauth2/callback"
 
     upstreams = "file:///dev/null"
@@ -33,7 +33,8 @@ data:
     footer = "-"
 
     provider = "github"
-    github_repo = "JamesClonk/k8s-infrastructure"
+    github_org = "jamesclonk-io"
+    github_users = "JamesClonk"
 
     whitelist_domains=".(@= data.values.configuration.ingress.domains[0] @)"
     cookie_domains = ".(@= data.values.configuration.ingress.domains[0] @)"
@@ -41,7 +42,7 @@ data:
     cookie_expire = "168h"
     cookie_secure = "true"
     cookie_httponly = "true"
-    cookie_samesite = "strict"
+    cookie_samesite = "lax"
 
     skip_provider_button="false"
 
