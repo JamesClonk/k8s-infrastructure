@@ -58,6 +58,22 @@ directories:
     - LICENSE
     - kustomization.yaml
 
+- path: vendor/github.com/oauth2-proxy/manifests
+  contents:
+  - path: .
+    git:
+      url: https://github.com/oauth2-proxy/manifests
+      ref: oauth2-proxy-4.2.2
+    includePaths:
+    - helm/oauth2-proxy/**/*
+- path: oauth2-proxy/build/chart
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/oauth2-proxy/manifests/helm/oauth2-proxy
+    excludePaths:
+    - LICENSE
+
 - path: vendor/github.com/jetstack/cert-manager
   contents:
   - path: .

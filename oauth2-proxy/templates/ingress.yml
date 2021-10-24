@@ -1,0 +1,35 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+#@ load("@ytt:assert", "assert")
+
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("configuration.ingress.domain is missing or invalid")
+#@ end
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+  labels: #@ labels()
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      large_client_header_buffers 4 32k;
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - secretName: oauth2-proxy-ingress-tls
+    hosts:
+    #@ for/end host in data.values.configuration.ingress.domains:
+    - #@ "oauth2-proxy." + host
+  rules:
+  #@ for/end host in data.values.configuration.ingress.domains:
+  - host: #@ "oauth2-proxy." + host
+    http:
+      paths:
+      - backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180

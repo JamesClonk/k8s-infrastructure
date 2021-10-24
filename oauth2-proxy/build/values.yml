@@ -1,0 +1,69 @@
+config:
+  existingSecret: oauth2-proxy
+  existingConfig: oauth2-proxy-config
+
+authenticatedEmailsFile:
+  enabled: false
+
+service:
+  type: ClusterIP
+  portNumber: 4180
+
+serviceAccount:
+  enabled: true
+  name: oauth2-proxy
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 384Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+extraVolumes:
+- name: html-template
+  configMap:
+    name: oauth2-proxy-html-template
+
+extraVolumeMounts:
+- mountPath: /etc/oauth2-proxy-template
+  name: html-template
+
+proxyVarsAsSecrets: true
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  timeoutSeconds: 5
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 15
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+
+securityContext:
+  enabled: true
+  runAsNonRoot: true
+
+httpScheme: http
+
+htpasswdFile:
+  enabled: false
+
+sessionStorage:
+  type: cookie
+
+redis:
+  enabled: false
+
+metrics:
+  enabled: true
+  port: 44180
+  servicemonitor:
+    enabled: false

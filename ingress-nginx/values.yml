@@ -5,11 +5,11 @@ ingress:
 
   resources:
     requests:
-      cpu: 200m
-      memory: 128Mi
+      cpu: 250m
+      memory: 256Mi
     limits:
       cpu: 2000m
-      memory: 320Mi
+      memory: 512Mi
 
 basic_auth:
   image: "jamesclonk/basic-auth:678636aaca212f20c4e263d05b75efabdc6aef2c"

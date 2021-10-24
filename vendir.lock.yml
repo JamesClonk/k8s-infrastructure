@@ -34,6 +34,18 @@ directories:
     path: .
   path: ingress-nginx/templates/upstream
 - contents:
+  - git:
+      commitTitle: 'Correct semverCompare constraints for ingress. Fixes: #60 (#61)'
+      sha: 2875c404ac768aeaa6aa493f86e9bfe11f241657
+      tags:
+      - oauth2-proxy-4.2.2
+    path: .
+  path: vendor/github.com/oauth2-proxy/manifests
+- contents:
+  - directory: {}
+    path: .
+  path: oauth2-proxy/build/chart
+- contents:
   - githubRelease:
       url: https://api.github.com/repos/jetstack/cert-manager/releases/34373236
     path: .

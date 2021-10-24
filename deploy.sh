@@ -28,6 +28,9 @@ deployments+=(
 	# we need some fancy ingress routing
 	"ingress-nginx"
 
+	# and want to use github oauth
+	"oauth2-proxy"
+
 	# and automatic let's encrypt certificate management
 	"cert-manager"
 
