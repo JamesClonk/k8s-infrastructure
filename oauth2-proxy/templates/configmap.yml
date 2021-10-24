@@ -1,0 +1,274 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("configuration.ingress.domain is missing or invalid")
+#@ end
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-proxy-config
+  namespace: oauth2-proxy
+  labels: #@ labels()
+  annotations:
+    kapp.k14s.io/versioned: ""
+#@yaml/text-templated-strings
+data:
+  oauth2_proxy.cfg: |-
+    reverse_proxy = "true"
+    redirect_url = "https://oauth2-proxy.(@= data.values.configuration.ingress.domains[0] @)/oauth2/callback"
+
+    upstreams = "file:///dev/null"
+    email_domains = "jamesclonk.ch"
+
+    ## path for for sign_in.html and error.html templates
+    custom_templates_dir = "/etc/oauth2-proxy-template/"
+    ## path or a URL to an custom image for the sign_in page logo
+    custom_sign_in_logo = "https://jamesclonk.io/images/welcome.png"
+    ## custom (html) banner string
+    # banner = ""
+    ## custom (html) footer string
+    footer = "-"
+
+    provider = "github"
+    github_repo = "JamesClonk/k8s-infrastructure"
+
+    whitelist_domains=".(@= data.values.configuration.ingress.domains[0] @)"
+    cookie_domains = ".(@= data.values.configuration.ingress.domains[0] @)"
+
+    cookie_expire = "168h"
+    cookie_secure = "true"
+    cookie_httponly = "true"
+    cookie_samesite = "strict"
+
+    skip_provider_button="false"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-proxy-html-template
+  namespace: oauth2-proxy
+  labels: #@ labels()
+  annotations:
+    kapp.k14s.io/versioned: ""
+#@yaml/text-templated-strings
+data:
+  robots.txt: |-
+    User-agent: *
+    Disallow: /
+  sign_in.html: |-
+    {{define "sign_in.html"}}
+    <!DOCTYPE html>
+    <html lang="en" charset="utf-8">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>(@= data.values.configuration.ingress.domains[0] @) - Sign In</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+        <style>
+          body {
+            height: 100vh;
+          }
+          .sign-in-box {
+            max-width: 400px;
+            margin: 1.25rem auto;
+          }
+          .logo-box {
+            margin: 1.5rem 3rem;
+          }
+          footer a {
+            text-decoration: underline;
+          }
+          .dark-blue {
+            color: #1a4162;
+          }
+        </style>
+      </head>
+      <body class="has-background-light">
+      <section class="section">
+        <div class="box block sign-in-box has-text-centered">
+          {{ if .LogoData }}
+          <div class="block logo-box">
+            {{.LogoData}}
+          </div>
+          {{ end }}
+
+          <form method="GET" action="{{.ProxyPrefix}}/start">
+            <input type="hidden" name="rd" value="{{.Redirect}}">
+              {{ if .SignInMessage }}
+              <p class="block">{{.SignInMessage}}</p>
+              {{ end}}
+              <button type="submit" class="button block is-info">Sign in with {{.ProviderName}}</button>
+          </form>
+
+          {{ if .CustomLogin }}
+          <hr>
+
+          <form method="POST" action="{{.ProxyPrefix}}/sign_in" class="block">
+            <input type="hidden" name="rd" value="{{.Redirect}}">
+
+            <div class="field">
+              <label class="label" for="username">Username</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="e.g. userx@example.com"  name="username" id="username">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="password">Password</label>
+              <div class="control">
+                <input class="input" type="password" placeholder="********" name="password" id="password">
+              </div>
+            </div>
+            <button class="button is-info">Sign in</button>
+          </form>
+          {{ end }}
+        </div>
+      </section>
+
+      <script>
+        if (window.location.hash) {
+          (function() {
+            var inputs = document.getElementsByName('rd');
+            for (var i = 0; i < inputs.length; i++) {
+              // Add hash, but make sure it is only added once
+              var idx = inputs[i].value.indexOf('#');
+              if (idx >= 0) {
+                // Remove existing hash from URL
+                inputs[i].value = inputs[i].value.substr(0, idx);
+              }
+              inputs[i].value += window.location.hash;
+            }
+          })();
+        }
+      </script>
+
+      <footer class="footer has-text-grey has-background-light is-size-7">
+        <div class="content has-text-centered">
+          {{ if eq .Footer "-" }}
+          {{ else if eq .Footer ""}}
+          <p>Secured with <a href="https://github.com/oauth2-proxy/oauth2-proxy#oauth2_proxy" class="has-text-grey">OAuth2 Proxy</a> version {{.Version}}</p>
+          {{ else }}
+          <p>{{.Footer}}</p>
+          {{ end }}
+        </div>
+      </footer>
+
+      </body>
+    </html>
+    {{end}}
+  error.html: |-
+    {{define "error.html"}}
+    <!DOCTYPE html>
+    <html lang="en" charset="utf-8">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>(@= data.values.configuration.ingress.domains[0] @) - {{.StatusCode}} {{.Title}}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+        let cardToggles = document.getElementsByClassName('card-toggle');
+        for (let i = 0; i < cardToggles.length; i++) {
+          cardToggles[i].addEventListener('click', e => {
+            e.currentTarget.parentElement.parentElement.childNodes[3].classList.toggle('is-hidden');
+          });
+        }
+      });
+    </script>
+
+    <style>
+      body {
+        height: 100vh;
+      }
+      .error-box {
+        margin: 1.25rem auto;
+        max-width: 600px;
+      }
+      .status-code {
+        font-size: 12rem;
+        font-weight: 600;
+      }
+      #more-info.card {
+        border: 1px solid #f0f0f0;
+      }
+      footer a {
+        text-decoration: underline;
+      }
+      .dark-blue {
+        color: #1a4162;
+      }
+    </style>
+    </head>
+    <body class="has-background-light">
+    <section class="section">
+      <div class="box block error-box has-text-centered">
+        <div class="status-code dark-blue">{{.StatusCode}}</div>
+        <div class="block">
+          <h1 class="subtitle is-1 dark-blue">{{.Title}}</h1>
+        </div>
+
+        {{ if or .Message .RequestID }}
+        <div id="more-info" class="block card is-fullwidth is-shadowless">
+          <header class="card-header is-shadowless">
+            <p class="card-header-title">More Info</p>
+            <a class="card-header-icon card-toggle">
+              <i class="fa fa-angle-down"></i>
+            </a>
+          </header>
+          <div class="card-content has-text-left is-hidden">
+            {{ if .Message }}
+            <div class="content">
+              {{.Message}}
+            </div>
+            {{ end }}
+            {{ if .RequestID }}
+            <div class="content">
+              Request ID: {{.RequestID}}
+            </div>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+
+        {{ if .Redirect }}
+        <hr>
+
+        <div class="columns">
+          <div class="column">
+            <form method="GET" action="{{.Redirect}}">
+              <button type="submit" class="button is-warning is-fullwidth">Go back</button>
+            </form>
+          </div>
+          <div class="column">
+            <form method="GET" action="{{.ProxyPrefix}}/sign_in">
+              <input type="hidden" name="rd" value="{{.Redirect}}">
+              <button type="submit" class="button is-info is-fullwidth">Try again</button>
+            </form>
+          </div>
+        </div>
+        {{ end }}
+
+      </div>
+    </section>
+
+    <footer class="footer has-text-grey has-background-light is-size-7">
+      <div class="content has-text-centered">
+        {{ if eq .Footer "-" }}
+        {{ else if eq .Footer ""}}
+        <p>Secured with <a href="https://github.com/oauth2-proxy/oauth2-proxy#oauth2_proxy" class="has-text-grey">OAuth2 Proxy</a> version {{.Version}}</p>
+        {{ else }}
+        <p>{{.Footer}}</p>
+        {{ end }}
+      </div>
+    </footer>
+
+    </body>
+    </html>
+    {{end}}

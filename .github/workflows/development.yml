@@ -34,6 +34,10 @@ jobs:
       working-directory: ingress-nginx
       run: ./deploy.sh
 
+    - name: deploy oauth2-proxy
+      working-directory: oauth2-proxy
+      run: ./deploy.sh
+
     # - name: deploy cert-manager for let's encrypt
     #   working-directory: cert-manager
     #   run: ./deploy.sh

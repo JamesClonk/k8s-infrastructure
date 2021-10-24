@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.oauth2_proxy.replicas > 1:
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+  labels: #@ labels()
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+      release: oauth2-proxy
+#@ end

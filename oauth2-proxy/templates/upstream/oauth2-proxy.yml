@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-4.2.2
+    release: oauth2-proxy
+    heritage: Helm
+  name: oauth2-proxy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-4.2.2
+    release: oauth2-proxy
+    heritage: Helm
+  name: oauth2-proxy
+spec:
+  type: ClusterIP
+  ports:
+  - port: 4180
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 44180
+    protocol: TCP
+    targetPort: metrics
+    name: metrics
+  selector:
+    app: oauth2-proxy
+    release: oauth2-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-4.2.2
+    heritage: Helm
+    release: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+      release: oauth2-proxy
+  template:
+    metadata:
+      annotations:
+        checksum/config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/redis-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      labels:
+        app: oauth2-proxy
+        release: oauth2-proxy
+    spec:
+      serviceAccountName: oauth2-proxy
+      containers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - --http-address=0.0.0.0:4180
+        - --metrics-address=0.0.0.0:44180
+        - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: client-id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: client-secret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy
+              key: cookie-secret
+        ports:
+        - containerPort: 4180
+          name: http
+          protocol: TCP
+        - containerPort: 44180
+          protocol: TCP
+          name: metrics
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+          successThreshold: 1
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: 250m
+            memory: 384Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /etc/oauth2_proxy
+          name: configmain
+        - mountPath: /etc/oauth2-proxy-template
+          name: html-template
+        securityContext:
+          runAsNonRoot: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: oauth2-proxy-config
+        name: configmain
+      - configMap:
+          name: oauth2-proxy-html-template
+        name: html-template
+      tolerations: []

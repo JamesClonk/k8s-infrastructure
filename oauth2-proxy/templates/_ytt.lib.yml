@@ -1,0 +1,6 @@
+#@ def labels():
+  app: oauth2-proxy
+  chart: oauth2-proxy-4.2.2
+  release: oauth2-proxy
+  heritage: Helm
+#@ end

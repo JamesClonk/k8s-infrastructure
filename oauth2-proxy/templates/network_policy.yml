@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.oauth2_proxy.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+  labels: #@ labels()
+spec:
+  podSelector:
+    matchLabels:
+      app: oauth2-proxy
+      release: oauth2-proxy
+  ingress:
+  - from: #! allow access for prometheus
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 44180
+  - from: #! allow access for ingress-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: ingress-nginx
+      podSelector: {}
+    ports:
+    - port: 4180
+#@ end
