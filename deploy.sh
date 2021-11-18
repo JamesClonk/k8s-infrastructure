@@ -3,21 +3,21 @@ set -e
 set -u
 source $(dirname ${BASH_SOURCE[0]})/setup.sh
 
-if [ "${ENVIRONMENT}" == "production" ]; then
-	deployments=(
-	# setup cluster on hetzner cloud
-	"hetzner-k3s"
-
-	# we want to use some hetzner cloud volumes
-	"hcloud-csi"
-)
-else
+if [ "${ENVIRONMENT}" == "development" ]; then
 	deployments=(
 	# setup a local kind cluster
 	"kind"
 
 	# add metrics-server to our local kind cluster, it feels lonely without it..
 	"metrics-server"
+)
+else
+	deployments=(
+	# setup cluster on hetzner cloud
+	"hetzner-k3s"
+
+	# we want to use some hetzner cloud volumes
+	"hcloud-csi"
 )
 fi
 

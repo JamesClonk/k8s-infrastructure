@@ -6,10 +6,10 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 ########################################################################################################################
 set +u
 if [ -z "${ENVIRONMENT}" ]; then
-	if [ "$(git branch --show-current)" == "master" ]; then
-		export ENVIRONMENT="production"
-	else
+	if [ "$(git branch --show-current)" == "develop" ]; then
 		export ENVIRONMENT="development"
+	else
+		export ENVIRONMENT="production"
 	fi
 fi
 if [ "${ENVIRONMENT}" == "production" ]; then
