@@ -99,7 +99,7 @@ echo "checking fail2ban ..."
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl status fail2ban | grep 'active (running)' 1>/dev/null" ||
 	(
 	echo "installing fail2ban ..."
-	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install fail2ban; systemctl enable fail2ban"
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "apt-get update; apt-get install -y fail2ban; systemctl enable fail2ban"
 	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 "cat > /etc/fail2ban/jail.d/defaults-debian.conf << EOF
 [DEFAULT]
