@@ -1,7 +1,7 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.29.0
+minimumRequiredVersion: 0.31.0
 overrides:
-- image: k8s.gcr.io/metrics-server/metrics-server:v0.5.0
-  newImage: k8s.gcr.io/metrics-server/metrics-server@sha256:6c5603956c0aed6b4087a8716afce8eb22f664b13162346ee852b4fab305ca15
+- image: k8s.gcr.io/metrics-server/metrics-server:v0.5.2
+  newImage: k8s.gcr.io/metrics-server/metrics-server@sha256:6385aec64bb97040a5e692947107b81e178555c7a5b71caa90d733e4130efc10
   preresolved: true
