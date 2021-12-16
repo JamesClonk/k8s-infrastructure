@@ -22,3 +22,6 @@
 
 # kube-state-metrics helm
 /monitoring/prometheus/build/chart/charts/kube-state-metrics-*.tgz
+
+# oauth2-proxy helm
+/oauth2-proxy/build/chart/charts/redis-*.tgz
