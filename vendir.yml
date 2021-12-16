@@ -9,7 +9,7 @@ directories:
   - path: .
     githubRelease:
       slug: kubernetes-sigs/metrics-server
-      tag: v0.5.0
+      tag: v0.5.2
       disableAutoChecksumValidation: true
     includePaths:
     - components.yaml
@@ -44,7 +44,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/ingress-nginx
-      ref: helm-chart-3.33.0
+      ref: helm-chart-3.39.0
     includePaths:
     - deploy/static/provider/baremetal/*
 - path: ingress-nginx/templates/upstream
@@ -79,7 +79,7 @@ directories:
   - path: .
     githubRelease:
       slug: jetstack/cert-manager
-      tag: v1.1.0
+      tag: v1.6.1
       disableAutoChecksumValidation: true
     includePaths:
     - cert-manager.yaml
@@ -98,7 +98,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/dashboard
-      ref: v2.0.4
+      ref: v2.0.5
     includePaths:
     - aio/deploy/*
 - path: kubernetes-dashboard/templates/upstream
@@ -116,7 +116,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/kube-state-metrics
-      ref: v2.0.0-alpha.2
+      ref: v2.2.4
     includePaths:
     - examples/standard/*
 - path: monitoring/kube-state-metrics/templates/upstream

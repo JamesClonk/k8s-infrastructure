@@ -2,7 +2,7 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/kubernetes-sigs/metrics-server/releases/43774310
+      url: https://api.github.com/repos/kubernetes-sigs/metrics-server/releases/53464202
     path: .
   path: vendor/github.com/kubernetes-sigs/metrics-server
 - contents:
@@ -23,10 +23,10 @@ directories:
   path: hcloud-csi/templates/upstream
 - contents:
   - git:
-      commitTitle: Release v0.47.0 (#7211)...
-      sha: 811ed7be57937f767ff955fc601e9ba571d8014e
+      commitTitle: Release v0.49.3 (#7748)...
+      sha: 0a2ec01eb4ec0e1b29c4b96eb838a2e7bfe0e9f6
       tags:
-      - helm-chart-3.33.0
+      - controller-v0.49.3
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
@@ -47,7 +47,7 @@ directories:
   path: oauth2-proxy/build/chart
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/jetstack/cert-manager/releases/34373236
+      url: https://api.github.com/repos/jetstack/cert-manager/releases/52450067
     path: .
   path: vendor/github.com/jetstack/cert-manager
 - contents:
@@ -56,10 +56,10 @@ directories:
   path: cert-manager/templates/upstream
 - contents:
   - git:
-      commitTitle: Bump version to 2.0.4 (#5498)...
-      sha: 4da3dfcd15a11011f950d63ba76c03f73b33fe96
+      commitTitle: Bump Dashboard version to 2.0.5 (#5702)...
+      sha: 8b89a1c7b670ddd8685c9eb5892dd54d2de625ab
       tags:
-      - v2.0.4
+      - v2.0.5
     path: .
   path: vendor/github.com/kubernetes/dashboard
 - contents:
@@ -68,10 +68,10 @@ directories:
   path: kubernetes-dashboard/templates/upstream
 - contents:
   - git:
-      commitTitle: 'Merge pull request #1285 from lilic/merge-master-2.0...'
-      sha: 9862ba2f1e98afaf4f4e92c9aae6ba8af12eb995
+      commitTitle: 'Merge pull request #1626 from dgrisonnet/prepare-v2.2.4...'
+      sha: 35f564f279e3284c2e5d98ccabfa3b01a9e9c253
       tags:
-      - v2.0.0-alpha.2
+      - v2.2.4
     path: .
   path: vendor/github.com/kubernetes/kube-state-metrics
 - contents:
