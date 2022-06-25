@@ -60,12 +60,14 @@ if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
 
 # install tools
-install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.19.13/bin/linux/amd64/kubectl" "275a97f2c825e8148b46b5b7eb62c1c76bdbadcca67f5e81f19a5985078cc185"
+install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.21.10/bin/linux/amd64/kubectl" "24ce60269b1ffe1ca151af8bfd3905c2427ebef620bc9286484121adf29131c0"
 install_tool "kapp" "https://github.com/vmware-tanzu/carvel-kapp/releases/download/v0.46.0/kapp-linux-amd64" "130f648cd921761b61bb03d7a0f535d1eea26e0b5fc60e2839af73f4ea98e22f"
 install_tool "ytt" "https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.40.1/ytt-linux-amd64" "11222665c627b8f0a1443534a3dde3c9b3aac08b322d28e91f0e011e3aeb7df5"
 install_tool "vendir" "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v0.26.0/vendir-linux-amd64" "98057bf90e09972f156d1c4fbde350e94133bbaf2e25818b007759f5e9c8b197"
 install_tool "kbld" "https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.32.0/kbld-linux-amd64" "de546ac46599e981c20ad74cd2deedf2b0f52458885d00b46b759eddb917351a"
 install_tool "imgpkg" "https://github.com/vmware-tanzu/carvel-imgpkg/releases/download/v0.25.0/imgpkg-linux-amd64" "14ce0b48a3a00352cdf0ef263aa98a9bcd90d5ea8634fdf6b88016e2a08f09d1"
+install_tool "yq" "https://github.com/mikefarah/yq/releases/download/v4.21.1/yq_linux_amd64" "50778261e24c70545a3ff8624df8b67baaff11f759e6e8b2e4c9c781df7ea8dc"
+install_tool "jq" "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" "af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44"
 install_tool "kind" "https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64" "949f81b3c30ca03a3d4effdecda04f100fa3edc07a28b19400f72ede7c5f0491"
 install_tool_from_tarball "cmctl" "cmctl" "https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cmctl-linux-amd64.tar.gz" "6e22fda56e0fa62cb3fab9340be23ba3fa0da341e737006a9552abdcc80c789e"
 install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.23.0/hcloud-linux-amd64.tar.gz" "500320950002dd9d24eeb47c66b3136c5318fa08c5f73e1b981a16a4dc320cad"
