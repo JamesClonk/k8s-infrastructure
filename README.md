@@ -59,6 +59,7 @@ Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum 
 |-|-|-|
 | [K3s](https://k3s.io) | An easy to install, lightweight, fully compliant Kubernetes distribution packaged as a single binary | https://github.com/rancher/k3s |
 | [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx) | An Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer | https://github.com/kubernetes/ingress-nginx |
+| [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/) | A proxy that provides authentication with Google, Azure, OpenID Connect and many more identity providers | https://github.com/oauth2-proxy/oauth2-proxy |
 | [cert-manager](https://cert-manager.io) | Automatic certificate management on top of Kubernetes, using [Let's Encrypt](https://letsencrypt.org) | https://github.com/jetstack/cert-manager |
 | [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard) | General-purpose web UI for Kubernetes clusters | https://github.com/kubernetes/dashboard |
 | [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) | Add-on agent to generate and expose cluster-level metrics | https://github.com/kubernetes/kube-state-metrics |
@@ -86,12 +87,14 @@ Adjust `prometheus.resources.requests|limits` to lower values to reduce maximum 
 
 Well, this is meant to be used for a *single-user* Kubernetes cluster, whether with only a one or multiple nodes, self-deployed or managed.  While operators are certainly cool pieces of software they don't really make much sense for a single-user scenario, hence I saw no reason to use the prometheus, grafana and postgres operators for those parts of this Kubernetes-infrastructure-as-code project.
 
-#### Why using simple basic-auth for all ingresses? 🔐
+#### ~Why using simple basic-auth for all ingresses? 🔐~
 
-I was considering and experimenting with using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) and [authelia](https://github.com/authelia/authelia), but ultimately made the same decision as with regards to using operators. It simply doesn't make much sense for a single-user Kubernetes cluster, the engineering and operational overhead was not worth it. All I needed are static username+password credentials for securing my applications.
+~I was considering and experimenting with using [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) and [authelia](https://github.com/authelia/authelia), but ultimately made the same decision as with regards to using operators. It simply doesn't make much sense for a single-user Kubernetes cluster, the engineering and operational overhead was not worth it. All I needed are static username+password credentials for securing my applications.~
 
-My recommendation would be to use one of these two if you have more requirements than me:
-- https://github.com/oauth2-proxy/oauth2-proxy (Simple oauth2 proxy to be used with GitHub for example)
-- https://github.com/authelia/authelia (Allows sophisticated auth configuration, 2FA, etc.)
+~My recommendation would be to use one of these two if you have more requirements than me:~
+- ~https://github.com/oauth2-proxy/oauth2-proxy (Simple oauth2 proxy to be used with GitHub for example)~
+- ~https://github.com/authelia/authelia (Allows sophisticated auth configuration, 2FA, etc.)~
 
-Both can be configured easily to work well together with *ingress-nginx*.
+~Both can be configured easily to work well together with *ingress-nginx*.~
+
+The above is not true anymore, because I am now actually using oauth2-proxy together with GitHub for all ingresses :joy:
