@@ -1,4 +1,4 @@
-name: restart k3s service
+name: reboot hetzner cloud virtual machine
 
 on:
   workflow_dispatch:
@@ -10,14 +10,14 @@ env:
   ENVIRONMENT: production
 
 jobs:
-  restart-k3s:
-    name: restart-kubernetes
+  reboot-vm:
+    name: reboot-virtual-machine
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: restart k3s service
+    - name: reboot virtual machine
       working-directory: hetzner-k3s
-      run: ./restart.sh
+      run: ./reboot.sh
     - name: cleanup
       if: ${{ always() }}
       run: ./cleanup.sh
