@@ -67,11 +67,19 @@ if [ "${HETZNER_SSH_PORT}" -eq "22" ]; then
 "cat > /etc/ssh/sshd_config << EOF
 Include /etc/ssh/sshd_config.d/*.conf
 Port 22333
+Protocol 2
 PermitRootLogin yes
 MaxAuthTries 2
+LoginGraceTime 15
+ClientAliveInterval 300
+ClientAliveCountMax 2
 PubkeyAuthentication yes
 PasswordAuthentication no
+PermitEmptyPasswords no
 ChallengeResponseAuthentication no
+KbdInteractiveAuthentication no
+KerberosAuthentication no
+GSSAPIAuthentication no
 UsePAM yes
 PrintMotd no
 AcceptEnv LANG LC_*
