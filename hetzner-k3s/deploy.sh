@@ -68,6 +68,12 @@ if [ "${HETZNER_SSH_PORT}" -eq "22" ]; then
 Include /etc/ssh/sshd_config.d/*.conf
 Port 22333
 Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group18-sha512,diffie-hellman-group16-sha512
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com
 PermitRootLogin yes
 MaxAuthTries 2
 LoginGraceTime 15
@@ -85,6 +91,10 @@ PrintMotd no
 AcceptEnv LANG LC_*
 Subsystem       sftp    /usr/lib/openssh/sftp-server
 EOF"
+	# remove weak moduli
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
+	# regenerate the RSA and ED25519 keys
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
 	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart sshd"
 	sleep 5
 fi
