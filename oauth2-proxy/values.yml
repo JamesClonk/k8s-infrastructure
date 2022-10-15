@@ -4,3 +4,11 @@ oauth2_proxy:
   enable_network_policy: true
   replicas: 1
   image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.0
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 192Mi

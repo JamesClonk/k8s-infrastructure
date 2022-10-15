@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"oauth2-proxy"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"oauth2-proxy"}), expects=1
+      - name: oauth2-proxy
+        #@overlay/replace
+        resources: #@ data.values.oauth2_proxy.resources

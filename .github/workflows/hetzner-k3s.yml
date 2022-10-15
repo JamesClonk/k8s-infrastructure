@@ -14,7 +14,7 @@ jobs:
     name: kubernetes
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
@@ -27,7 +27,7 @@ jobs:
     needs: [ hetzner-k3s ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
@@ -40,7 +40,7 @@ jobs:
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install hetzner csi driver
       working-directory: hcloud-csi
       run: ./deploy.sh

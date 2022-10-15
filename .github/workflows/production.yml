@@ -16,7 +16,7 @@ jobs:
     name: kubernetes
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install and upgrade k3s on hetzner cloud
       working-directory: hetzner-k3s
       run: ./deploy.sh
@@ -30,7 +30,7 @@ jobs:
     needs: [ hetzner-k3s ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: prepare kube-system namespace
       working-directory: kube-system
       run: ./deploy.sh
@@ -44,7 +44,7 @@ jobs:
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install hetzner csi driver
       working-directory: hcloud-csi
       run: ./deploy.sh
@@ -58,7 +58,7 @@ jobs:
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy kubernetes ingress controller
       working-directory: ingress-nginx
       run: ./deploy.sh
@@ -72,7 +72,7 @@ jobs:
     needs: [ ingress-nginx ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy cert-manager for let's encrypt
       working-directory: cert-manager
       run: ./deploy.sh
@@ -86,7 +86,7 @@ jobs:
     needs: [ ingress-nginx ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy oauth2-proxy
       working-directory: oauth2-proxy
       run: ./deploy.sh
@@ -100,7 +100,7 @@ jobs:
     needs: [ oauth2-proxy, cert-manager ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy kubernetes dashboard
       working-directory: kubernetes-dashboard
       run: ./deploy.sh
@@ -114,7 +114,7 @@ jobs:
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy kube-state-metrics
       working-directory: monitoring/kube-state-metrics
       run: ./deploy.sh
@@ -128,7 +128,7 @@ jobs:
     needs: [ oauth2-proxy, cert-manager, kube-state-metrics, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy prometheus
       working-directory: monitoring/prometheus
       run: ./deploy.sh
@@ -142,7 +142,7 @@ jobs:
     needs: [ oauth2-proxy, cert-manager, kube-state-metrics ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy prometheus-msteams proxy
       working-directory: monitoring/prometheus-msteams
       run: ./deploy.sh
@@ -156,7 +156,7 @@ jobs:
     needs: [ oauth2-proxy, cert-manager, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy loki
       working-directory: monitoring/loki
       run: ./deploy.sh
@@ -170,7 +170,7 @@ jobs:
     needs: [ prometheus, loki, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy grafana
       working-directory: monitoring/grafana
       run: ./deploy.sh
@@ -184,7 +184,7 @@ jobs:
     needs: [ kube-system, hcloud-csi ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: deploy postgres database
       working-directory: postgres
       run: ./deploy.sh

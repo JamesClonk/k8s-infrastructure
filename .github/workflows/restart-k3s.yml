@@ -14,7 +14,7 @@ jobs:
     name: restart-kubernetes
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: restart k3s service
       working-directory: hetzner-k3s
       run: ./restart.sh
