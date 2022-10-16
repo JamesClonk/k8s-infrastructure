@@ -47,6 +47,8 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
+          securityContext:
+            {{- toYaml .Values.alertmanager.containerSecurityContext | nindent 12 }}
           env:
             {{- range $key, $value := .Values.alertmanager.extraEnv }}
             - name: {{ $key }}
@@ -61,7 +63,7 @@ spec:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
           {{- if .Values.alertmanager.statefulSet.headless.enableMeshPeer }}
-            - --cluster.advertise-address=$(POD_IP):6783
+            - --cluster.advertise-address=[$(POD_IP)]:6783
             - --cluster.listen-address=0.0.0.0:6783
           {{- range $n := until (.Values.alertmanager.replicaCount | int) }}
             - --cluster.peer={{ template "prometheus.alertmanager.fullname" $ }}-{{ $n }}.{{ template "prometheus.alertmanager.fullname" $ }}-headless:6783
@@ -85,6 +87,10 @@ spec:
             httpGet:
               path: {{ .Values.alertmanager.prefixURL }}/#/status
               port: 9093
+              {{- with .Values.alertmanager.probeHeaders }}
+              httpHeaders:
+{{- toYaml . | nindent 14 }}
+              {{- end }}
             initialDelaySeconds: 30
             timeoutSeconds: 30
           resources:
@@ -105,9 +111,18 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.alertmanager.name }}
           image: "{{ .Values.configmapReload.alertmanager.image.repository }}:{{ .Values.configmapReload.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.alertmanager.image.pullPolicy }}"
+          securityContext:
+            {{- toYaml .Values.configmapReload.alertmanager.containerSecurityContext | nindent 12 }}
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
+          {{- range $key, $value := .Values.configmapReload.alertmanager.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          {{- if .Values.configmapReload.alertmanager.port }}
+          ports:
+            - containerPort: {{ .Values.configmapReload.alertmanager.port }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.alertmanager.resources | indent 12 }}
           volumeMounts:
@@ -117,7 +132,7 @@ spec:
         {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
@@ -144,6 +159,9 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
       {{- end }}
 {{- if .Values.alertmanager.persistentVolume.enabled }}
   volumeClaimTemplates:

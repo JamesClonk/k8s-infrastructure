@@ -32,6 +32,31 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Generate basic labels
+*/}}
+{{- define "oauth2-proxy.labels" }}
+helm.sh/chart: {{ include "oauth2-proxy.chart" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: authentication-proxy
+app.kubernetes.io/part-of: {{ template "oauth2-proxy.name" . }}
+{{- include "oauth2-proxy.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+{{- if .Values.customLabels }}
+{{ toYaml .Values.customLabels }}
+{{- end }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "oauth2-proxy.selectorLabels" }}
+app.kubernetes.io/name: {{ include "oauth2-proxy.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Get the secret name.
 */}}
 {{- define "oauth2-proxy.secretName" -}}
@@ -53,11 +78,26 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{/*
+Redis subcharts fullname
+*/}}
+{{- define "oauth2-proxy.redis.fullname" -}}
+{{- if .Values.redis.enabled -}}
+{{- include "common.names.fullname" (dict "Chart" (dict "Name" "redis") "Release" .Release "Values" .Values.redis) -}}
+{{- else -}}
+{{ fail "attempting to use redis subcharts fullname, even though the subchart is not enabled. This will lead to misconfiguration" }}
+{{- end -}}
+{{- end -}}
 
-{{- define "oauth2-proxy.redisStandaloneUrl" -}}
+{{/*
+Compute the redis url if not set explicitly.
+*/}}
+{{- define "oauth2-proxy.redis.StandaloneUrl" -}}
 {{- if .Values.sessionStorage.redis.standalone.connectionUrl -}}
 {{ .Values.sessionStorage.redis.standalone.connectionUrl }}
+{{- else if .Values.redis.enabled -}}
+{{- printf "redis://%s-master:%.0f" (include "oauth2-proxy.redis.fullname" .) .Values.redis.master.service.ports.redis -}}
 {{- else -}}
-{{- printf "redis://%s-redis-master:6379" (include "oauth2-proxy.fullname" .) -}}
+{{ fail "please set sessionStorage.redis.standalone.connectionUrl or enable the redis subchart via redis.enabled" }}
 {{- end -}}
 {{- end -}}

@@ -60,6 +60,28 @@ See the [v1.22 API deprecations guide](https://kubernetes.io/docs/reference/usin
 
 For the same reason `service.port` was renamed to `service.portNumber`.
 
+### To 5.0.0
+
+Version 5.0.0 introduces support for custom labels and refactor [Kubernetes recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/). This is a breaking change because many labels of all resources need to be updated to stay consistent.
+
+In order to upgrade, delete the Deployment before upgrading:
+
+```bash
+kubectl delete deployment my-release-oauth2-proxy
+```
+
+This will introduce a slight downtime.
+
+For users who don't want downtime, you can perform these actions:
+
+- Perform a non-cascading removal of the deployment that keeps the pods running
+- Add new labels to pods
+- Perform `helm upgrade`
+
+### To 6.0.0
+
+Version 6.0.0 bumps the version of the redis subchart from ~10.6.0 to ~16.4.0. You probably need to adjust your redis config. See [here](https://github.com/bitnami/charts/tree/master/bitnami/redis#upgrading) for detailed upgrade instructions.
+
 ## Configuration
 
 The following table lists the configurable parameters of the oauth2-proxy chart and their default values.
@@ -80,20 +102,31 @@ Parameter | Description | Default
 `config.configFile` | custom [oauth2_proxy.cfg](https://github.com/oauth2-proxy/oauth2-proxy/blob/master/contrib/oauth2-proxy.cfg.example) contents for settings not overridable via environment nor command line | `""`
 `config.existingConfig` | existing Kubernetes configmap to use for the configuration file. See [config template](https://github.com/oauth2-proxy/manifests/blob/master/helm/oauth2-proxy/templates/configmap.yaml) for the required values | `nil`
 `config.cookieName` | The name of the cookie that oauth2-proxy will create. | `""`
+`alphaConfig.enabled` | Flag to toggle any alpha config related logic | `false`
+`alphaConfig.annotations` | Configmap annotations | `{}`
+`alphaConfig.serverConfigData` | Arbitrary configuration data to append to the server section | `{}`
+`alphaConfig.metricsConfigData` | Arbitrary configuration data to append to the metrics section | `{}`
+`alphaConfig.configData` | Arbitrary configuration data to append | `{}`
+`alphaConfig.existingConfig` | existing Kubernetes configmap to use for the alpha configuration file. See [config template](https://github.com/oauth2-proxy/manifests/blob/master/helm/oauth2-proxy/templates/configmap-alpha.yaml) for the required values  | `nil`
+`customLabels` | Custom labels to add into metadata | `{}` |
 `config.google.adminEmail` | user impersonated by the google service account | `""`
 `config.google.serviceAccountJson` | google service account json contents | `""`
 `config.google.existingConfig` | existing Kubernetes configmap to use for the service account file. See [google secret template](https://github.com/oauth2-proxy/manifests/blob/master/helm/oauth2-proxy/templates/google-secret.yaml) for the required values | `nil`
+`config.google.groups` | restrict logins to members of these google groups | `[]`
 `extraArgs` | key:value list of extra arguments to give the binary | `{}`
 `extraEnv` | key:value list of extra environment variables to give the binary | `[]`
 `extraVolumes` | list of extra volumes | `[]`
 `extraVolumeMounts` | list of extra volumeMounts | `[]`
+`hostAlias.enabled`  | provide extra ip:hostname alias for network name resolution.
+`hostAlias.ip`  | `ip` address `hostAliases.hostname` should resolve to.
+`hostAlias.hostname`  | `hostname` associated to `hostAliases.ip`.
 `htpasswdFile.enabled` | enable htpasswd-file option | `false`
-`htpasswdFile.entries` | list of [SHA encrypted user:passwords](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview#command-line-options) | `{}`
+`htpasswdFile.entries` | list of [encrypted user:passwords](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/overview#command-line-options) | `{}`
 `htpasswdFile.existingSecret` | existing Kubernetes secret to use for OAuth2 htpasswd file | `""`
 `httpScheme` | `http` or `https`. `name` used for port on the deployment. `httpGet` port `name` and `scheme` used for `liveness`- and `readinessProbes`. `name` and `targetPort` used for the service. | `http`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/oauth2-proxy/oauth2-proxy`
-`image.tag` | Image tag | `v7.1.3`
+`image.tag` | Image tag | `v7.3.0`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | Enable Ingress | `false`
 `ingress.className` | name referencing IngressClass | `nil`
@@ -107,6 +140,7 @@ Parameter | Description | Default
 `livenessProbe.initialDelaySeconds` | number of seconds | 0
 `livenessProbe.timeoutSeconds` | number of seconds | 1
 `nodeSelector` | node labels for pod assignment | `{}`
+`deploymentAnnotations` | annotations to add to the deployment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
 `podDisruptionBudget.enabled`| Enabled creation of PodDisruptionBudget (only if replicaCount > 1) | true
@@ -134,7 +168,7 @@ Parameter | Description | Default
 `proxyVarsAsSecrets` | choose between environment values or secrets for setting up OAUTH2_PROXY variables. When set to false, remember to add the variables OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET, OAUTH2_PROXY_COOKIE_SECRET in extraEnv | `true`
 `sessionStorage.type` | Session storage type which can be one of the following: cookie or redis | `cookie`
 `sessionStorage.redis.existingSecret` | existing Kubernetes secret to use for redis-password and redis-sentinel-password | `""`
-`sessionStorage.redis.password` | Redis password. Applicable for all Redis configurations | `nil`
+`sessionStorage.redis.password` | Redis password. Applicable for all Redis configurations. Taken from redis subchart secret if not set. sessionStorage.redis.existingSecret takes precedence | `nil`
 `sessionStorage.redis.clientType` | Allows the user to select which type of client will be used for redis instance. Possible options are: `sentinel`, `cluster` or `standalone` | `standalone`
 `sessionStorage.redis.standalone.connectionUrl` | URL of redis standalone server for redis session storage (e.g. redis://HOST[:PORT]). Automatically generated if not set. | `""`
 `sessionStorage.redis.cluster.connectionUrls` | List of Redis cluster connection URLs (e.g. redis://HOST[:PORT]) | `[]`
@@ -151,6 +185,7 @@ Parameter | Description | Default
 `metrics.servicemonitor.interval` | Prometheus scrape interval | `60s`
 `metrics.servicemonitor.scrapeTimeout` | Prometheus scrape timeout | `30s`
 `metrics.servicemonitor.labels` | Add custom labels to the ServiceMonitor resource| `{}`
+`extraObjects` | Extra K8s manifests to deploy | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -212,3 +247,44 @@ extraEnv:
   - name: TEST_ENV_VAR_2
     value: '{{ .Values.tplValue }}'
 ```
+
+## Custom templates configuration
+You can replace the default template files using a Kubernetes `configMap` volume. The default templates are the two files [sign_in.html](https://github.com/oauth2-proxy/oauth2-proxy/blob/master/pkg/app/pagewriter/sign_in.html) and [error.html](https://github.com/oauth2-proxy/oauth2-proxy/blob/master/pkg/app/pagewriter/error.html).
+
+```yaml
+config:
+  configFile: |
+    ...
+    custom_templates_dir = "/data/custom-templates"
+
+extraVolumes:
+  - name: custom-templates
+    configMap:
+      name: oauth2-proxy-custom-templates
+
+extraVolumeMounts:
+  - name: custom-templates
+    mountPath: "/data/custom-templates"
+    readOnly: true
+
+extraObjects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: oauth2-proxy-custom-templates
+    data:
+      sign_in.html: |
+        <!DOCTYPE html>
+        <html>
+        <body>sign_in</body>
+        </html>
+      error.html: |
+        <!DOCTYPE html>
+        <html>
+        <body>
+        <h1>error</h1>
+        <p>{{.StatusCode}}</p>
+        </body>
+        </html>
+```
+

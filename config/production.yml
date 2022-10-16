@@ -8,32 +8,32 @@ configuration:
       key_name: kubernetes
 
     private_network:
-      name: k8s-private
+      name: kubernetes
       range: 10.8.0.0/16
       subnet: 10.8.0.0/24
       zone: "eu-central"
 
     node:
-      name: kubernetes-server
-      type: cpx41 # https://www.hetzner.com/cloud#pricing
-      image: ubuntu-20.04
+      name: kubernetes
+      type: cpx31 # https://www.hetzner.com/cloud#pricing
+      image: ubuntu-22.04
       location: nbg1 # https://docs.hetzner.com/general/others/data-centers-and-connection
 
     firewall:
       enabled: "true" # set to 'true' if you want to use a Hetzner firewall to protect your server
-      name: kubernetes-firewall
+      name: kubernetes
 
     floating_ip:
       enabled: "false" # set to 'true' if you want a floating-ip assigned to your server
-      name: kubernetes-vip
+      name: kubernetes
 
     loadbalancer:
       enabled: "false" # set to 'true' if you want a Hetzner load-balancer in front of your server
-      name: kubernetes-lb
+      name: kubernetes
       type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
 
     k3s:
-      version: "v1.20.15+k3s1" # https://github.com/rancher/k3s/releases
+      version: "v1.24.6+k3s1" # https://github.com/rancher/k3s/releases
 
   ingress:
     domains:

@@ -47,6 +47,8 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
+          securityContext:
+            {{- toYaml .Values.alertmanager.containerSecurityContext | nindent 12 }}
           env:
             {{- range $key, $value := .Values.alertmanager.extraEnv }}
             - name: {{ $key }}
@@ -60,12 +62,20 @@ spec:
           args:
             - --config.file=/etc/config/{{ .Values.alertmanager.configFileName }}
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
-            - --cluster.advertise-address=$(POD_IP):6783
+          {{- if .Values.alertmanager.service.enableMeshPeer }}
+            - --cluster.listen-address=0.0.0.0:6783
+            - --cluster.advertise-address=[$(POD_IP)]:6783
+          {{- else }}
+            - --cluster.listen-address=
+          {{- end }}
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
           {{- if .Values.alertmanager.baseURL }}
             - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+          {{- range .Values.alertmanager.clusterPeers }}
+            - --cluster.peer={{ . }}
           {{- end }}
 
           ports:
@@ -74,6 +84,10 @@ spec:
             httpGet:
               path: {{ .Values.alertmanager.prefixURL }}/-/ready
               port: 9093
+              {{- with .Values.alertmanager.probeHeaders }}
+              httpHeaders:
+{{- toYaml . | nindent 14 }}
+              {{- end }}
             initialDelaySeconds: 30
             timeoutSeconds: 30
           resources:
@@ -90,28 +104,56 @@ spec:
               subPath: {{ .subPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.alertmanager.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
 
         {{- if .Values.configmapReload.alertmanager.enabled }}
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.alertmanager.name }}
           image: "{{ .Values.configmapReload.alertmanager.image.repository }}:{{ .Values.configmapReload.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.alertmanager.image.pullPolicy }}"
+          securityContext:
+            {{- toYaml .Values.configmapReload.alertmanager.containerSecurityContext | nindent 12 }}
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://127.0.0.1:9093{{ .Values.alertmanager.prefixURL }}/-/reload
+          {{- range $key, $value := .Values.configmapReload.alertmanager.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          {{- range .Values.configmapReload.alertmanager.extraVolumeDirs }}
+            - --volume-dir={{ . }}
+          {{- end }}
+          {{- if .Values.configmapReload.alertmanager.containerPort }}
+          ports:
+            - containerPort: {{ .Values.configmapReload.alertmanager.containerPort }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.alertmanager.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+            {{- range .Values.configmapReload.alertmanager.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.alertmanager.name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
         {{- end }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      {{ toYaml .Values.imagePullSecrets | indent 2 }}
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.alertmanager.dnsConfig }}
+      dnsConfig:
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- if .Values.alertmanager.securityContext }}
       securityContext:
@@ -138,6 +180,19 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+            {{- with .optional }}
+            optional: {{ . }}
+            {{- end }}
+      {{- end }}
+      {{- range .Values.alertmanager.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+      {{- range .Values.configmapReload.alertmanager.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.alertmanager.name }}-{{ .name }}
+          configMap:
+            name: {{ .configMap }}
       {{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}

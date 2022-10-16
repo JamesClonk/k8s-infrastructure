@@ -2,7 +2,7 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/kubernetes-sigs/metrics-server/releases/53464202
+      url: https://api.github.com/repos/kubernetes-sigs/metrics-server/releases/59100288
     path: .
   path: vendor/github.com/kubernetes-sigs/metrics-server
 - contents:
@@ -11,10 +11,10 @@ directories:
   path: metrics-server/templates/upstream
 - contents:
   - git:
-      commitTitle: Prepare Release v1.5.1
-      sha: d9e6109e55e037e92d35156ecb9b883e1d7c3f90
+      commitTitle: Fix changelog generation...
+      sha: e07b392a554acacb55510eece3def3663790c479
       tags:
-      - v1.5.1
+      - v1.6.0
     path: .
   path: vendor/github.com/hetznercloud/csi-driver
 - contents:
@@ -23,10 +23,10 @@ directories:
   path: hcloud-csi/templates/upstream
 - contents:
   - git:
-      commitTitle: Release v0.49.3 (#7748)...
-      sha: 0a2ec01eb4ec0e1b29c4b96eb838a2e7bfe0e9f6
+      commitTitle: 'Merge pull request #9108 from strongjz/release-1.4.0...'
+      sha: cc79e1474512b43351c7d33500b14eb8dc4d0a9a
       tags:
-      - controller-v0.49.3
+      - controller-v1.4.0
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
@@ -35,10 +35,10 @@ directories:
   path: ingress-nginx/templates/upstream
 - contents:
   - git:
-      commitTitle: 'Correct semverCompare constraints for ingress. Fixes: #60 (#61)'
-      sha: 2875c404ac768aeaa6aa493f86e9bfe11f241657
+      commitTitle: make automountServiceAccountToken configurable (#105)...
+      sha: 75e3bd252ba1e0d56ddbedd724796c38fcae05b2
       tags:
-      - oauth2-proxy-4.2.2
+      - oauth2-proxy-6.2.7
     path: .
   path: vendor/github.com/oauth2-proxy/manifests
 - contents:
@@ -47,7 +47,7 @@ directories:
   path: oauth2-proxy/build/chart
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/jetstack/cert-manager/releases/52450067
+      url: https://api.github.com/repos/cert-manager/cert-manager/releases/72867571
     path: .
   path: vendor/github.com/jetstack/cert-manager
 - contents:
@@ -56,10 +56,10 @@ directories:
   path: cert-manager/templates/upstream
 - contents:
   - git:
-      commitTitle: Bump Dashboard version to 2.0.5 (#5702)...
-      sha: 8b89a1c7b670ddd8685c9eb5892dd54d2de625ab
+      commitTitle: v2.6.1 (#7359)
+      sha: 2ce9133f71d80ce549e9b0493f1075de3e8d5d1a
       tags:
-      - v2.0.5
+      - v2.6.1
     path: .
   path: vendor/github.com/kubernetes/dashboard
 - contents:
@@ -68,10 +68,10 @@ directories:
   path: kubernetes-dashboard/templates/upstream
 - contents:
   - git:
-      commitTitle: 'Merge pull request #1626 from dgrisonnet/prepare-v2.2.4...'
-      sha: 35f564f279e3284c2e5d98ccabfa3b01a9e9c253
+      commitTitle: 'Merge pull request #1817 from mrueg/prep-release-2.6.0...'
+      sha: bc3b98558b4a05fec0ca894ce3a83a8762c83e62
       tags:
-      - v2.2.4
+      - v2.6.0
     path: .
   path: vendor/github.com/kubernetes/kube-state-metrics
 - contents:
@@ -80,10 +80,10 @@ directories:
   path: monitoring/kube-state-metrics/templates/upstream
 - contents:
   - git:
-      commitTitle: 'charts/prometheus-pingdom-exporter: fix typo (#317)...'
-      sha: 5e43255f64b53d3689d33b79074608be305d2f2d
+      commitTitle: '[prometheus] handle PSP removed in k8s 1.25+ (#2562)...'
+      sha: 1a0c21e0be9e0d3d046a1a77293241371ada03e6
       tags:
-      - prometheus-11.16.8
+      - prometheus-15.16.1
     path: .
   path: vendor/github.com/prometheus-community/helm-charts
 - contents:
@@ -92,30 +92,38 @@ directories:
   path: monitoring/prometheus/build/chart
 - contents:
   - git:
-      commitTitle: 'Merge pull request #81 from unitygilles/https-servicemonitor...'
-      sha: ca6fd684ac63e492d81590c7daf74bbbfdda9f90
+      commitTitle: 'Merge pull request #1895 from zanac1986/fix/grafana-imagerender1...'
+      sha: e2f558b5d08c15658b00a1064b61e9598c9c0ee9
       tags:
-      - grafana-6.1.3
+      - grafana-6.42.2
     path: .
-  path: vendor/github.com/grafana/helm-charts
+  path: vendor/github.com/grafana/grafana
 - contents:
   - directory: {}
     path: .
   path: monitoring/grafana/build/chart
 - contents:
   - git:
-      commitTitle: 'Loki Release: update release notes and docs (#2808)...'
-      sha: 6978ee5d73878d7406bda68296a3dd8ecda4d538
+      commitTitle: 'Merge pull request #1898 from zanac1986/fix/promtail-psp-deprecation...'
+      sha: 6ad2d8f6e7f4a3769208056dc3f058047c82150f
       tags:
-      - v2.0.0
+      - promtail-6.5.1
+    path: .
+  path: vendor/github.com/grafana/promtail
+- contents:
+  - directory: {}
+    path: .
+  path: monitoring/loki/build/charts/promtail
+- contents:
+  - git:
+      commitTitle: '[loki helm chart] fixed to pass CI (#7345)...'
+      sha: c9165fb768125f511412d4204eb4ccb7ca539b64
+      tags:
+      - helm-loki-3.2.1
     path: .
   path: vendor/github.com/grafana/loki
 - contents:
   - directory: {}
     path: .
   path: monitoring/loki/build/charts/loki
-- contents:
-  - directory: {}
-    path: .
-  path: monitoring/loki/build/charts/promtail
 kind: LockConfig
