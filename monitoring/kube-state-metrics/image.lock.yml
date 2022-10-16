@@ -1,7 +1,7 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.31.0
+minimumRequiredVersion: 0.32.0
 overrides:
-- image: k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.2.4
-  newImage: k8s.gcr.io/kube-state-metrics/kube-state-metrics@sha256:ea4ebe736165cf084fc6fbabf3af07d76bbfe9213d621acb3295353fc36286ae
+- image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.6.0
+  newImage: registry.k8s.io/kube-state-metrics/kube-state-metrics@sha256:bdab4e49d71d272cf944c8612dff5ab1250f0fafdae45c22980286ac0c016032
   preresolved: true
