@@ -13,7 +13,7 @@ postgres:
       driver: csi.hetzner.cloud
       size: 10Gi
       reclaim: false
-      volume_handle: "" # <-- must be set if 'reclaim=true'
+      volume_handle: "" # <-- must be set if 'reclaim=true', MUST be numerical ID of volume, not pvc-* name!!! Check UI dashboard!
 
 pgbouncer:
   image: "edoburu/pgbouncer:1.12.0"
