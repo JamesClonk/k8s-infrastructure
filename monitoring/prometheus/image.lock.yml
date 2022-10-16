@@ -1,19 +1,19 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.27.0
+minimumRequiredVersion: 0.32.0
 overrides:
-- image: jimmidyson/configmap-reload:v0.4.0
-  newImage: index.docker.io/jimmidyson/configmap-reload@sha256:17d34fd73f9e8a78ba7da269d96822ce8972391c2838e08d92a990136adb8e4a
+- image: jimmidyson/configmap-reload:v0.5.0
+  newImage: index.docker.io/jimmidyson/configmap-reload@sha256:904d08e9f701d3d8178cb61651dbe8edc5d08dd5895b56bdcac9e5805ea82b52
   preresolved: true
-- image: prom/alertmanager:v0.21.0
-  newImage: index.docker.io/prom/alertmanager@sha256:24a5204b418e8fa0214cfb628486749003b039c279c56b5bddb5b10cd100d926
+- image: prom/pushgateway:v1.4.3
+  newImage: index.docker.io/prom/pushgateway@sha256:3496e0f859434b60e6e6eccbc1dddf33adad9a9eb19592dc4ed4a4bf167a844d
   preresolved: true
-- image: prom/node-exporter:v1.0.1
-  newImage: index.docker.io/prom/node-exporter@sha256:cf66a6bbd573fd819ea09c72e21b528e9252d58d01ae13564a29749de1e48e0f
+- image: quay.io/prometheus/alertmanager:v0.24.0
+  newImage: quay.io/prometheus/alertmanager@sha256:088464f949de8065b9da7dfce7302a633d700e9d598e2bebc03310712f083b31
   preresolved: true
-- image: prom/prometheus:v2.21.0
-  newImage: index.docker.io/prom/prometheus@sha256:d43417c260e516508eed1f1d59c10c49d96bbea93eafb4955b0df3aea5908971
+- image: quay.io/prometheus/node-exporter:v1.3.1
+  newImage: quay.io/prometheus/node-exporter@sha256:f2269e73124dd0f60a7d19a2ce1264d33d08a985aed0ee6b0b89d0be470592cd
   preresolved: true
-- image: prom/pushgateway:v1.2.0
-  newImage: index.docker.io/prom/pushgateway@sha256:0a9031142481adfb964fe7f65e698d01a6260de982f0322bc44496c3dcc866f1
+- image: quay.io/prometheus/prometheus:v2.39.1
+  newImage: quay.io/prometheus/prometheus@sha256:4748e26f9369ee7270a7cd3fb9385c1adb441c05792ce2bce2f6dd622fd91d38
   preresolved: true
