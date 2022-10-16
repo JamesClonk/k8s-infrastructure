@@ -5,7 +5,7 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 spec:
@@ -28,12 +28,13 @@ kind: ServiceAccount
 metadata:
   labels:
     app: loki
-    chart: loki-0.31.1
-    heritage: Helm
+    chart: loki-2.16.0
     release: loki
+    heritage: Helm
   annotations: {}
   name: loki
   namespace: loki
+automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: Secret
@@ -42,11 +43,11 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
 data:
-  loki.yaml: YXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDBzCmluZ2VzdGVyOgogIGNodW5rX2Jsb2NrX3NpemU6IDI2MjE0NAogIGNodW5rX2lkbGVfcGVyaW9kOiAzbQogIGNodW5rX3JldGFpbl9wZXJpb2Q6IDFtCiAgbGlmZWN5Y2xlcjoKICAgIHJpbmc6CiAgICAgIGt2c3RvcmU6CiAgICAgICAgc3RvcmU6IGlubWVtb3J5CiAgICAgIHJlcGxpY2F0aW9uX2ZhY3RvcjogMQogIG1heF90cmFuc2Zlcl9yZXRyaWVzOiAwCmxpbWl0c19jb25maWc6CiAgZW5mb3JjZV9tZXRyaWNfbmFtZTogZmFsc2UKICByZWplY3Rfb2xkX3NhbXBsZXM6IHRydWUKICByZWplY3Rfb2xkX3NhbXBsZXNfbWF4X2FnZTogMTY4aApzY2hlbWFfY29uZmlnOgogIGNvbmZpZ3M6CiAgLSBmcm9tOiAiMjAxOC0wNC0xNSIKICAgIGluZGV4OgogICAgICBwZXJpb2Q6IDE2OGgKICAgICAgcHJlZml4OiBpbmRleF8KICAgIG9iamVjdF9zdG9yZTogZmlsZXN5c3RlbQogICAgc2NoZW1hOiB2OQogICAgc3RvcmU6IGJvbHRkYgpzZXJ2ZXI6CiAgaHR0cF9saXN0ZW5fcG9ydDogMzEwMApzdG9yYWdlX2NvbmZpZzoKICBib2x0ZGI6CiAgICBkaXJlY3Rvcnk6IC9kYXRhL2xva2kvaW5kZXgKICBmaWxlc3lzdGVtOgogICAgZGlyZWN0b3J5OiAvZGF0YS9sb2tpL2NodW5rcwp0YWJsZV9tYW5hZ2VyOgogIHJldGVudGlvbl9kZWxldGVzX2VuYWJsZWQ6IGZhbHNlCiAgcmV0ZW50aW9uX3BlcmlvZDogMHM=
+  loki.yaml: YXV0aF9lbmFibGVkOiBmYWxzZQpjaHVua19zdG9yZV9jb25maWc6CiAgbWF4X2xvb2tfYmFja19wZXJpb2Q6IDBzCmNvbXBhY3RvcjoKICBzaGFyZWRfc3RvcmU6IGZpbGVzeXN0ZW0KICB3b3JraW5nX2RpcmVjdG9yeTogL2RhdGEvbG9raS9ib2x0ZGItc2hpcHBlci1jb21wYWN0b3IKaW5nZXN0ZXI6CiAgY2h1bmtfYmxvY2tfc2l6ZTogMjYyMTQ0CiAgY2h1bmtfaWRsZV9wZXJpb2Q6IDNtCiAgY2h1bmtfcmV0YWluX3BlcmlvZDogMW0KICBsaWZlY3ljbGVyOgogICAgcmluZzoKICAgICAgcmVwbGljYXRpb25fZmFjdG9yOiAxCiAgbWF4X3RyYW5zZmVyX3JldHJpZXM6IDAKICB3YWw6CiAgICBkaXI6IC9kYXRhL2xva2kvd2FsCmxpbWl0c19jb25maWc6CiAgZW5mb3JjZV9tZXRyaWNfbmFtZTogZmFsc2UKICBtYXhfZW50cmllc19saW1pdF9wZXJfcXVlcnk6IDUwMDAKICByZWplY3Rfb2xkX3NhbXBsZXM6IHRydWUKICByZWplY3Rfb2xkX3NhbXBsZXNfbWF4X2FnZTogMTY4aAptZW1iZXJsaXN0OgogIGpvaW5fbWVtYmVyczoKICAtICdsb2tpLW1lbWJlcmxpc3QnCnNjaGVtYV9jb25maWc6CiAgY29uZmlnczoKICAtIGZyb206ICIyMDIwLTEwLTI0IgogICAgaW5kZXg6CiAgICAgIHBlcmlvZDogMjRoCiAgICAgIHByZWZpeDogaW5kZXhfCiAgICBvYmplY3Rfc3RvcmU6IGZpbGVzeXN0ZW0KICAgIHNjaGVtYTogdjExCiAgICBzdG9yZTogYm9sdGRiLXNoaXBwZXIKc2VydmVyOgogIGdycGNfbGlzdGVuX3BvcnQ6IDkwOTUKICBodHRwX2xpc3Rlbl9wb3J0OiAzMTAwCnN0b3JhZ2VfY29uZmlnOgogIGJvbHRkYl9zaGlwcGVyOgogICAgYWN0aXZlX2luZGV4X2RpcmVjdG9yeTogL2RhdGEvbG9raS9ib2x0ZGItc2hpcHBlci1hY3RpdmUKICAgIGNhY2hlX2xvY2F0aW9uOiAvZGF0YS9sb2tpL2JvbHRkYi1zaGlwcGVyLWNhY2hlCiAgICBjYWNoZV90dGw6IDI0aAogICAgc2hhcmVkX3N0b3JlOiBmaWxlc3lzdGVtCiAgZmlsZXN5c3RlbToKICAgIGRpcmVjdG9yeTogL2RhdGEvbG9raS9jaHVua3MKdGFibGVfbWFuYWdlcjoKICByZXRlbnRpb25fZGVsZXRlc19lbmFibGVkOiBmYWxzZQogIHJldGVudGlvbl9wZXJpb2Q6IDBz
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -55,9 +56,9 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
-    heritage: Helm
+    chart: loki-2.16.0
     release: loki
+    heritage: Helm
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -66,9 +67,9 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
-    heritage: Helm
+    chart: loki-2.16.0
     release: loki
+    heritage: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -84,7 +85,7 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
     variant: headless
@@ -102,11 +103,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: loki-memberlist
+  namespace: loki
+  labels:
+    app: loki
+    chart: loki-2.16.0
+    release: loki
+    heritage: Helm
+spec:
+  type: ClusterIP
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - name: http
+    port: 7946
+    targetPort: memberlist-port
+    protocol: TCP
+  selector:
+    app: loki
+    release: loki
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: loki
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
   annotations: {}
@@ -128,7 +152,7 @@ metadata:
   namespace: loki
   labels:
     app: loki
-    chart: loki-0.31.1
+    chart: loki-2.16.0
     release: loki
     heritage: Helm
   annotations: {}
@@ -149,7 +173,7 @@ spec:
         name: loki
         release: loki
       annotations:
-        checksum/config: 0b4b06eb968b6ccfa28dd92452590ca8f3f823cdb5c44c114c53a96b76fb0e7a
+        checksum/config: f7c516d64b976f04d4c31a243b6c2091ced173f942f6315d3ee2ba37ca7c0bd9
         prometheus.io/port: http-metrics
         prometheus.io/scrape: "true"
     spec:
@@ -162,11 +186,13 @@ spec:
       initContainers: []
       containers:
       - name: loki
-        image: grafana/loki:1.6.0
+        image: grafana/loki:2.6.1
         imagePullPolicy: IfNotPresent
         args:
         - -config.file=/etc/loki/loki.yaml
         volumeMounts:
+        - name: tmp
+          mountPath: /tmp
         - name: config
           mountPath: /etc/loki
         - name: storage
@@ -175,6 +201,12 @@ spec:
         ports:
         - name: http-metrics
           containerPort: 3100
+          protocol: TCP
+        - name: grpc
+          containerPort: 9095
+          protocol: TCP
+        - name: memberlist-port
+          containerPort: 7946
           protocol: TCP
         livenessProbe:
           httpGet:
@@ -201,12 +233,15 @@ spec:
       tolerations: []
       terminationGracePeriodSeconds: 4800
       volumes:
+      - name: tmp
+        emptyDir: {}
       - name: config
         secret:
           secretName: loki
   volumeClaimTemplates:
   - metadata:
       name: storage
+      labels: {}
       annotations: {}
     spec:
       accessModes:

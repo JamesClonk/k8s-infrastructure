@@ -1,10 +1,10 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.24.0
+minimumRequiredVersion: 0.32.0
 overrides:
-- image: grafana/loki:1.6.0
-  newImage: index.docker.io/grafana/loki@sha256:72fdf006e78141aa1f449acdbbaa195d4b7ad6be559a6710e4bcfe5ea2d7cc80
+- image: docker.io/grafana/promtail:2.6.1
+  newImage: index.docker.io/grafana/promtail@sha256:072527b12cdfa1393d04a08aeba6b0eb42fd6921426ea14eaf8c828953771749
   preresolved: true
-- image: grafana/promtail:1.6.0
-  newImage: index.docker.io/grafana/promtail@sha256:e8572e1db54baba005fe793a6c22ec6d22c568f68a65144509fc5ccb30e46047
+- image: grafana/loki:2.6.1
+  newImage: index.docker.io/grafana/loki@sha256:1ee60f980950b00e505bd564b40f720132a0653b110e993043bb5940673d060a
   preresolved: true

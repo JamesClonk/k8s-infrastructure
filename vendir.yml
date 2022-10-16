@@ -179,14 +179,14 @@ directories:
   contents:
   - path: .
     git:
-      url: https://github.com/grafana/loki
-      ref: helm-loki-3.2.1
+      url: https://github.com/grafana/helm-charts
+      ref: loki-2.16.0
     includePaths:
-    - production/helm/loki/**/*
+    - charts/loki/**/*
 - path: monitoring/loki/build/charts/loki
   contents:
   - path: .
     directory:
-      path: vendor/github.com/grafana/loki/production/helm/loki
+      path: vendor/github.com/grafana/loki/charts/loki
     excludePaths:
     - LICENSE

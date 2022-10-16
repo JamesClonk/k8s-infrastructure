@@ -13,8 +13,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      release: promtail
-      application: promtail
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: promtail
   ingress:
   - from: #! allow access for prometheus
     - namespaceSelector:
@@ -32,8 +32,8 @@ spec:
   - from: #! allow access for promtail
     - podSelector:
         matchLabels:
-          release: promtail
-          application: promtail
+          app.kubernetes.io/name: loki
+          app.kubernetes.io/instance: promtail
     ports:
     - port: 3100
   - from: #! allow access for prometheus

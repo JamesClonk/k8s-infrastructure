@@ -1,448 +1,39 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  labels:
-    app: loki
-    chart: promtail-0.25.1
-    heritage: Helm
-    release: promtail
   name: promtail-loki
   namespace: loki
+  labels:
+    helm.sh/chart: promtail-6.5.1
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/version: 2.6.1
+    app.kubernetes.io/managed-by: Helm
 ---
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
   name: promtail-loki
   namespace: loki
   labels:
-    app: loki
-    chart: promtail-0.25.1
-    release: promtail
-    heritage: Helm
-data:
-  promtail.yaml: |
-    client:
-      backoff_config:
-        max_period: 5m
-        max_retries: 10
-        min_period: 500ms
-      batchsize: 1048576
-      batchwait: 1s
-      external_labels: {}
-      timeout: 10s
-    positions:
-      filename: /run/promtail/positions.yaml
-    server:
-      http_listen_port: 3101
-    target_config:
-      sync_period: 10s
-    scrape_configs:
-    - job_name: kubernetes-pods-name
-      pipeline_stages:
-        - docker: {}
-        - match:
-            selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
-            stages:
-            - metrics:
-                app_panic_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app panics
-                  type: Counter
-        - match:
-            selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
-            stages:
-            - metrics:
-                app_error_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app errors
-                  type: Counter
-        - match:
-            selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
-            stages:
-            - metrics:
-                repo_mirrorer_failed_push:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total repo-mirrorer failed pushes
-                  type: Counter
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - source_labels:
-        - __meta_kubernetes_pod_label_name
-        target_label: __service__
-      - source_labels:
-        - __meta_kubernetes_pod_node_name
-        target_label: __host__
-      - action: drop
-        regex: ''
-        source_labels:
-        - __service__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - action: replace
-        replacement: $1
-        separator: /
-        source_labels:
-        - __meta_kubernetes_namespace
-        - __service__
-        target_label: job
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_container_name
-        target_label: container
-      - replacement: /var/log/pods/*$1/*.log
-        separator: /
-        source_labels:
-        - __meta_kubernetes_pod_uid
-        - __meta_kubernetes_pod_container_name
-        target_label: __path__
-    - job_name: kubernetes-pods-app
-      pipeline_stages:
-        - docker: {}
-        - match:
-            selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
-            stages:
-            - metrics:
-                app_panic_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app panics
-                  type: Counter
-        - match:
-            selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
-            stages:
-            - metrics:
-                app_error_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app errors
-                  type: Counter
-        - match:
-            selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
-            stages:
-            - metrics:
-                repo_mirrorer_failed_push:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total repo-mirrorer failed pushes
-                  type: Counter
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - action: drop
-        regex: .+
-        source_labels:
-        - __meta_kubernetes_pod_label_name
-      - source_labels:
-        - __meta_kubernetes_pod_label_app
-        target_label: __service__
-      - source_labels:
-        - __meta_kubernetes_pod_node_name
-        target_label: __host__
-      - action: drop
-        regex: ''
-        source_labels:
-        - __service__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - action: replace
-        replacement: $1
-        separator: /
-        source_labels:
-        - __meta_kubernetes_namespace
-        - __service__
-        target_label: job
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_container_name
-        target_label: container
-      - replacement: /var/log/pods/*$1/*.log
-        separator: /
-        source_labels:
-        - __meta_kubernetes_pod_uid
-        - __meta_kubernetes_pod_container_name
-        target_label: __path__
-    - job_name: kubernetes-pods-direct-controllers
-      pipeline_stages:
-        - docker: {}
-        - match:
-            selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
-            stages:
-            - metrics:
-                app_panic_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app panics
-                  type: Counter
-        - match:
-            selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
-            stages:
-            - metrics:
-                app_error_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app errors
-                  type: Counter
-        - match:
-            selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
-            stages:
-            - metrics:
-                repo_mirrorer_failed_push:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total repo-mirrorer failed pushes
-                  type: Counter
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - action: drop
-        regex: .+
-        separator: ''
-        source_labels:
-        - __meta_kubernetes_pod_label_name
-        - __meta_kubernetes_pod_label_app
-      - action: drop
-        regex: '[0-9a-z-.]+-[0-9a-f]{8,10}'
-        source_labels:
-        - __meta_kubernetes_pod_controller_name
-      - source_labels:
-        - __meta_kubernetes_pod_controller_name
-        target_label: __service__
-      - source_labels:
-        - __meta_kubernetes_pod_node_name
-        target_label: __host__
-      - action: drop
-        regex: ''
-        source_labels:
-        - __service__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - action: replace
-        replacement: $1
-        separator: /
-        source_labels:
-        - __meta_kubernetes_namespace
-        - __service__
-        target_label: job
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_container_name
-        target_label: container
-      - replacement: /var/log/pods/*$1/*.log
-        separator: /
-        source_labels:
-        - __meta_kubernetes_pod_uid
-        - __meta_kubernetes_pod_container_name
-        target_label: __path__
-    - job_name: kubernetes-pods-indirect-controller
-      pipeline_stages:
-        - docker: {}
-        - match:
-            selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
-            stages:
-            - metrics:
-                app_panic_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app panics
-                  type: Counter
-        - match:
-            selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
-            stages:
-            - metrics:
-                app_error_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app errors
-                  type: Counter
-        - match:
-            selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
-            stages:
-            - metrics:
-                repo_mirrorer_failed_push:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total repo-mirrorer failed pushes
-                  type: Counter
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - action: drop
-        regex: .+
-        separator: ''
-        source_labels:
-        - __meta_kubernetes_pod_label_name
-        - __meta_kubernetes_pod_label_app
-      - action: keep
-        regex: '[0-9a-z-.]+-[0-9a-f]{8,10}'
-        source_labels:
-        - __meta_kubernetes_pod_controller_name
-      - action: replace
-        regex: '([0-9a-z-.]+)-[0-9a-f]{8,10}'
-        source_labels:
-        - __meta_kubernetes_pod_controller_name
-        target_label: __service__
-      - source_labels:
-        - __meta_kubernetes_pod_node_name
-        target_label: __host__
-      - action: drop
-        regex: ''
-        source_labels:
-        - __service__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - action: replace
-        replacement: $1
-        separator: /
-        source_labels:
-        - __meta_kubernetes_namespace
-        - __service__
-        target_label: job
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_container_name
-        target_label: container
-      - replacement: /var/log/pods/*$1/*.log
-        separator: /
-        source_labels:
-        - __meta_kubernetes_pod_uid
-        - __meta_kubernetes_pod_container_name
-        target_label: __path__
-    - job_name: kubernetes-pods-static
-      pipeline_stages:
-        - docker: {}
-        - match:
-            selector: '{app=~"backman|home-info|irvisualizer|ircollector|jcio"} |~ "panic"'
-            stages:
-            - metrics:
-                app_panic_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app panics
-                  type: Counter
-        - match:
-            selector: '{app=~"home-info|irvisualizer|ircollector|jcio"} |~ "error"'
-            stages:
-            - metrics:
-                app_error_total:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total app errors
-                  type: Counter
-        - match:
-            selector: '{namespace="repo-mirrorer"} |~ "failed to push"'
-            stages:
-            - metrics:
-                repo_mirrorer_failed_push:
-                  config:
-                    action: inc
-                    match_all: true
-                  description: Total repo-mirrorer failed pushes
-                  type: Counter
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - action: drop
-        regex: ''
-        source_labels:
-        - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_label_component
-        target_label: __service__
-      - source_labels:
-        - __meta_kubernetes_pod_node_name
-        target_label: __host__
-      - action: drop
-        regex: ''
-        source_labels:
-        - __service__
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - action: replace
-        replacement: $1
-        separator: /
-        source_labels:
-        - __meta_kubernetes_namespace
-        - __service__
-        target_label: job
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - action: replace
-        source_labels:
-        - __meta_kubernetes_pod_container_name
-        target_label: container
-      - replacement: /var/log/pods/*$1/*.log
-        separator: /
-        source_labels:
-        - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
-        - __meta_kubernetes_pod_container_name
-        target_label: __path__
+    helm.sh/chart: promtail-6.5.1
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/version: 2.6.1
+    app.kubernetes.io/managed-by: Helm
+stringData:
+  promtail.yaml: "server:\n  log_level: info\n  http_listen_port: 3101\n  \n\nclients:\n  - url: http://loki-gateway/loki/api/v1/push\n\npositions:\n  filename: /run/promtail/positions.yaml\n\nscrape_configs:\n  # See also https://github.com/grafana/loki/blob/master/production/ksonnet/promtail/scrape_config.libsonnet for reference\n  - job_name: kubernetes-pods\n    pipeline_stages:\n      - cri: {}\n    kubernetes_sd_configs:\n      - role: pod\n    relabel_configs:\n      - source_labels:\n          - __meta_kubernetes_pod_controller_name\n        regex: ([0-9a-z-.]+?)(-[0-9a-f]{8,10})?\n        action: replace\n        target_label: __tmp_controller_name\n      - source_labels:\n          - __meta_kubernetes_pod_label_app_kubernetes_io_name\n          - __meta_kubernetes_pod_label_app\n          - __tmp_controller_name\n          - __meta_kubernetes_pod_name\n        regex: ^;*([^;]+)(;.*)?$\n        action: replace\n        target_label: app\n      - source_labels:\n          - __meta_kubernetes_pod_label_app_kubernetes_io_instance\n          - __meta_kubernetes_pod_label_release\n        regex: ^;*([^;]+)(;.*)?$\n        action: replace\n        target_label: instance\n      - source_labels:\n          - __meta_kubernetes_pod_label_app_kubernetes_io_component\n          - __meta_kubernetes_pod_label_component\n        regex: ^;*([^;]+)(;.*)?$\n        action: replace\n        target_label: component\n      - action: replace\n        source_labels:\n        - __meta_kubernetes_pod_node_name\n        target_label: node_name\n      - action: replace\n        source_labels:\n        - __meta_kubernetes_namespace\n        target_label: namespace\n      - action: replace\n        replacement: $1\n        separator: /\n        source_labels:\n        - namespace\n        - app\n        target_label: job\n      - action: replace\n        source_labels:\n        - __meta_kubernetes_pod_name\n        target_label: pod\n      - action: replace\n        source_labels:\n        - __meta_kubernetes_pod_container_name\n        target_label: container\n      - action: replace\n        replacement: /var/log/pods/*$1/*.log\n        separator: /\n        source_labels:\n        - __meta_kubernetes_pod_uid\n        - __meta_kubernetes_pod_container_name\n        target_label: __path__\n      - action: replace\n        regex: true/(.*)\n        replacement: /var/log/pods/*$1/*.log\n        separator: /\n        source_labels:\n        - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash\n        - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash\n        - __meta_kubernetes_pod_container_name\n        target_label: __path__\n  \n  \n\nlimits_config:\n"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+  name: promtail-loki
   labels:
-    app: loki
-    chart: promtail-0.25.1
-    release: promtail
-    heritage: Helm
-  name: promtail-loki-clusterrole
+    helm.sh/chart: promtail-6.5.1
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/version: 2.6.1
+    app.kubernetes.io/managed-by: Helm
 rules:
 - apiGroups:
   - ""
@@ -460,49 +51,21 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: promtail-loki-clusterrolebinding
+  name: promtail-loki
   labels:
-    app: loki
-    chart: promtail-0.25.1
-    release: promtail
-    heritage: Helm
+    helm.sh/chart: promtail-6.5.1
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/version: 2.6.1
+    app.kubernetes.io/managed-by: Helm
 subjects:
 - kind: ServiceAccount
   name: promtail-loki
   namespace: loki
 roleRef:
   kind: ClusterRole
-  name: promtail-loki-clusterrole
+  name: promtail-loki
   apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: promtail-loki
-  namespace: loki
-  labels:
-    app: loki
-    chart: promtail-0.25.1
-    heritage: Helm
-    release: promtail
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: promtail-loki
-  namespace: loki
-  labels:
-    app: loki
-    chart: promtail-0.25.1
-    heritage: Helm
-    release: promtail
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: promtail-loki
-subjects:
-- kind: ServiceAccount
-  name: promtail-loki
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -510,42 +73,42 @@ metadata:
   name: promtail-loki
   namespace: loki
   labels:
-    app: loki
-    chart: promtail-0.25.1
-    release: promtail
-    heritage: Helm
-  annotations: {}
+    helm.sh/chart: promtail-6.5.1
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: promtail
+    app.kubernetes.io/version: 2.6.1
+    app.kubernetes.io/managed-by: Helm
 spec:
   selector:
     matchLabels:
-      app: loki
-      release: promtail
+      app.kubernetes.io/name: loki
+      app.kubernetes.io/instance: promtail
   updateStrategy: {}
   template:
     metadata:
       labels:
-        app: loki
-        release: promtail
+        app.kubernetes.io/name: loki
+        app.kubernetes.io/instance: promtail
       annotations:
-        checksum/config: 6548cc64009667e40dd6d26b70fff62803d9530c4e296ebb9115dad56c450355
-        prometheus.io/port: http-metrics
-        prometheus.io/scrape: "true"
+        checksum/config: 52fcf23c3ce664f593cf2810ff0cca23e9a5aff9b513487bec416600439a575e
     spec:
       serviceAccountName: promtail-loki
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
       containers:
       - name: promtail
-        image: grafana/promtail:1.6.0
+        image: docker.io/grafana/promtail:2.6.1
         imagePullPolicy: IfNotPresent
         args:
         - -config.file=/etc/promtail/promtail.yaml
-        - -client.url=http://loki:3100/loki/api/v1/push
         volumeMounts:
         - name: config
           mountPath: /etc/promtail
-        - name: run
-          mountPath: /run/promtail
+        - mountPath: /run/promtail
+          name: run
         - mountPath: /var/lib/docker/containers
-          name: docker
+          name: containers
           readOnly: true
         - mountPath: /var/log/pods
           name: pods
@@ -556,12 +119,15 @@ spec:
             fieldRef:
               fieldPath: spec.nodeName
         ports:
-        - containerPort: 3101
-          name: http-metrics
+        - name: http-metrics
+          containerPort: 3101
+          protocol: TCP
         securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
           readOnlyRootFilesystem: true
-          runAsGroup: 0
-          runAsUser: 0
         readinessProbe:
           failureThreshold: 5
           httpGet:
@@ -578,22 +144,23 @@ spec:
           requests:
             cpu: 50m
             memory: 64Mi
-      nodeSelector: {}
-      affinity: {}
       tolerations:
       - effect: NoSchedule
         key: node-role.kubernetes.io/master
         operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
       volumes:
       - name: config
-        configMap:
-          name: promtail-loki
-      - name: run
-        hostPath:
+        secret:
+          secretName: promtail-loki
+      - hostPath:
           path: /run/promtail
+        name: run
       - hostPath:
           path: /var/lib/docker/containers
-        name: docker
+        name: containers
       - hostPath:
           path: /var/log/pods
         name: pods

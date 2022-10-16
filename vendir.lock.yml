@@ -116,10 +116,10 @@ directories:
   path: monitoring/loki/build/charts/promtail
 - contents:
   - git:
-      commitTitle: '[loki helm chart] fixed to pass CI (#7345)...'
-      sha: c9165fb768125f511412d4204eb4ccb7ca539b64
+      commitTitle: 'Merge pull request #1504 from tchelovilar/add-loki-servicemonitor-tls-options...'
+      sha: f21407f39bedf277d7014f20b5d38a1a3305ed59
       tags:
-      - helm-loki-3.2.1
+      - loki-2.16.0
     path: .
   path: vendor/github.com/grafana/loki
 - contents:
