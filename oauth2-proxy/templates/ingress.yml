@@ -6,20 +6,20 @@
 #@  assert.fail("configuration.ingress.domain is missing or invalid")
 #@ end
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: oauth2-proxy
   namespace: oauth2-proxy
   labels: #@ labels()
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/server-snippet: |
       large_client_header_buffers 4 32k;
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: nginx
   tls:
   - secretName: oauth2-proxy-ingress-tls
     hosts:
@@ -31,5 +31,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: oauth2-proxy
-          servicePort: 4180
+          path: /
+          pathType: Prefix
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
