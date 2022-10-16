@@ -12,6 +12,7 @@ service:
 serviceAccount:
   enabled: true
   name: oauth2-proxy
+  automountServiceAccountToken: true
 
 ingress:
   enabled: false
@@ -19,10 +20,10 @@ ingress:
 resources:
   limits:
     cpu: 250m
-    memory: 384Mi
+    memory: 192Mi
   requests:
     cpu: 100m
-    memory: 256Mi
+    memory: 64Mi
 
 extraVolumes:
 - name: html-template
@@ -50,6 +51,7 @@ readinessProbe:
 securityContext:
   enabled: true
   runAsNonRoot: true
+  allowPrivilegeEscalation: false
 
 httpScheme: http
 

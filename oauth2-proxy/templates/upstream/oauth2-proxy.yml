@@ -3,19 +3,28 @@ kind: ServiceAccount
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-4.2.2
-    release: oauth2-proxy
-    heritage: Helm
+    helm.sh/chart: oauth2-proxy-6.2.7
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: 7.3.0
   name: oauth2-proxy
+automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-4.2.2
-    release: oauth2-proxy
-    heritage: Helm
+    helm.sh/chart: oauth2-proxy-6.2.7
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: 7.3.0
   name: oauth2-proxy
 spec:
   type: ClusterIP
@@ -29,24 +38,28 @@ spec:
     targetPort: metrics
     name: metrics
   selector:
-    app: oauth2-proxy
-    release: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-4.2.2
-    heritage: Helm
-    release: oauth2-proxy
+    helm.sh/chart: oauth2-proxy-6.2.7
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authentication-proxy
+    app.kubernetes.io/part-of: oauth2-proxy
+    app.kubernetes.io/name: oauth2-proxy
+    app.kubernetes.io/instance: oauth2-proxy
+    app.kubernetes.io/version: 7.3.0
   name: oauth2-proxy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: oauth2-proxy
-      release: oauth2-proxy
+      app.kubernetes.io/name: oauth2-proxy
+      app.kubernetes.io/instance: oauth2-proxy
   template:
     metadata:
       annotations:
@@ -54,15 +67,22 @@ spec:
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-        checksum/redis-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/redis-secret: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
       labels:
         app: oauth2-proxy
-        release: oauth2-proxy
+        helm.sh/chart: oauth2-proxy-6.2.7
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: authentication-proxy
+        app.kubernetes.io/part-of: oauth2-proxy
+        app.kubernetes.io/name: oauth2-proxy
+        app.kubernetes.io/instance: oauth2-proxy
+        app.kubernetes.io/version: 7.3.0
     spec:
       serviceAccountName: oauth2-proxy
+      automountServiceAccountToken: true
       containers:
       - name: oauth2-proxy
-        image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.0
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.3.0
         imagePullPolicy: IfNotPresent
         args:
         - --http-address=0.0.0.0:4180
@@ -110,16 +130,18 @@ spec:
         resources:
           limits:
             cpu: 250m
-            memory: 384Mi
+            memory: 192Mi
           requests:
             cpu: 100m
-            memory: 256Mi
+            memory: 64Mi
         volumeMounts:
-        - mountPath: /etc/oauth2_proxy
+        - mountPath: /etc/oauth2_proxy/oauth2_proxy.cfg
           name: configmain
+          subPath: oauth2_proxy.cfg
         - mountPath: /etc/oauth2-proxy-template
           name: html-template
         securityContext:
+          allowPrivilegeEscalation: false
           runAsNonRoot: true
       volumes:
       - configMap:

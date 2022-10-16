@@ -13,7 +13,8 @@ spec:
   podSelector:
     matchLabels:
       app: oauth2-proxy
-      release: oauth2-proxy
+      app.kubernetes.io/name: oauth2-proxy
+      app.kubernetes.io/instance: oauth2-proxy
   ingress:
   - from: #! allow access for prometheus
     - namespaceSelector:
