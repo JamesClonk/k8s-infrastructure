@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"IngressClass", "metadata":{"name":"nginx"}}), expects=1
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    #@overlay/replace
+    ingressclass.kubernetes.io/is-default-class: "true"
