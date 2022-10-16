@@ -42,7 +42,7 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null \
 	|| (hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 	--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
 	&& rm -f "${KUBECONFIG}" && sleep 30)
-	# wait half a minute for server to be ready for sure
+# wait half a minute for server to be ready for sure
 
 # get server-ip
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
