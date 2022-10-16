@@ -1,15 +1,15 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.27.0
+minimumRequiredVersion: 0.32.0
 overrides:
 - image: edoburu/pgbouncer:1.12.0
-  newImage: index.docker.io/edoburu/pgbouncer@sha256:9575399033c1eee3ba90c4f8365bb2c0c0fed3df590e703230c3ce850cd32837
+  newImage: index.docker.io/edoburu/pgbouncer@sha256:abc0a4123a813a8fb0bfc6fefaab317c61f3852ae44e008aef8d87ee4c8f7573
   preresolved: true
 - image: jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57
   newImage: index.docker.io/jamesclonk/pgbackup@sha256:878deed9d3d62112584e9be8878b1cfa36a7fa44f3dfb9ecfe3fb1554326963e
   preresolved: true
 - image: postgres:12
-  newImage: index.docker.io/library/postgres@sha256:62ae78ebf6903c47ff40273e1266173d224ee1bc2c000805cc4e0c4470305f57
+  newImage: index.docker.io/library/postgres@sha256:9bb9989581be2b92756d795435a3c032fa701603bbf34490bf724d6ab65bd240
   preresolved: true
 - image: wrouesnel/postgres_exporter:v0.8.0
   newImage: index.docker.io/wrouesnel/postgres_exporter@sha256:520fcd04d6c8f922d800d89ae96c021f4afd22e376c4b88260a8b780e3375dbe
