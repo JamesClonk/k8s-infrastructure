@@ -132,6 +132,23 @@ EOF"
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl status fail2ban"
 echo " "
 
+# setup crontab
+echo "checking crontab ..."
+# check if crontab is already setup
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "crontab -l | grep 'sbin/reboot' 1>/dev/null" ||
+	(
+	echo "setting up crontab ..."
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+"cat > /root/crontab.conf << EOF
+# m h  dom mon dow   command
+00 08 * * 1 /usr/sbin/reboot
+
+EOF"
+	retry 2 2 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "crontab < /root/crontab.conf"
+	)
+hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "crontab -l"
+echo " "
+
 # setup firewall
 ./firewall.sh
 
