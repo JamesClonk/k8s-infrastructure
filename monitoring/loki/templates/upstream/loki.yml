@@ -174,7 +174,7 @@ spec:
         release: loki
       annotations:
         checksum/config: f7c516d64b976f04d4c31a243b6c2091ced173f942f6315d3ee2ba37ca7c0bd9
-        prometheus.io/port: http-metrics
+        prometheus.io/port: "3100"
         prometheus.io/scrape: "true"
     spec:
       serviceAccountName: loki
