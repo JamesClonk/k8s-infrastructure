@@ -60,7 +60,7 @@ if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
 
 # install tools
-install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.24.6/bin/linux/amd64/kubectl" "3ba7e61aecb19eadfa5de1c648af1bc66f5980526645d9dfe682d77fc313b74c"
+install_tool "kubectl" "https://storage.googleapis.com/kubernetes-release/release/v1.25.8/bin/linux/amd64/kubectl" "80e70448455f3d19c3cb49bd6ff6fc913677f4f240d368fa2b9f0d400c8cd16e"
 install_tool "kapp" "https://github.com/vmware-tanzu/carvel-kapp/releases/download/v0.46.0/kapp-linux-amd64" "130f648cd921761b61bb03d7a0f535d1eea26e0b5fc60e2839af73f4ea98e22f"
 install_tool "ytt" "https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.40.1/ytt-linux-amd64" "11222665c627b8f0a1443534a3dde3c9b3aac08b322d28e91f0e011e3aeb7df5"
 install_tool "vendir" "https://github.com/vmware-tanzu/carvel-vendir/releases/download/v0.26.0/vendir-linux-amd64" "98057bf90e09972f156d1c4fbde350e94133bbaf2e25818b007759f5e9c8b197"
@@ -71,7 +71,7 @@ install_tool "jq" "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-li
 install_tool "kind" "https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64" "949f81b3c30ca03a3d4effdecda04f100fa3edc07a28b19400f72ede7c5f0491"
 install_tool_from_tarball "cmctl" "cmctl" "https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cmctl-linux-amd64.tar.gz" "6e22fda56e0fa62cb3fab9340be23ba3fa0da341e737006a9552abdcc80c789e"
 install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.30.3/hcloud-linux-amd64.tar.gz" "0e6c2c1bf8be9747059c811004ba37bba884b4b194d8f3e0262cbab6c1c0e339"
-install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz" "f197057230be75a9db85225c2eaf49f65918bffd5e9e2174a88c41cd5623ea50"
+install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.10.3-linux-amd64.tar.gz" "cc5223b23fd2ccdf4c80eda0acac7a6a5c8cdb81c5b538240e85fe97aa5bc3fb"
 install_tool_from_tarball "k9s" "k9s" "https://github.com/derailed/k9s/releases/download/v0.23.3/k9s_Linux_x86_64.tar.gz" "51eb79a779f372961168b62d584728e478d4c8a447986c2c64ef3892beb0e53e"
 
 # git config
