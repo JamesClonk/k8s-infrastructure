@@ -20,7 +20,7 @@ if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
 
 # install tools
-install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.1/sops-v3.7.1.linux" "185348fd77fc160d5bdf3cd20ecbc796163504fd3df196d7cb29000773657b74"
+install_tool "sops" "https://github.com/mozilla/sops/releases/download/v3.7.3/sops-v3.7.3.linux.amd64" "53aec65e45f62a769ff24b7e5384f0c82d62668dd96ed56685f649da114b4dbb"
 install_tool "yq" "https://github.com/mikefarah/yq/releases/download/v4.21.1/yq_linux_amd64" "50778261e24c70545a3ff8624df8b67baaff11f759e6e8b2e4c9c781df7ea8dc"
 
 # aws config
