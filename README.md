@@ -1,4 +1,8 @@
 # k8s-infrastructure 🐳
+
+[![Build](https://img.shields.io/github/actions/workflow/status/JamesClonk/k8s-infrastructure/production.yml?branch=master&label=Deployment)](https://github.com/JamesClonk/k8s-infrastructure/actions/workflows/production.yml)
+[![Platform](https://img.shields.io/badge/Platform-Kubernetes-blue)](https://kubernetes.io/)
+
 Create your own personal Kubernetes infrastructure, the quick and easy way
 
 ## Quick start ⏩
