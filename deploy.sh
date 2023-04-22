@@ -1,27 +1,19 @@
 #!/bin/bash
 set -e
 set -u
+set -o pipefail
 source $(dirname ${BASH_SOURCE[0]})/setup.sh
 
-if [ "${ENVIRONMENT}" == "development" ]; then
-	deployments=(
-	# setup a local kind cluster
-	"kind"
-
-	# add metrics-server to our local kind cluster, it feels lonely without it..
-	"metrics-server"
-)
-else
-	deployments=(
+########################################################################################################################
+# deployments
+########################################################################################################################
+deployments+=(
 	# setup cluster on hetzner cloud
 	"hetzner-k3s"
 
 	# we want to use some hetzner cloud volumes
 	"hcloud-csi"
-)
-fi
 
-deployments+=(
 	# let's own the kube-system namespace
 	"kube-system"
 
@@ -44,7 +36,9 @@ deployments+=(
 	"postgres"
 )
 
+########################################################################################################################
 # deploy it all, all of it!
+########################################################################################################################
 for deployment in ${deployments[@]}; do
 	pushd $deployment
 	./deploy.sh

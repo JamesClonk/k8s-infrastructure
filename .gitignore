@@ -20,6 +20,12 @@
 # optional/hidden env configuration files
 .env*
 
+# kubeconfig
+/kubeconfig
+
+# sops unencrypted
+*_unencrypted
+
 # kube-state-metrics helm
 /monitoring/prometheus/build/chart/charts/kube-state-metrics-*.tgz
 
