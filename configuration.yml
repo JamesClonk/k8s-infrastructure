@@ -33,7 +33,7 @@ configuration:
       type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
 
     k3s:
-      version: "v1.24.6+k3s1" # https://github.com/rancher/k3s/releases
+      version: "v1.24.12+k3s1" # https://github.com/rancher/k3s/releases
 
   ingress:
     domains:
