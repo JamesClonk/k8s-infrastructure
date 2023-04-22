@@ -42,7 +42,7 @@ function install_tool {
 	local -r tool_checksum="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
-		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}"
+		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}" 2>/dev/null
 		chmod +x "$HOME/bin/${tool_name}"
 	fi
 	sha256sum "$HOME/bin/${tool_name}" | grep "${tool_checksum}" >/dev/null || (echo "checksum failed for [${tool_name}]" && rm -f "$HOME/bin/${tool_name}" && exit 1)
@@ -55,10 +55,10 @@ function install_tool_from_tarball {
 	local -r tool_checksum="$1"; shift
 	if [ ! -f "$HOME/bin/${tool_name}" ]; then
 		echo "downloading [${tool_name}] ..."
-		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}.tgz"
+		wget -q "${tool_url}" -O "$HOME/bin/${tool_name}.tgz" 2>/dev/null
 		echo "unpacking [${tool_name}.tgz] ..."
 		STRIP_COMPONENTS=$(echo "${tool_path}" | awk -F"/" '{print NF-1}')
-		tar -xvzf "$HOME/bin/${tool_name}.tgz" --strip-components=${STRIP_COMPONENTS} -C "$HOME/bin/" "${tool_path}"
+		tar -xvzf "$HOME/bin/${tool_name}.tgz" --strip-components=${STRIP_COMPONENTS} -C "$HOME/bin/" "${tool_path}" >/dev/null
 		chmod +x "$HOME/bin/${tool_name}"
 		rm -f "$HOME/bin/${tool_name}.tgz"
 	fi
