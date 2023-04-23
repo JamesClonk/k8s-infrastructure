@@ -197,8 +197,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: setup kubeconfig
-      env:
-        KUBECONFIG: ~/.kube/config
       run: ./setup.sh
 
     - name: checkout k8s-testing
@@ -217,14 +215,14 @@ jobs:
     - name: run k8s-testing specs
       working-directory: testing
       env:
-        KUBECONFIG: ~/.kube/config
+        KUBECONFIG: ~/.kube/k8s-infrastructure
       run: |
         make all
 
     - name: cleanup
       if: ${{ always() }}
       env:
-        KUBECONFIG: ~/.kube/config
+        KUBECONFIG: ~/.kube/k8s-infrastructure
       run: |
         rm -f ${KUBECONFIG} || true
         ./cleanup.sh
