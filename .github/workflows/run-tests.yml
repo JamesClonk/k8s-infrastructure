@@ -3,6 +3,9 @@ name: run specs on cluster
 on:
   workflow_dispatch:
 
+env:
+  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+
 permissions:
   contents: read
 
