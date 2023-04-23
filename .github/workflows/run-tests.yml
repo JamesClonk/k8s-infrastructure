@@ -34,15 +34,12 @@ jobs:
       uses: ./testing/.github/actions/setup-chrome
     - name: run k8s-testing specs
       working-directory: testing
-      env:
-        KUBECONFIG: ~/.kube/k8s-infrastructure
       run: |
+        export KUBECONFIG=${HOME}/.kube/k8s-infrastructure
         make all
 
     - name: cleanup
       if: ${{ always() }}
-      env:
-        KUBECONFIG: ~/.kube/k8s-infrastructure
       run: |
-        rm -f ${KUBECONFIG} || true
+        rm -f ${HOME}/.kube/k8s-infrastructure || true
         ./cleanup.sh
