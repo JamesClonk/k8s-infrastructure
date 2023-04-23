@@ -195,34 +195,34 @@ jobs:
     needs: [ postgres, grafana, kubernetes-dashboard ]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: setup kubeconfig
-      run: ./setup.sh
-
     - name: checkout k8s-testing
       uses: actions/checkout@v3
       with:
         repository: JamesClonk/k8s-testing
         ref: master
-        path: testing
     - name: setup ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.7'
         bundler-cache: true
     - name: setup chrome
-      uses: ./testing/.github/actions/setup-chrome
+      uses: ./.github/actions/setup-chrome
+
+    - uses: actions/checkout@v3
+      with:
+        path: repo
+    - name: setup kubeconfig
+      working-directory: repo
+      run: ./setup.sh
+
     - name: run k8s-testing specs
-      working-directory: testing
-      env:
-        KUBECONFIG: ~/.kube/k8s-infrastructure
       run: |
-        make all
+        export KUBECONFIG=${HOME}/.kube/k8s-infrastructure
+        make test
 
     - name: cleanup
       if: ${{ always() }}
-      env:
-        KUBECONFIG: ~/.kube/k8s-infrastructure
+      working-directory: repo
       run: |
-        rm -f ${KUBECONFIG} || true
+        rm -f ${HOME}/.kube/k8s-infrastructure || true
         ./cleanup.sh
