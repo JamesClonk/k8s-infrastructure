@@ -219,7 +219,7 @@ jobs:
       env:
         KUBECONFIG: ~/.kube/config
       run: |
-        make test
+        make all
 
     - name: cleanup
       if: ${{ always() }}
