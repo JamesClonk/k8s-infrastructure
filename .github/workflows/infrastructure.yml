@@ -1,4 +1,4 @@
-name: kubernetes production
+name: kubernetes infrastructure and cluster
 
 on:
   push:
@@ -188,3 +188,45 @@ jobs:
     - name: cleanup
       if: ${{ always() }}
       run: ./cleanup.sh
+
+  testing:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: k8s e2e testing
+    needs: [ postgres, grafana, kubernetes-dashboard ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup kubeconfig
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: ./setup.sh
+
+    - name: checkout k8s-testing
+      uses: actions/checkout@v3
+      with:
+        repository: JamesClonk/k8s-testing
+        ref: master
+        path: testing
+    - name: setup ruby
+      working-directory: testing
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true
+    - name: setup chrome
+      working-directory: testing
+      uses: ./.github/actions/setup-chrome
+    - name: run k8s-testing specs
+      working-directory: testing
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: |
+        make test
+
+    - name: cleanup
+      if: ${{ always() }}
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: |
+        rm -f ${KUBECONFIG} || true
+        ./cleanup.sh

@@ -1,0 +1,49 @@
+name: Run specs on cluster
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testing:
+    name: 'k8s e2e testing'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup kubeconfig
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: ./setup.sh
+
+    - name: checkout k8s-testing
+      uses: actions/checkout@v3
+      with:
+        repository: JamesClonk/k8s-testing
+        ref: master
+        path: testing
+    - name: setup ruby
+      working-directory: testing
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true
+    - name: setup chrome
+      working-directory: testing
+      uses: ./.github/actions/setup-chrome
+    - name: run k8s-testing specs
+      working-directory: testing
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: |
+        make test
+
+    - name: cleanup
+      if: ${{ always() }}
+      env:
+        KUBECONFIG: ~/.kube/config
+      run: |
+        rm -f ${KUBECONFIG} || true
+        ./cleanup.sh
