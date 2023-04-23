@@ -209,13 +209,11 @@ jobs:
         path: testing
     - name: setup ruby
       uses: ruby/setup-ruby@v1
-      working-directory: testing
       with:
         ruby-version: '2.7'
         bundler-cache: true
     - name: setup chrome
-      working-directory: testing
-      uses: ./.github/actions/setup-chrome
+      uses: testing/.github/actions/setup-chrome
     - name: run k8s-testing specs
       working-directory: testing
       env:
