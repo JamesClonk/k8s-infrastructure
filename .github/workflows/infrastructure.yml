@@ -213,7 +213,7 @@ jobs:
         ruby-version: '2.7'
         bundler-cache: true
     - name: setup chrome
-      uses: testing/.github/actions/setup-chrome
+      uses: ./testing/.github/actions/setup-chrome
     - name: run k8s-testing specs
       working-directory: testing
       env:
