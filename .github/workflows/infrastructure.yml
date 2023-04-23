@@ -208,8 +208,8 @@ jobs:
         ref: master
         path: testing
     - name: setup ruby
-      working-directory: testing
       uses: ruby/setup-ruby@v1
+      working-directory: testing
       with:
         ruby-version: '2.7'
         bundler-cache: true
