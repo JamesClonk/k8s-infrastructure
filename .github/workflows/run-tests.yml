@@ -1,4 +1,4 @@
-name: Run specs on cluster
+name: run specs on cluster
 
 on:
   workflow_dispatch:
