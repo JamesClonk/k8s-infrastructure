@@ -42,6 +42,16 @@ hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
 
+# fix iptables issues (https://github.com/k3s-io/k3s/issues/535)
+echo "clearing iptables ..."
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -P INPUT ACCEPT"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -P FORWARD ACCEPT"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -P OUTPUT ACCEPT"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -t nat -F"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -t mangle -F"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -F"
+retry 7 7 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "iptables -X"
+
 # restarting k3s
 echo "restarting k3s ..."
 hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" "systemctl restart k3s"
