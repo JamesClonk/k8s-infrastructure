@@ -234,7 +234,7 @@ data:
         labels:
           severity: warning
       - alert: Client_Error
-        expr: rate(ircollector_api_client_request_error_total[5m]) > 0
+        expr: rate(ircollector_api_client_request_error_total[5m]) > 0.05
         for: 5m
         annotations:
           title: '{{ $labels.app_kubernetes_io_component }}: API client error'
@@ -242,7 +242,7 @@ data:
         labels:
           severity: warning
       - alert: Collector_Error
-        expr: rate(ircollector_errors_total[5m]) > 0
+        expr: rate(ircollector_errors_total[5m]) > 0.05
         for: 5m
         annotations:
           title: '{{ $labels.app_kubernetes_io_component }}: collector error'
