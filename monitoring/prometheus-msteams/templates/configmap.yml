@@ -16,15 +16,24 @@ data:
   card.tmpl: |
     {{ define "teams.card" }}
     {
-      "@type": "MessageCard",
-      "@context": "http://schema.org/extensions",
-      "themeColor": "{{- if eq .Status "resolved" -}}2DC72D
-                     {{- else if eq .Status "firing" -}}
-                        {{- if eq .CommonLabels.severity "critical" -}}DD1A1A
-                        {{- else if eq .CommonLabels.severity "warning" -}}FFA500
-                        {{- else -}}808080{{- end -}}
-                     {{- else -}}808080{{- end -}}",
-      "summary": "{{- if eq .CommonAnnotations.summary "" -}}
+       "type":"message",
+       "attachments":[
+          {
+             "contentType":"application/vnd.microsoft.card.adaptive",
+             "contentUrl":null,
+             "content":{
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.6",
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "text": "Prometheus Alert ({{ .Status | title }}) - {{ .CommonLabels.alertname }}{{- if .CommonLabels.job -}} for {{ .CommonLabels.job }}{{ end }}",
+                        "size": "Large"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "{{- if eq .CommonAnnotations.summary "" -}}
                       {{- if eq .CommonAnnotations.message "" -}}
                         {{- if eq .CommonLabels.alertname "" -}}
                           Prometheus Alert
@@ -37,31 +46,41 @@ data:
                   {{- else -}}
                       {{- .CommonAnnotations.summary -}}
                   {{- end -}}",
-      "title": "Prometheus Alert ({{ .Status | title }}) - {{ .CommonLabels.alertname }}{{- if .CommonLabels.job -}} for {{ .CommonLabels.job }}{{ end }}",
-      "sections": [ {{$externalUrl := .ExternalURL}}
-      {{- range $index, $alert := .Alerts }}{{- if $index }},{{- end }}
-        {
-          "activityTitle": "[{{ $alert.Annotations.description }}]({{ $externalUrl }})",
-          "facts": [
-            {{- range $key, $value := $alert.Annotations }}
-            {
-              {{- if ne $key "description" -}}
-                "name": "{{ $key }}",
-                "value": "{{ $value }}"
-              {{- end -}}
-            },
-            {{- end -}}
-            {{$c := counter}}{{ range $key, $value := $alert.Labels }}{{if call $c}},{{ end }}
-            {
-              "name": "{{ $key }}",
-              "value": "{{ $value }}"
-            }
-            {{- end }}
-          ],
-          "markdown": true
-        }
-        {{- end }}
-      ]
+                        "weight": "Bolder",
+                        "color": "Warning",
+                        "fontType": "Monospace",
+                        "size": "Medium",
+                        "isSubtle": false,
+                        "separator": true,
+                        "wrap": true
+                    }{{$externalUrl := .ExternalURL}}
+                    {{- range $index, $alert := .Alerts }}
+                    ,{
+                        "type": "TextBlock",
+                        "text": "[{{ $alert.Annotations.description }}]({{ $externalUrl }})",
+                        "size": "Medium",
+                        "fontType": "Monospace",
+                        "separator": true
+                    }
+                    {{- range $key, $value := $alert.Annotations }}
+                    ,{
+                        "type": "TextBlock",
+                        "text": "**{{ $key }}**: {{ $value }}",
+                        "size": "Small"
+                    }
+                    {{- end }}
+                    {{- range $key, $value := $alert.Labels }}
+                    ,{
+                        "type": "TextBlock",
+                        "text": "**{{ $key }}**: {{ $value }}",
+                        "size": "Small"
+                    }
+                    {{- end }}
+                    {{- end }}
+                ]
+             }
+          }
+       ]
     }
     {{ end }}
 #@ end

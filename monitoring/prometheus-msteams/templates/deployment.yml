@@ -24,7 +24,7 @@ spec:
       affinity: #@ podAntiAffinity()
       containers:
       - name: msteams
-        image: "quay.io/prometheusmsteams/prometheus-msteams:v1.4.1"
+        image: "docker.io/jamesclonk/prometheus-msteams:workflows"
         securityContext:
           privileged: false
           allowPrivilegeEscalation: false

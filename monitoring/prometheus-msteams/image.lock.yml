@@ -1,7 +1,7 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.24.0
+minimumRequiredVersion: 0.32.0
 overrides:
-- image: quay.io/prometheusmsteams/prometheus-msteams:v1.4.1
-  newImage: quay.io/prometheusmsteams/prometheus-msteams@sha256:c69cc0661eabf703694eb7a6e861d7b6c3333b0b8b153aa5e88a32b0ba21c97b
+- image: docker.io/jamesclonk/prometheus-msteams:workflows
+  newImage: index.docker.io/jamesclonk/prometheus-msteams@sha256:476a9500b789fa4ec74ca2b73df26bdaaaa3b1b76b902e9b5837543a9d721291
   preresolved: true
