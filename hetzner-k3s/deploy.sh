@@ -50,6 +50,10 @@ retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
 echo " "
 
+# WireGuard configuration
+echo "checking wireguard ..."
+# TODO: add wireguard setup/check here!
+
 # SSH configuration
 echo "checking ssh ..."
 
