@@ -4,7 +4,6 @@
 configuration:
   hetzner:
     ssh:
-      port: "22333"
       key_name: kubernetes
 
     private_network:

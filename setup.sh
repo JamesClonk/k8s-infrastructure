@@ -115,7 +115,6 @@ git config --local diff.sopsdiffer.textconv "sops -d"
 ########################################################################################################################
 export HCLOUD_TOKEN=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.token' -)
 
-export HETZNER_SSH_PORT=$(yq -e eval '.configuration.hetzner.ssh.port' ${CONFIGURATION_FILE})
 export HETZNER_SSH_KEY_NAME=$(yq -e eval '.configuration.hetzner.ssh.key_name' ${CONFIGURATION_FILE})
 export HETZNER_PUBLIC_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.public_key' -)
 export HETZNER_PRIVATE_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.private_key' -)
@@ -167,7 +166,7 @@ set -o pipefail
 ########################################################################################################################
 if [ ! -f "$HOME/.ssh/known_hosts" ]; then
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
-		ssh-keyscan -p "${HETZNER_SSH_PORT}" "$(hcloud server ip "${HETZNER_NODE_NAME}")" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
+		ssh-keyscan -p 22333 "$(hcloud server ip "${HETZNER_NODE_NAME}")" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
 	chmod 600 "$HOME/.ssh/known_hosts" || true
 fi
 
@@ -180,7 +179,7 @@ set +u
 if [ ! -f "${KUBECONFIG}" ]; then
 	echo "writing [${KUBECONFIG}] ..."
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
-		hcloud server ssh -p "${HETZNER_SSH_PORT}" "${HETZNER_NODE_NAME}" \
+		hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
 			'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${INGRESS_DOMAIN}/g" >"${KUBECONFIG}" || true
 	chmod 600 "${KUBECONFIG}"
 fi
