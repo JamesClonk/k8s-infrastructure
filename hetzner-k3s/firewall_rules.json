@@ -5,6 +5,15 @@
       "0.0.0.0/0",
       "::/0"
     ],
+    "protocol": "udp",
+    "port": "${HETZNER_WIREGUARD_SERVER_PORT}"
+  },
+  {
+    "direction": "in",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ],
     "protocol": "tcp",
     "port": "80"
   },
@@ -16,15 +25,6 @@
     ],
     "protocol": "tcp",
     "port": "443"
-  },
-  {
-    "direction": "in",
-    "source_ips": [
-      "0.0.0.0/0",
-      "::/0"
-    ],
-    "protocol": "tcp",
-    "port": "6443"
   },
   {
     "direction": "in",

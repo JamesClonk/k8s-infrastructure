@@ -94,8 +94,9 @@ echo " "
 ########################################################################################################################
 echo "checking wireguard ..."
 
-# start local wireguard client connection to server
-wg-quick up hetzner0.conf
+# (re)start local wireguard client connection to server
+wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
+wg-quick up "${LOCAL_WIREGUARD_FILE}"
 
 # test if we can reach SSH
 export HETZNER_WIREGUARD_SETUP="false"
@@ -105,7 +106,7 @@ nc -vz "${HETZNER_NODE_IP}" 22333 || export HETZNER_WIREGUARD_SETUP="true" # if 
 if [ "${HETZNER_WIREGUARD_SETUP}" -eq "false" ]; then
 	echo "configuring wireguard ..."
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
-		"cat > /etc/wireguard/kubernetes0.conf << EOF
+		"cat > /etc/wireguard/hetzner0.conf << EOF
 # server
 [Interface]
 Address = ${HETZNER_WIREGUARD_SERVER_IP}/24
@@ -123,7 +124,7 @@ SaveConfig = false
 PublicKey = ${HETZNER_WIREGUARD_CLIENT_PUBLIC_KEY}
 AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32, ${HETZNER_WIREGUARD_SERVER_RANGE}, ${HETZNER_PRIVATE_NETWORK_SUBNET}
 EOF"
-	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@kubernetes0"
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@hetzner0"
 fi
 
 ########################################################################################################################
