@@ -38,12 +38,46 @@ echo " "
 ########################################################################################################################
 ####### server #########################################################################################################
 ########################################################################################################################
+# prepare cloud-init file
+cat >cloud-init.conf <<EOF
+#cloud-config
+package_update: true
+package_upgrade: true
+write_files:
+- path: /etc/ssh/sshd_config.d/ssh-kubernetes.conf
+  content: |
+    Port 22333
+    Protocol 2
+    HostKey /etc/ssh/ssh_host_rsa_key
+    HostKey /etc/ssh/ssh_host_ed25519_key
+    Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+    KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group18-sha512,diffie-hellman-group16-sha512
+    MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
+    HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com
+    PermitRootLogin yes
+    MaxAuthTries 2
+    LoginGraceTime 15
+    ClientAliveInterval 300
+    ClientAliveCountMax 2
+    PubkeyAuthentication yes
+    PasswordAuthentication no
+    PermitEmptyPasswords no
+    ChallengeResponseAuthentication no
+    KbdInteractiveAuthentication no
+    KerberosAuthentication no
+    GSSAPIAuthentication no
+runcmd:
+- reboot
+EOF
+
 echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
-		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" &&
-		rm -f "${KUBECONFIG}" && sleep 30)
-# wait half a minute for server to be ready for sure
+		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
+		--user-data-from-file "cloud-init.conf" &&
+		rm -f "${KUBECONFIG}" && sleep 60)
+# wait a minute for server to be ready for sure
+rm -f cloud-init.conf
 
 # get server-ip
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
@@ -64,34 +98,6 @@ cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null
 
 # custom SSH configuration
 echo "configuring sshd ..."
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
-	"cat > /etc/ssh/sshd_config << EOF
-Include /etc/ssh/sshd_config.d/*.conf
-Port 22333
-Protocol 2
-HostKey /etc/ssh/ssh_host_rsa_key
-HostKey /etc/ssh/ssh_host_ed25519_key
-Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group18-sha512,diffie-hellman-group16-sha512
-MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com
-HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,sk-ssh-ed25519@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com
-PermitRootLogin yes
-MaxAuthTries 2
-LoginGraceTime 15
-ClientAliveInterval 300
-ClientAliveCountMax 2
-PubkeyAuthentication yes
-PasswordAuthentication no
-PermitEmptyPasswords no
-ChallengeResponseAuthentication no
-KbdInteractiveAuthentication no
-KerberosAuthentication no
-GSSAPIAuthentication no
-UsePAM yes
-PrintMotd no
-AcceptEnv LANG LC_*
-Subsystem       sftp    /usr/lib/openssh/sftp-server
-EOF"
 # remove weak moduli
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
 # regenerate the RSA and ED25519 keys
