@@ -50,6 +50,7 @@ packages:
 write_files:
 - path: /etc/ssh/sshd_config.d/ssh-kubernetes.conf
   content: |
+    # ListenAddress 10.8.0.2
     Port 22333
     Protocol 2
     HostKey /etc/ssh/ssh_host_rsa_key
@@ -79,8 +80,7 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-		--user-data-from-file "cloud-init.conf" &&
-		rm -f "${KUBECONFIG}" && sleep 60)
+		--user-data-from-file "cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 60)
 # wait a minute for server to be ready for sure
 rm -f cloud-init.conf
 
@@ -142,7 +142,9 @@ echo "configuring sshd ..."
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
 # regenerate the RSA and ED25519 keys
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart sshd"
+# stop listening to public IP, local only from now on! (access is handled via wireguard)
+retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress/ListenAddress/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
+retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
 sleep 5
 
 ########################################################################################################################
@@ -258,7 +260,7 @@ echo "installing/upgrading k3s on server [${HETZNER_NODE_NAME}] ..."
 retry 10 10 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
-test -f "${KUBECONFIG}" || sleep 30 # wait a moment if this looks like it is k3s' first startup
+test -f "${KUBECONFIG}" || sleep 60 # wait a moment if this looks like it is k3s' first startup
 
 mkdir -p $HOME/.kube || true
 HETZNER_K3S_IP="${HETZNER_NODE_IP}"
