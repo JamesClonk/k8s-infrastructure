@@ -50,7 +50,7 @@ packages:
 write_files:
 - path: /etc/ssh/sshd_config.d/ssh-kubernetes.conf
   content: |
-    # ListenAddress 10.8.0.2
+    # ListenAddress xyz
     Port 22333
     Protocol 2
     HostKey /etc/ssh/ssh_host_rsa_key
@@ -84,9 +84,11 @@ hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 # wait a minute for server to be ready for sure
 rm -f "$HOME/.cloud-init.conf"
 
-# get server-ip
+# get server-ip, public and private
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
+HETZNER_NODE_PRIVATE_IP=$(exit 1)
+exit 1 # TODO: fix code on how to get private ip? can hcloud-cli do it? worst case: do it via ssh ip a command magic
 echo " "
 
 ########################################################################################################################
@@ -143,7 +145,7 @@ retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'
 # regenerate the RSA and ED25519 keys
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
 # stop listening to public IP, local only from now on! (access is handled via wireguard)
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress/ListenAddress/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
+retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress xyz/ListenAddress ${HETZNER_NODE_PRIVATE_IP}/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
 sleep 5
 
