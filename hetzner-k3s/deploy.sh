@@ -39,7 +39,7 @@ echo " "
 ####### server #########################################################################################################
 ########################################################################################################################
 # prepare cloud-init file
-cat >cloud-init.conf <<EOF
+cat >$HOME/.cloud-init.conf <<EOF
 #cloud-config
 
 package_update: true
@@ -80,9 +80,9 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-		--user-data-from-file "cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 60)
+		--user-data-from-file "$HOME/.cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 60)
 # wait a minute for server to be ready for sure
-rm -f cloud-init.conf
+rm -f "$HOME/.cloud-init.conf"
 
 # get server-ip
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
