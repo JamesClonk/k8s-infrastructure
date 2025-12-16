@@ -41,8 +41,12 @@ echo " "
 # prepare cloud-init file
 cat >cloud-init.conf <<EOF
 #cloud-config
+
 package_update: true
 package_upgrade: true
+packages:
+- wireguard
+
 write_files:
 - path: /etc/ssh/sshd_config.d/ssh-kubernetes.conf
   content: |
@@ -66,6 +70,7 @@ write_files:
     KbdInteractiveAuthentication no
     KerberosAuthentication no
     GSSAPIAuthentication no
+
 runcmd:
 - reboot
 EOF
@@ -84,13 +89,47 @@ retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
 echo " "
 
-# WireGuard configuration
+########################################################################################################################
+####### wireguard ######################################################################################################
+########################################################################################################################
 echo "checking wireguard ..."
-# TODO: add wireguard setup/check here!
 
-# SSH configuration
+# start local wireguard client connection to server
+wg-quick up hetzner0.conf
+
+# test if we can reach SSH
+export HETZNER_WIREGUARD_SETUP="false"
+nc -vz "${HETZNER_NODE_IP}" 22333 || export HETZNER_WIREGUARD_SETUP="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
+
+# setup if not yet working
+if [ "${HETZNER_WIREGUARD_SETUP}" -eq "false" ]; then
+	echo "configuring wireguard ..."
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+		"cat > /etc/wireguard/kubernetes0.conf << EOF
+# server
+[Interface]
+Address = ${HETZNER_WIREGUARD_SERVER_IP}/24
+ListenPort = ${HETZNER_WIREGUARD_SERVER_PORT}
+PrivateKey = ${HETZNER_WIREGUARD_SERVER_PRIVATE_KEY}
+
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens+ -j MASQUERADE
+PostUp = sysctl -w -q net.ipv4.ip_forward=1; sysctl -w -q net.ipv4.conf.all.forwarding=1
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens+ -j MASQUERADE
+PostDown = sysctl -w -q net.ipv4.ip_forward=0; sysctl -w -q net.ipv4.conf.all.forwarding=0
+SaveConfig = false
+
+# client
+[Peer]
+PublicKey = ${HETZNER_WIREGUARD_CLIENT_PUBLIC_KEY}
+AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32, ${HETZNER_WIREGUARD_SERVER_RANGE}, ${HETZNER_PRIVATE_NETWORK_SUBNET}
+EOF"
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@kubernetes0"
+fi
+
+########################################################################################################################
+####### SSH ############################################################################################################
+########################################################################################################################
 echo "checking ssh ..."
-
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
 	(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
@@ -105,6 +144,9 @@ retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_hos
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart sshd"
 sleep 5
 
+########################################################################################################################
+####### server config ##################################################################################################
+########################################################################################################################
 # get rid of idiotic systemd-resolved
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm -f /etc/resolv.conf"
@@ -134,6 +176,9 @@ EOF"
 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "crontab -l"
 echo " "
 
+########################################################################################################################
+####### firewall #######################################################################################################
+########################################################################################################################
 # setup firewall
 ./firewall.sh
 

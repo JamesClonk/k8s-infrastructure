@@ -10,6 +10,7 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/configuration.yml"
 export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets.sops"
 export KUBECONFIG="$HOME/.kube/k8s-infrastructure"
+export LOCAL_WIREGUARD_FILE="$HOME/.wireguard-hetzner0.conf"
 
 ########################################################################################################################
 # helper functions
@@ -119,6 +120,16 @@ export HETZNER_SSH_KEY_NAME=$(yq -e eval '.configuration.hetzner.ssh.key_name' $
 export HETZNER_PUBLIC_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.public_key' -)
 export HETZNER_PRIVATE_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.private_key' -)
 
+export HETZNER_WIREGUARD_SERVER_RANGE=$(yq -e eval '.configuration.hetzner.wireguard.server.range' ${CONFIGURATION_FILE})
+export HETZNER_WIREGUARD_SERVER_IP=$(yq -e eval '.configuration.hetzner.wireguard.server.ip' ${CONFIGURATION_FILE})
+export HETZNER_WIREGUARD_SERVER_PORT=$(yq -e eval '.configuration.hetzner.wireguard.server.port' ${CONFIGURATION_FILE})
+export HETZNER_WIREGUARD_SERVER_PUBLIC_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.server.public_key' -)
+export HETZNER_WIREGUARD_SERVER_PRIVATE_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.server.private_key' -)
+
+export HETZNER_WIREGUARD_CLIENT_IP=$(yq -e eval '.configuration.hetzner.wireguard.client.ip' ${CONFIGURATION_FILE})
+export HETZNER_WIREGUARD_CLIENT_PUBLIC_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.client.public_key' -)
+export HETZNER_WIREGUARD_CLIENT_PRIVATE_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.client.private_key' -)
+
 export HETZNER_PRIVATE_NETWORK_NAME=$(yq -e eval '.configuration.hetzner.private_network.name' ${CONFIGURATION_FILE})
 export HETZNER_PRIVATE_NETWORK_RANGE=$(yq -e eval '.configuration.hetzner.private_network.range' ${CONFIGURATION_FILE})
 export HETZNER_PRIVATE_NETWORK_SUBNET=$(yq -e eval '.configuration.hetzner.private_network.subnet' ${CONFIGURATION_FILE})
@@ -145,6 +156,25 @@ export HETZNER_K3S_VERSION=$(yq -e eval '.configuration.hetzner.k3s.version' ${C
 # ingress-nginx configuration
 ########################################################################################################################
 export INGRESS_DOMAIN=$(yq -e eval '.configuration.ingress.domains[0]' ${CONFIGURATION_FILE})
+
+########################################################################################################################
+# wireguard client
+########################################################################################################################
+if [ ! -f "${LOCAL_WIREGUARD_FILE}" ]; then
+	cat >"${LOCAL_WIREGUARD_FILE}" <<EOF
+[Interface]
+Address = ${HETZNER_WIREGUARD_CLIENT_IP}
+PrivateKey = ${HETZNER_WIREGUARD_CLIENT_PRIVATE_KEY}
+
+[Peer]
+PublicKey = ${HETZNER_WIREGUARD_SERVER_PUBLIC_KEY}
+Endpoint = ${INGRESS_DOMAIN}:${HETZNER_WIREGUARD_SERVER_PORT}
+AllowedIPs = ${HETZNER_WIREGUARD_SERVER_RANGE}, ${HETZNER_PRIVATE_NETWORK_SUBNET}
+PersistentKeepalive = 25
+EOF
+	chmod 600 "${LOCAL_WIREGUARD_FILE}"
+fi
+wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
 
 ########################################################################################################################
 # $HOME/.ssh

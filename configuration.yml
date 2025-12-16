@@ -6,6 +6,14 @@ configuration:
     ssh:
       key_name: kubernetes
 
+    wireguard:
+      server:
+        range: 10.10.250.0/24
+        ip: 10.10.250.1
+        port: 58585
+      client:
+        ip: 10.10.250.10
+
     private_network:
       name: kubernetes
       range: 10.8.0.0/16
