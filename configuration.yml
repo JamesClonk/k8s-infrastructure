@@ -15,8 +15,8 @@ configuration:
 
     node:
       name: kubernetes
-      type: cpx31 # https://www.hetzner.com/cloud#pricing
-      image: ubuntu-22.04
+      type: cpx32 # https://www.hetzner.com/cloud#pricing
+      image: ubuntu-24.04
       location: nbg1 # https://docs.hetzner.com/general/others/data-centers-and-connection
 
     firewall:
@@ -33,16 +33,16 @@ configuration:
       type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
 
     k3s:
-      version: "v1.24.17+k3s1" # https://github.com/rancher/k3s/releases
+      version: "v1.34.2+k3s1" # https://github.com/rancher/k3s/releases
 
   ingress:
     domains:
-    - "jamesclonk.io"
+    - "jamesclonk.com" # TODO: change for prod
 
   postgres:
     backup:
       s3:
-        enabled: "true"
+        enabled: "false" # TODO: change for prod
         retention_days: "21d"
 
   alertmanager:

@@ -9,32 +9,6 @@
 #@  assert.fail("postgres.resources.storage.size cannot be empty")
 #@ end
 
-#@ if data.values.postgres.resources.storage.reclaim:
-#@ if len(data.values.postgres.resources.storage.volume_handle) == 0:
-#@  assert.fail("postgres.resources.storage.volume_handle cannot be empty")
-#@ end
-#@ if len(data.values.postgres.resources.storage.driver) == 0:
-#@  assert.fail("postgres.resources.storage.driver cannot be empty")
-#@ end
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pvc-postgres
-  namespace: postgres
-  labels: #@ labels("pv")
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: #@ data.values.postgres.resources.storage.size
-  csi:
-    driver: #@ data.values.postgres.resources.storage.driver
-    fsType: ext4
-    volumeHandle: #@ str(data.values.postgres.resources.storage.volume_handle)
-  storageClassName: #@ data.values.postgres.resources.storage.class_name
-#@ end
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -49,8 +23,6 @@ spec:
     requests:
       storage: #@ data.values.postgres.resources.storage.size
   storageClassName: #@ data.values.postgres.resources.storage.class_name
-  #@ if/end data.values.postgres.resources.storage.reclaim:
-  volumeName: pvc-postgres
 
 #@ if data.values.pgbackup.enabled:
 #@ if len(data.values.pgbackup.resources.storage.class_name) == 0:
@@ -58,32 +30,6 @@ spec:
 #@ end
 #@ if len(data.values.pgbackup.resources.storage.size) == 0:
 #@  assert.fail("pgbackup.resources.storage.size cannot be empty")
-#@ end
-
-#@ if data.values.pgbackup.resources.storage.reclaim:
-#@ if len(data.values.pgbackup.resources.storage.volume_handle) == 0:
-#@  assert.fail("pgbackup.resources.storage.volume_handle cannot be empty")
-#@ end
-#@ if len(data.values.pgbackup.resources.storage.driver) == 0:
-#@  assert.fail("pgbackup.resources.storage.driver cannot be empty")
-#@ end
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pvc-pgbackup
-  namespace: postgres
-  labels: #@ labels("pv")
-spec:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: #@ data.values.pgbackup.resources.storage.size
-  csi:
-    driver: #@ data.values.pgbackup.resources.storage.driver
-    fsType: ext4
-    volumeHandle: #@ str(data.values.pgbackup.resources.storage.volume_handle)
-  storageClassName: #@ data.values.pgbackup.resources.storage.class_name
 #@ end
 
 ---
@@ -102,6 +48,4 @@ spec:
     requests:
       storage: #@ data.values.pgbackup.resources.storage.size
   storageClassName: #@ data.values.pgbackup.resources.storage.class_name
-  #@ if/end data.values.pgbackup.resources.storage.reclaim:
-  volumeName: pvc-pgbackup
 #@ end

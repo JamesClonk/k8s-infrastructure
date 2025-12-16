@@ -8,12 +8,8 @@ postgres:
   resources:
     memory_in_mb: 1024
     storage:
-      class_name: hcloud-volumes
-      #! class_name: local-path
-      driver: csi.hetzner.cloud
-      size: 10Gi
-      reclaim: false
-      volume_handle: "" # <-- must be set if 'reclaim=true', MUST be numerical ID of volume, not pvc-* name!!! Check UI dashboard!
+      class_name: local-path
+      size: 20Gi
 
 pgbouncer:
   image: "edoburu/pgbouncer:1.12.0"
@@ -27,16 +23,12 @@ exporter:
 pgbackup:
   image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
 
-  enabled: true
+  enabled: false # TODO: change for prod
   schedule: "55 5 * * *"
   file_retention: "21"
 
   resources:
     memory_in_mb: 1024
     storage:
-      #! class_name: hcloud-volumes
       class_name: local-path
-      driver: csi.hetzner.cloud
-      size: 10Gi
-      reclaim: false
-      volume_handle: "" # <-- must be set if 'reclaim=true'
+      size: 20Gi
