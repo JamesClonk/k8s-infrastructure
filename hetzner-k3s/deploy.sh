@@ -80,8 +80,8 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-		--user-data-from-file "$HOME/.tmp/cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 77)
-# wait a minute for server to be ready for sure
+		--user-data-from-file "$HOME/.tmp/cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 177)
+# wait for a while for server when newly created to be ready for sure
 rm -f "$HOME/.tmp/cloud-init.conf"
 
 # get server-ip, public and private
@@ -166,7 +166,6 @@ echo " "
 ########################################################################################################################
 # setup firewall
 ./firewall.sh
-exit 1 # TODO: remove if firewall is correct
 
 ########################################################################################################################
 ####### server config ##################################################################################################
@@ -273,12 +272,12 @@ fi
 echo "installing/upgrading k3s on server [${HETZNER_NODE_NAME}] ..."
 
 retry 10 10 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
-	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
+	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--tls-san=${HETZNER_NODE_PRIVATE_IP} --disable=traefik --disable=servicelb' sh -"
 echo " "
 test -f "${KUBECONFIG}" || sleep 60 # wait a moment if this looks like it is k3s' first startup
 
 mkdir -p $HOME/.kube || true
-HETZNER_K3S_IP="${HETZNER_NODE_IP}"
+HETZNER_K3S_IP="${HETZNER_NODE_PRIVATE_IP}"
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi

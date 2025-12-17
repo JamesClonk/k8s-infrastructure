@@ -201,10 +201,22 @@ if [ ! -f "$HOME/.ssh/known_hosts" ]; then
 	export HETZNER_SERVER_EXISTS="true"
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
 	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
-		# must be done with private-ip via wireguard connection
+		HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
 		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
-		echo "adding ${HETZNER_NODE_PRIVATE_IP} to ssh known_hosts ..."
-		ssh-keyscan -p 22333 "${HETZNER_NODE_PRIVATE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
+
+		# test if we can still reach SSH from outside
+		export HETZNER_FIREWALL_LOADED_ALREADY="false"
+		nc -vz "${HETZNER_NODE_IP}" 22333 -w5 || export HETZNER_FIREWALL_LOADED_ALREADY="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
+
+		if [ "${HETZNER_FIREWALL_LOADED_ALREADY}" == "false" ]; then
+			# still using the public-ip
+			echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..."
+			ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
+		else
+			# must be done with the private-ip via wireguard connection
+			echo "adding ${HETZNER_NODE_PRIVATE_IP} to ssh known_hosts ..."
+			ssh-keyscan -p 22333 "${HETZNER_NODE_PRIVATE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
+		fi
 	fi
 fi
 
@@ -219,11 +231,17 @@ if [ ! -f "${KUBECONFIG}" ]; then
 	export HETZNER_SERVER_EXISTS="true"
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
 	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
-		echo "writing [${KUBECONFIG}] ..."
 		# must be done with private-ip via wireguard connection
 		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
-		ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
-			'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${INGRESS_DOMAIN}/g" >"${KUBECONFIG}" || true
+
+		# test if we can actually reach the K8s-API
+		export HETZNER_KUBERNETES_API_RUNNING="true"
+		nc -vz "${HETZNER_NODE_PRIVATE_IP}" 6443 -w5 || export HETZNER_KUBERNETES_API_RUNNING="false"
+		if [ "${HETZNER_KUBERNETES_API_RUNNING}" == "true" ]; then
+			echo "writing [${KUBECONFIG}] ..."
+			ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
+				'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_NODE_PRIVATE_IP}/g" >"${KUBECONFIG}" || true
+		fi
 	fi
 fi
 chmod 600 "${KUBECONFIG}" || true

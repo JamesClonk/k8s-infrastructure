@@ -56,7 +56,7 @@ hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl status k3s"
 echo " "
 
 mkdir -p $HOME/.kube || true
-HETZNER_K3S_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
+HETZNER_K3S_IP=${HETZNER_NODE_PRIVATE_IP}
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
