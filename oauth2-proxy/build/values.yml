@@ -2,9 +2,6 @@ config:
   existingSecret: oauth2-proxy
   existingConfig: oauth2-proxy-config
 
-authenticatedEmailsFile:
-  enabled: false
-
 service:
   type: ClusterIP
   portNumber: 4180
@@ -12,9 +9,10 @@ service:
 serviceAccount:
   enabled: true
   name: oauth2-proxy
-  automountServiceAccountToken: true
 
 ingress:
+  enabled: false
+gatewayApi:
   enabled: false
 
 resources:
@@ -34,38 +32,9 @@ extraVolumeMounts:
 - mountPath: /etc/oauth2-proxy-template
   name: html-template
 
-proxyVarsAsSecrets: true
-
 livenessProbe:
-  enabled: true
   initialDelaySeconds: 15
   timeoutSeconds: 5
 
 readinessProbe:
-  enabled: true
   initialDelaySeconds: 15
-  timeoutSeconds: 5
-  periodSeconds: 10
-  successThreshold: 1
-
-securityContext:
-  enabled: true
-  runAsNonRoot: true
-  allowPrivilegeEscalation: false
-
-httpScheme: http
-
-htpasswdFile:
-  enabled: false
-
-sessionStorage:
-  type: cookie
-
-redis:
-  enabled: false
-
-metrics:
-  enabled: true
-  port: 44180
-  servicemonitor:
-    enabled: false
