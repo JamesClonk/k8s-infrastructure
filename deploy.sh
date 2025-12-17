@@ -17,11 +17,11 @@ deployments+=(
 	# we need some fancy ingress routing
 	"ingress-nginx"
 
-	# and want to use github oauth
-	"oauth2-proxy"
-
 	# and automatic let's encrypt certificate management
 	"cert-manager"
+
+	# and use github oauth
+	"oauth2-proxy"
 
 	# it also never hurts to have a dashboard!
 	"kubernetes-dashboard"
