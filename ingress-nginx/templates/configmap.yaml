@@ -1,0 +1,7 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"ingress-nginx-controller"}}), expects=1
+---
+data:
+  allow-snippet-annotations: "true"

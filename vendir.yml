@@ -4,54 +4,19 @@ kind: Config
 minimumRequiredVersion: 0.12.0
 
 directories:
-- path: vendor/github.com/kubernetes-sigs/metrics-server
-  contents:
-  - path: .
-    githubRelease:
-      slug: kubernetes-sigs/metrics-server
-      tag: v0.6.1
-      disableAutoChecksumValidation: true
-    includePaths:
-    - components.yaml
-- path: metrics-server/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/kubernetes-sigs/metrics-server
-    includePaths:
-    - components.yaml
-
-- path: vendor/github.com/hetznercloud/csi-driver
-  contents:
-  - path: .
-    git:
-      url: https://github.com/hetznercloud/csi-driver
-      ref: v1.6.0
-    includePaths:
-    - deploy/kubernetes/*
-- path: hcloud-csi/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/hetznercloud/csi-driver/deploy/kubernetes
-    includePaths:
-    - hcloud-csi.yml
-    excludePaths:
-    - LICENSE
-
 - path: vendor/github.com/kubernetes/ingress-nginx
   contents:
   - path: .
     git:
       url: https://github.com/kubernetes/ingress-nginx
-      ref: helm-chart-4.3.0
+      ref: helm-chart-4.14.1
     includePaths:
-    - deploy/static/provider/baremetal/*
+    - deploy/static/provider/cloud/*
 - path: ingress-nginx/templates/upstream
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
+      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud
     includePaths:
     - deploy.yaml
     excludePaths:

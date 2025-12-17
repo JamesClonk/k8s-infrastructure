@@ -320,8 +320,7 @@ subjects:
   namespace: ingress-nginx
 ---
 apiVersion: v1
-data:
-  allow-snippet-annotations: "true"
+data: null
 kind: ConfigMap
 metadata:
   labels:
