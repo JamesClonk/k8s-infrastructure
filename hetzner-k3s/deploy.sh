@@ -191,7 +191,7 @@ ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "crontab -l | grep 'sbin/reboot' 1>
 		retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 			"cat > /root/crontab.conf << EOF
 # m h  dom mon dow   command
-00 08 * * 1 /usr/sbin/reboot
+00 07 * * 1 /usr/sbin/reboot
 
 EOF"
 		retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "crontab < /root/crontab.conf"
