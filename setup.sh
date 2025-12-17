@@ -10,7 +10,7 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/configuration.yml"
 export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets.sops"
 export KUBECONFIG="$HOME/.kube/k8s-infrastructure"
-export LOCAL_WIREGUARD_FILE="$HOME/.hetzner0.conf"
+export LOCAL_WIREGUARD_FILE="$HOME/.tmp/hetzner0.conf"
 
 ########################################################################################################################
 # helper functions
@@ -160,6 +160,8 @@ export INGRESS_DOMAIN=$(yq -e eval '.configuration.ingress.domains[0]' ${CONFIGU
 ########################################################################################################################
 # wireguard client
 ########################################################################################################################
+if [ ! -d "$HOME/.tmp" ]; then mkdir "$HOME/.tmp"; fi
+chmod 700 "$HOME/.tmp" || true
 if [ ! -f "${LOCAL_WIREGUARD_FILE}" ]; then
 	cat >"${LOCAL_WIREGUARD_FILE}" <<EOF
 [Interface]
@@ -211,7 +213,7 @@ if [ ! -f "${KUBECONFIG}" ]; then
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
 		hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
 			'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${INGRESS_DOMAIN}/g" >"${KUBECONFIG}" || true
-	chmod 600 "${KUBECONFIG}"
 fi
+chmod 600 "${KUBECONFIG}" || true
 set -u
 set -o pipefail

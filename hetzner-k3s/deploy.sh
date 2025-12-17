@@ -128,6 +128,7 @@ AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32, ${HETZNER_WIREGUARD_SERVER_RANGE
 EOF"
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@hetzner0"
 fi
+exit 1 # TODO: remove if wireguard is correct
 
 ########################################################################################################################
 ####### SSH ############################################################################################################
@@ -148,6 +149,7 @@ retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_hos
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress xyz/ListenAddress ${HETZNER_NODE_PRIVATE_IP}/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
 retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
 sleep 5
+exit 1 # TODO: remove if SSH is now correct
 
 ########################################################################################################################
 ####### server config ##################################################################################################
