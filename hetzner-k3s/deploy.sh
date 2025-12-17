@@ -172,9 +172,9 @@ exit 1 # TODO: remove if firewall is correct
 ####### server config ##################################################################################################
 ########################################################################################################################
 # get rid of idiotic systemd-resolved
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm -f /etc/resolv.conf"
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "systemctl stop systemd-resolved; systemctl disable systemd-resolved"
+retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "rm -f /etc/resolv.conf"
+retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 	"cat > /etc/resolv.conf << EOF
 nameserver 1.1.1.1
 nameserver 8.8.8.8
@@ -186,18 +186,18 @@ echo " "
 # setup crontab
 echo "checking crontab ..."
 # check if crontab is already setup
-hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "crontab -l | grep 'sbin/reboot' 1>/dev/null" ||
+ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "crontab -l | grep 'sbin/reboot' 1>/dev/null" ||
 	(
 		echo "setting up crontab ..."
-		retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+		retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 			"cat > /root/crontab.conf << EOF
 # m h  dom mon dow   command
 00 08 * * 1 /usr/sbin/reboot
 
 EOF"
-		retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "crontab < /root/crontab.conf"
+		retry 2 2 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "crontab < /root/crontab.conf"
 	)
-hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "crontab -l"
+ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "crontab -l"
 echo " "
 
 ########################################################################################################################
@@ -219,8 +219,8 @@ if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 
 	# add floating-ip to server network interfaces
 	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.IP}}')
-	hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" ||
-		(hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+	ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" ||
+		(ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 			"cat > /etc/netplan/60-floating-ip.yaml << EOF
 network:
   version: 2
@@ -272,7 +272,7 @@ fi
 ########################################################################################################################
 echo "installing/upgrading k3s on server [${HETZNER_NODE_NAME}] ..."
 
-retry 10 10 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+retry 10 10 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
 echo " "
 test -f "${KUBECONFIG}" || sleep 60 # wait a moment if this looks like it is k3s' first startup
@@ -282,7 +282,7 @@ HETZNER_K3S_IP="${HETZNER_NODE_IP}"
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
-retry 5 10 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+retry 5 10 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" >"${KUBECONFIG}"
 chmod 600 "${KUBECONFIG}"
 
