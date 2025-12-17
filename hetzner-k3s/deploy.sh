@@ -80,7 +80,7 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-		--user-data-from-file "$HOME/.tmp/cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 177)
+		--user-data-from-file "$HOME/.tmp/cloud-init.conf" && rm -f "${KUBECONFIG}" && echo "waiting for server to be ready ..." && sleep 177)
 # wait for a while for server when newly created to be ready for sure
 rm -f "$HOME/.tmp/cloud-init.conf"
 
