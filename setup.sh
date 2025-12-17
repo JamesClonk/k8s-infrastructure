@@ -215,10 +215,16 @@ if [ ! -d "$HOME/.kube" ]; then mkdir "$HOME/.kube"; fi
 chmod 700 "$HOME/.kube" || true
 set +u
 if [ ! -f "${KUBECONFIG}" ]; then
-	echo "writing [${KUBECONFIG}] ..."
-	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
-		hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+	# check for server
+	export HETZNER_SERVER_EXISTS="true"
+	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
+	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
+		echo "writing [${KUBECONFIG}] ..."
+		# must be done with private-ip via wireguard connection
+		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+		ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 			'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${INGRESS_DOMAIN}/g" >"${KUBECONFIG}" || true
+	fi
 fi
 chmod 600 "${KUBECONFIG}" || true
 set -u
