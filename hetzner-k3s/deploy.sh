@@ -39,7 +39,7 @@ echo " "
 ####### server #########################################################################################################
 ########################################################################################################################
 # prepare cloud-init file
-cat >$HOME/.cloud-init.conf <<EOF
+cat >$HOME/.tmp/cloud-init.conf <<EOF
 #cloud-config
 
 package_update: true
@@ -80,16 +80,21 @@ echo "checking for server [${HETZNER_NODE_NAME}] ..."
 hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null ||
 	(hcloud server create --name "${HETZNER_NODE_NAME}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
 		--ssh-key "${HETZNER_SSH_KEY_NAME}" --network "${HETZNER_PRIVATE_NETWORK_NAME}" --location "${HETZNER_NODE_LOCATION}" \
-		--user-data-from-file "$HOME/.cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 60)
+		--user-data-from-file "$HOME/.tmp/cloud-init.conf" && rm -f "${KUBECONFIG}" && sleep 77)
 # wait a minute for server to be ready for sure
-rm -f "$HOME/.cloud-init.conf"
+rm -f "$HOME/.tmp/cloud-init.conf"
 
 # get server-ip, public and private
 retry 5 10 hcloud server ip "${HETZNER_NODE_NAME}"
 HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
-HETZNER_NODE_PRIVATE_IP=$(exit 1)
-exit 1 # TODO: fix code on how to get private ip? can hcloud-cli do it? worst case: do it via ssh ip a command magic
+HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+echo "server IPs: ${HETZNER_NODE_IP}, ${HETZNER_NODE_PRIVATE_IP}"
 echo " "
+
+# add server-ip to ssh known_hosts, otherwise no further ssh commands will work
+cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
+	(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
+		ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" && echo " ")
 
 ########################################################################################################################
 ####### wireguard ######################################################################################################
@@ -100,12 +105,12 @@ echo "checking wireguard ..."
 wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
 wg-quick up "${LOCAL_WIREGUARD_FILE}"
 
-# test if we can reach SSH
-export HETZNER_WIREGUARD_SETUP="false"
-nc -vz "${HETZNER_NODE_IP}" 22333 || export HETZNER_WIREGUARD_SETUP="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
+# test if we can still reach SSH from outside
+export HETZNER_FIREWALL_LOADED_ALREADY="false"
+nc -vz "${HETZNER_NODE_IP}" 22333 || export HETZNER_FIREWALL_LOADED_ALREADY="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
 
-# setup if not yet working
-if [ "${HETZNER_WIREGUARD_SETUP}" -eq "false" ]; then
+# setup if no firewall yet
+if [ "${HETZNER_FIREWALL_LOADED_ALREADY}" == "false" ]; then
 	echo "configuring wireguard ..."
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
 		"cat > /etc/wireguard/hetzner0.conf << EOF
@@ -124,9 +129,10 @@ SaveConfig = false
 # client
 [Peer]
 PublicKey = ${HETZNER_WIREGUARD_CLIENT_PUBLIC_KEY}
-AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32, ${HETZNER_WIREGUARD_SERVER_RANGE}, ${HETZNER_PRIVATE_NETWORK_SUBNET}
+AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32
 EOF"
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@hetzner0"
+	sleep 2
 fi
 exit 1 # TODO: remove if wireguard is correct
 
@@ -134,22 +140,27 @@ exit 1 # TODO: remove if wireguard is correct
 ####### SSH ############################################################################################################
 ########################################################################################################################
 echo "checking ssh ..."
-# add server-ip to ssh known_hosts
-cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
-	(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
-		ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" && echo " ")
 
-# custom SSH configuration
-echo "configuring sshd ..."
-# remove weak moduli
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
-# regenerate the RSA and ED25519 keys
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
-# stop listening to public IP, local only from now on! (access is handled via wireguard)
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress xyz/ListenAddress ${HETZNER_NODE_PRIVATE_IP}/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
-retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
-sleep 5
+# setup if no firewall yet
+if [ "${HETZNER_FIREWALL_LOADED_ALREADY}" == "false" ]; then
+	# custom SSH configuration
+	echo "configuring sshd ..."
+	# remove weak moduli
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
+	# regenerate the RSA and ED25519 keys
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
+	# stop listening to public IP, local only from now on! (access is handled via wireguard)
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress xyz/ListenAddress ${HETZNER_NODE_PRIVATE_IP}/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
+	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
+	sleep 5
+fi
 exit 1 # TODO: remove if SSH is now correct
+
+########################################################################################################################
+####### firewall #######################################################################################################
+########################################################################################################################
+# setup firewall
+./firewall.sh
 
 ########################################################################################################################
 ####### server config ##################################################################################################
@@ -182,12 +193,6 @@ EOF"
 	)
 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "crontab -l"
 echo " "
-
-########################################################################################################################
-####### firewall #######################################################################################################
-########################################################################################################################
-# setup firewall
-./firewall.sh
 
 ########################################################################################################################
 ####### floating-ip ####################################################################################################

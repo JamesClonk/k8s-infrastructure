@@ -199,7 +199,7 @@ set -o pipefail
 if [ ! -f "$HOME/.ssh/known_hosts" ]; then
 	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
 		ssh-keyscan -p 22333 "$(hcloud server ip "${HETZNER_NODE_NAME}")" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
-	chmod 600 "$HOME/.ssh/known_hosts" || true
+	chmod 640 "$HOME/.ssh/known_hosts" || true
 fi
 
 ########################################################################################################################
