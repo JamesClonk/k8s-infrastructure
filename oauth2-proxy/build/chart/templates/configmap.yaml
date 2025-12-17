@@ -3,15 +3,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-{{- if .Values.config.annotations }}
+{{- with .Values.config.annotations }}
   annotations:
-{{ toYaml .Values.config.annotations | indent 4 }}
+{{ tpl ( toYaml . ) $ | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "oauth2-proxy.name" . }}
 {{- include "oauth2-proxy.labels" . | indent 4 }}
   name: {{ template "oauth2-proxy.fullname" . }}
+  namespace: {{ template "oauth2-proxy.namespace" $ }}
 data:
-  oauth2_proxy.cfg: {{ .Values.config.configFile | quote }}
+  oauth2_proxy.cfg: {{ tpl .Values.config.configFile $ | quote }}
 {{- end }}
 {{- end }}

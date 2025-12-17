@@ -14,10 +14,10 @@ directories:
   path: ingress-nginx/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Thu 08 Sep 2022 05:52:27 PM CEST...'
-      sha: 75e3bd252ba1e0d56ddbedd724796c38fcae05b2
+      commitTitle: 'gpg: Signature made Mon 08 Dec 2025 09:33:30 AM CET...'
+      sha: 4efa93b9158acaa99d439f6b32435cb26401dba0
       tags:
-      - oauth2-proxy-6.2.7
+      - oauth2-proxy-9.0.1
     path: .
   path: vendor/github.com/oauth2-proxy/manifests
 - contents:

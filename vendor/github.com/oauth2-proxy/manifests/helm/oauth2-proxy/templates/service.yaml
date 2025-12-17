@@ -5,9 +5,10 @@ metadata:
     app: {{ template "oauth2-proxy.name" . }}
 {{- include "oauth2-proxy.labels" . | indent 4 }}
   name: {{ template "oauth2-proxy.fullname" . }}
-{{- if .Values.service.annotations }}
+  namespace: {{ template "oauth2-proxy.namespace" $ }}
+{{- with .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{ tpl ( toYaml . ) $ | indent 4 }}
 {{- end }}
 spec:
 {{- if (or (eq .Values.service.type "ClusterIP") (empty .Values.service.type)) }}
@@ -27,16 +28,41 @@ spec:
 {{- else }}
   type: {{ .Values.service.type }}
 {{- end }}
+{{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+{{- end }}
+{{- if .Values.service.internalTrafficPolicy }}
+  internalTrafficPolicy: {{ .Values.service.internalTrafficPolicy }}
+{{- end }}
   ports:
     - port: {{ .Values.service.portNumber }}
-      targetPort: {{ .Values.httpScheme }}
+      targetPort: {{ .Values.service.targetPort | default .Values.httpScheme }}
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
       protocol: TCP
+      {{- with .Values.service.appProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
       name: {{ .Values.httpScheme }}
     {{- if and .Values.metrics.enabled .Values.metrics.port }}
     - port: {{ .Values.metrics.port }}
       protocol: TCP
+      {{- with .Values.metrics.service.appProtocol }}
+      appProtocol: {{ . }}
+      {{- end }}
       targetPort: metrics
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.metrics.nodePort))) }}
+      nodePort: {{ .Values.metrics.nodePort }}
+      {{- end }}
       name: metrics
     {{- end }}
   selector:
     {{- include "oauth2-proxy.selectorLabels" . | indent 4 }}
+{{- if .Values.service.ipDualStack.enabled }}
+  ipFamilies: {{ toYaml .Values.service.ipDualStack.ipFamilies | nindent 4 }}
+  ipFamilyPolicy: {{ .Values.service.ipDualStack.ipFamilyPolicy }}
+{{- end }}
+{{- if .Values.service.trafficDistribution }}
+  trafficDistribution: {{ .Values.service.trafficDistribution }}
+{{- end }}

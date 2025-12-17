@@ -1,7 +1,7 @@
 name: oauth2-proxy
-version: 6.2.7
+version: 9.0.1
 apiVersion: v2
-appVersion: 7.3.0
+appVersion: 7.13.0
 home: https://oauth2-proxy.github.io/oauth2-proxy/
 description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:
@@ -13,23 +13,26 @@ keywords:
   - github
   - redis
 dependencies:
-  - name: redis
-    version: ~16.4.0
-    repository: https://charts.bitnami.com/bitnami
+  - name: redis-ha
+    version: 4.35.5
+    repository: https://dandydeveloper.github.io/charts
     alias: redis
     condition: redis.enabled
 sources:
   - https://github.com/oauth2-proxy/oauth2-proxy
   - https://github.com/oauth2-proxy/manifests
 maintainers:
-  - name: desaintmartin
-    email: cedric@desaintmartin.fr
-  - name: tlawrie
-  - name: NickMeves
-    email: nicholas.meves@gmail.com
-  - name: JoelSpeed
-    email: joel.speed@hotmail.co.uk
   - name: pierluigilenoci
     email: pierluigi.lenoci@gmail.com
-engine: gotpl
-kubeVersion: ">=1.9.0-0"
+  - name: tuunit
+    email: jan@larwig.com
+  - name: JoelSpeed
+    email: joel.speed@hotmail.co.uk
+kubeVersion: ">=1.16.0-0"
+annotations:
+  artifacthub.io/changes: |
+    - kind: changed
+      description: Breaking change: Separate image.repository into (image.registry / image.repository) and support .global.imageRegistry
+      links:
+        - name: Github PR
+          url: https://github.com/oauth2-proxy/manifests/pull/367
