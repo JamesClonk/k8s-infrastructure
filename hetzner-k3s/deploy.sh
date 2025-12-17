@@ -134,7 +134,7 @@ EOF"
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@hetzner0"
 	sleep 2
 fi
-exit 1 # TODO: remove if wireguard is correct
+echo " "
 
 ########################################################################################################################
 ####### SSH ############################################################################################################
@@ -145,22 +145,24 @@ echo "checking ssh ..."
 if [ "${HETZNER_FIREWALL_LOADED_ALREADY}" == "false" ]; then
 	# custom SSH configuration
 	echo "configuring sshd ..."
-	# remove weak moduli
-	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
-	# regenerate the RSA and ED25519 keys
-	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
+	### note: some of these security settings are not needed anymore since SSH will be behind wireguard access
+	# # remove weak moduli
+	# retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" 'awk '\''$5 >= 3071'\'' /etc/ssh/moduli > /etc/ssh/moduli.safe; mv /etc/ssh/moduli.safe /etc/ssh/moduli'
+	# # regenerate the RSA and ED25519 keys
+	# retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "rm /etc/ssh/ssh_host_*; ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ''; ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ''"
 	# stop listening to public IP, local only from now on! (access is handled via wireguard)
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "sed 's/# ListenAddress xyz/ListenAddress ${HETZNER_NODE_PRIVATE_IP}/g' -i /etc/ssh/sshd_config.d/ssh-kubernetes.conf"
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart ssh.service"
 	sleep 5
 fi
-exit 1 # TODO: remove if SSH is now correct
+echo " "
 
 ########################################################################################################################
 ####### firewall #######################################################################################################
 ########################################################################################################################
 # setup firewall
 ./firewall.sh
+exit 1 # TODO: remove if firewall is correct
 
 ########################################################################################################################
 ####### server config ##################################################################################################
