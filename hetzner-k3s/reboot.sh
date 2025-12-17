@@ -13,13 +13,14 @@ fi
 ########################################################################################################################
 ####### server #########################################################################################################
 ########################################################################################################################
-# get server-ip
-HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
+
+# get private server-ip
+HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
 
 # add server-ip to ssh known_hosts
-cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
-	(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
-		ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts")
+cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_PRIVATE_IP}" 1>/dev/null ||
+	(echo "adding ${HETZNER_NODE_PRIVATE_IP} to ssh known_hosts ..." &&
+		ssh-keyscan -p 22333 "${HETZNER_NODE_PRIVATE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts")
 echo " "
 
 ########################################################################################################################
@@ -39,7 +40,7 @@ hcloud server reboot "${HETZNER_NODE_NAME}"
 echo " "
 
 mkdir -p $HOME/.kube || true
-HETZNER_K3S_IP="${HETZNER_NODE_IP}"
+HETZNER_K3S_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
