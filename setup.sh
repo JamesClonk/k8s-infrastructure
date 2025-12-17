@@ -197,9 +197,15 @@ set -o pipefail
 # known_hosts
 ########################################################################################################################
 if [ ! -f "$HOME/.ssh/known_hosts" ]; then
-	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" 1>/dev/null &&
-		ssh-keyscan -p 22333 "$(hcloud server ip "${HETZNER_NODE_NAME}")" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
-	chmod 640 "$HOME/.ssh/known_hosts" || true
+	# check for server
+	export HETZNER_SERVER_EXISTS="true"
+	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
+	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
+		# must be done with private-ip via wireguard connection
+		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+		echo "adding ${HETZNER_NODE_PRIVATE_IP} to ssh known_hosts ..."
+		ssh-keyscan -p 22333 "${HETZNER_NODE_PRIVATE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" || true
+	fi
 fi
 
 ########################################################################################################################

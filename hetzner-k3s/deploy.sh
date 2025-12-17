@@ -91,11 +91,6 @@ HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name
 echo "server IPs: ${HETZNER_NODE_IP}, ${HETZNER_NODE_PRIVATE_IP}"
 echo " "
 
-# add server-ip to ssh known_hosts, otherwise no further ssh commands will work
-cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
-	(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
-		ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" && echo " ")
-
 ########################################################################################################################
 ####### wireguard ######################################################################################################
 ########################################################################################################################
@@ -107,10 +102,15 @@ wg-quick up "${LOCAL_WIREGUARD_FILE}"
 
 # test if we can still reach SSH from outside
 export HETZNER_FIREWALL_LOADED_ALREADY="false"
-nc -vz "${HETZNER_NODE_IP}" 22333 || export HETZNER_FIREWALL_LOADED_ALREADY="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
+nc -vz "${HETZNER_NODE_IP}" 22333 -w5 || export HETZNER_FIREWALL_LOADED_ALREADY="true" # if failure, then firewall already blocks ssh and wireguard should be active by now
 
 # setup if no firewall yet
 if [ "${HETZNER_FIREWALL_LOADED_ALREADY}" == "false" ]; then
+	# add server-ip to ssh known_hosts, otherwise no initial ssh setup commands will work
+	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_IP}" 1>/dev/null ||
+		(echo "adding ${HETZNER_NODE_IP} to ssh known_hosts ..." &&
+			ssh-keyscan -p 22333 "${HETZNER_NODE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" && echo " " || true)
+
 	echo "configuring wireguard ..."
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
 		"cat > /etc/wireguard/hetzner0.conf << EOF
@@ -133,6 +133,10 @@ AllowedIPs = ${HETZNER_WIREGUARD_CLIENT_IP}/32
 EOF"
 	retry 2 2 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl enable --now wg-quick@hetzner0"
 	sleep 2
+
+	# also do an ssh known_hosts entry via private-ip now
+	cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_PRIVATE_IP}" 1>/dev/null ||
+		(echo "adding ${HETZNER_NODE_PRIVATE_IP} to ssh known_hosts ..." && ssh-keyscan -p 22333 "${HETZNER_NODE_PRIVATE_IP}" 2>/dev/null >>"$HOME/.ssh/known_hosts" && echo " ")
 fi
 echo " "
 
