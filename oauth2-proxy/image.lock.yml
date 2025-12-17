@@ -1,6 +1,6 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.32.0
+minimumRequiredVersion: 0.47.0
 overrides:
 - image: quay.io/oauth2-proxy/oauth2-proxy:v7.2.1
   newImage: quay.io/oauth2-proxy/oauth2-proxy@sha256:febeebebe762ed672672dd0915013feee7338632ee622a865b43ee2812399c4e
