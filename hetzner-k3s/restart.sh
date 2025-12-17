@@ -35,24 +35,24 @@ fi
 ########################################################################################################################
 echo "restarting k3s on server [${HETZNER_NODE_NAME}] ..."
 
-hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
-	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--disable=traefik --disable=servicelb' sh -"
+ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
+	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--tls-san=${HETZNER_NODE_PRIVATE_IP} --disable=traefik --disable=servicelb' sh -"
 echo " "
 
 # fix iptables issues (https://github.com/k3s-io/k3s/issues/535)
 echo "clearing iptables ..."
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -P INPUT ACCEPT"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -P FORWARD ACCEPT"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -P OUTPUT ACCEPT"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -t nat -F"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -t mangle -F"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -F"
-retry 7 7 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "iptables -X"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -P INPUT ACCEPT"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -P FORWARD ACCEPT"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -P OUTPUT ACCEPT"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -t nat -F"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -t mangle -F"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -F"
+retry 7 7 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "iptables -X"
 
 # restarting k3s
 echo "restarting k3s ..."
-hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl restart k3s"
-hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" "systemctl status k3s"
+ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "systemctl restart k3s" && sleep 10
+ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "systemctl status k3s"
 echo " "
 
 mkdir -p $HOME/.kube || true
@@ -60,7 +60,7 @@ HETZNER_K3S_IP=${HETZNER_NODE_PRIVATE_IP}
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
-retry 5 10 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+retry 5 10 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" >"${KUBECONFIG}"
 chmod 600 "${KUBECONFIG}"
 

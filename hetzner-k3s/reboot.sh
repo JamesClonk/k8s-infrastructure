@@ -13,7 +13,6 @@ fi
 ########################################################################################################################
 ####### server #########################################################################################################
 ########################################################################################################################
-
 # get private server-ip
 HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
 
@@ -44,7 +43,8 @@ HETZNER_K3S_IP=${HETZNER_NODE_PRIVATE_IP}
 if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
-retry 15 45 hcloud server ssh -p 22333 "${HETZNER_NODE_NAME}" \
+retry 15 45 nc -vz "${HETZNER_NODE_PRIVATE_IP}" 22333 -w5
+retry 5 5 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 	'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_K3S_IP}/g" >"${KUBECONFIG}"
 chmod 600 "${KUBECONFIG}"
 
