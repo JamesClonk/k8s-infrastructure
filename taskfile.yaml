@@ -1,0 +1,57 @@
+---
+version: '3'
+set: [errexit, nounset, pipefail]
+
+tasks:
+  default:
+    desc: "List all tasks"
+    cmds:
+    - task -l
+
+  deploy:
+    desc: "Deploy entire infrastructure and components"
+    # deploy it all, all of it!
+    cmds:
+    # setup cluster on hetzner cloud
+    - task: hetzner:deploy
+    # let's own the kube-system namespace
+    - task: kube-system:deploy
+    # we need some fancy ingress routing
+    - task: ingress:deploy
+    # and automatic let's encrypt certificate management
+    - task: cert-manager:deploy
+    # and use github oauth
+    - task: dex:deploy
+    # and do the login-dance via proxy
+    - task: oauth2-proxy:deploy
+    # it also never hurts to have a dashboard!
+    - task: kubernetes-dashboard:deploy
+    # we can always use a good database..
+    - task: postgres:deploy
+    # metrics, monitoring, alerting, logs, what would we do without those?
+    - task: monitoring:deploy
+    # admire our work!
+    - task: list-apps
+    # cleanup properly afterwards ...
+    - task: cleanup
+
+  list-apps:
+    desc: "List all running apps/components"
+    cmds:
+    - bash list_apps.sh
+
+  cleanup:
+    desc: "Cleanup environment, remove confidential files"
+    cmds:
+    - bash cleanup.sh
+
+includes:
+  hetzner: ./hetzner-k3s
+  kube-system: ./kube-system
+  ingress: ./ingress-nginx
+  cert-manager: ./cert-manager
+  dex: ./dex
+  oauth2-proxy: ./oauth2-proxy
+  kubernetes-dashboard: ./kubernetes-dashboard
+  postgres: ./postgres
+  monitoring: ./monitoring

@@ -1,0 +1,34 @@
+---
+version: '3'
+set: [errexit, nounset, pipefail]
+
+tasks:
+  deploy:
+    desc: "Deploy infrastructure and kubernetes on server"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash deploy.sh
+
+  firewall:
+    desc: "Load firewall rules"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash firewall.sh
+
+  reboot:
+    desc: "Reboot the server"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash reboot.sh
+
+  restart:
+    desc: "Restart and reload k3s/kubernetes"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash restart.sh
+
+  ssh:
+    desc: "Initiate an SSH connection to server"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash ssh.sh

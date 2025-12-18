@@ -12,12 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: install and upgrade k3s on hetzner cloud
-      working-directory: hetzner-k3s
-      run: ./deploy.sh
+      run: task hetzner:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   kube-system:
     name: kube-system
@@ -25,22 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: prepare kube-system namespace
-      working-directory: kube-system
-      run: ./deploy.sh
+      run: task kube-system:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
-
-  hcloud-csi:
-    name: hcloud-csi
-    needs: [ kube-system ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: install hetzner csi driver
-      working-directory: hcloud-csi
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup

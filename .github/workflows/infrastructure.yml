@@ -14,12 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: install and upgrade k3s on hetzner cloud
-      working-directory: hetzner-k3s
-      run: ./deploy.sh
+      run: task hetzner:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   kube-system:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -28,26 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: prepare kube-system namespace
-      working-directory: kube-system
-      run: ./deploy.sh
+      run: task kube-system:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
-
-  hcloud-csi:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: hcloud-csi
-    needs: [ kube-system ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: install hetzner csi driver
-      working-directory: hcloud-csi
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   ingress-nginx:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -57,11 +47,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: deploy kubernetes ingress controller
-      working-directory: ingress-nginx
-      run: ./deploy.sh
+      run: task ingress-nginx:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   cert-manager:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -70,26 +59,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy cert-manager for let's encrypt
-      working-directory: cert-manager
-      run: ./deploy.sh
+      run: task cert-manager:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
+
+  dex:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: dex
+    needs: [ cert-manager, ingress-nginx ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: deploy dex
+      run: task dex:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
 
   oauth2-proxy:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: oauth2-proxy
-    needs: [ ingress-nginx ]
+    needs: [ dex ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: deploy oauth2-proxy
-      working-directory: oauth2-proxy
-      run: ./deploy.sh
+      run: task oauth2-proxy:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   kubernetes-dashboard:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -98,12 +101,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy kubernetes dashboard
-      working-directory: kubernetes-dashboard
-      run: ./deploy.sh
+      run: task kubernetes-dashboard:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
+
+  postgres:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: postgres
+    needs: [ kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy postgres database
+      run: task postgres:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
 
   kube-state-metrics:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -112,26 +133,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy kube-state-metrics
-      working-directory: monitoring/kube-state-metrics
-      run: ./deploy.sh
+      run: task monitoring:deploy-kube-state-metrics
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   prometheus:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: prometheus
-    needs: [ oauth2-proxy, cert-manager, kube-state-metrics, hcloud-csi ]
+    needs: [ oauth2-proxy, cert-manager, kube-state-metrics ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy prometheus
-      working-directory: monitoring/prometheus
-      run: ./deploy.sh
+      run: task monitoring:deploy-prometheus
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   prometheus-msteams:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -140,54 +165,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy prometheus-msteams proxy
-      working-directory: monitoring/prometheus-msteams
-      run: ./deploy.sh
+      run: task monitoring:deploy-prometheus-msteams
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   loki:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: loki
-    needs: [ oauth2-proxy, cert-manager, hcloud-csi ]
+    needs: [ oauth2-proxy, cert-manager ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy loki
-      working-directory: monitoring/loki
-      run: ./deploy.sh
+      run: task monitoring:deploy-loki
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   grafana:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: grafana
-    needs: [ prometheus, loki, hcloud-csi ]
+    needs: [ prometheus, loki ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy grafana
-      working-directory: monitoring/grafana
-      run: ./deploy.sh
+      run: task monitoring:deploy-grafana
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
-
-  postgres:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: postgres
-    needs: [ kube-system, hcloud-csi ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy postgres database
-      working-directory: postgres
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   testing:
     if: "!contains(github.event.head_commit.message, 'skip')"

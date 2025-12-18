@@ -12,9 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: restart k3s service
-      working-directory: hetzner-k3s
-      run: ./restart.sh
+      run: task hetzner:restart
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup

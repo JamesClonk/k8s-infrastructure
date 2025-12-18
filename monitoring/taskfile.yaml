@@ -1,0 +1,5 @@
+---
+version: '3'
+set: [errexit, nounset, pipefail]
+
+tasks: {} # TODO: implement
