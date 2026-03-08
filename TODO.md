@@ -57,7 +57,11 @@
 			- vector
 			- prometheus-discord ???
 
+- update all cert-manager annotations to point to "letsencrypt-prod" instead of "letsencrypt-staging"
+
 - go through all remaining "# TODO:" comments
+
+- go through image-puller and update all necessary values / sha-checksums / etc..
 
 - switch cx32 to cpx32 once ready for prod deployment
 

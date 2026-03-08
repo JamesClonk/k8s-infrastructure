@@ -46,5 +46,8 @@ spec:
       name: letsencrypt-staging
     solvers:
     - http01:
-        ingress:
-          class: nginx
+        gatewayHTTPRoute:
+          parentRefs:
+          - kind: Gateway
+            name: envoy-gateway
+            namespace: envoy-gateway-system

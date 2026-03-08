@@ -23,7 +23,7 @@ directories:
   path: oauth2-proxy/build/chart
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cert-manager/cert-manager/releases/72867571
+      url: https://api.github.com/repos/cert-manager/cert-manager/releases/289893419
     path: .
   path: vendor/github.com/jetstack/cert-manager
 - contents:

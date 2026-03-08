@@ -47,8 +47,11 @@ spec:
       name: letsencrypt-prod
     solvers:
     - http01:
-        ingress:
-          class: nginx
+        gatewayHTTPRoute:
+          parentRefs:
+          - kind: Gateway
+            name: envoy-gateway
+            namespace: envoy-gateway-system
 
 #@overlay/match by=overlay.subset({"kind":"Deployment"}), expects="1+"
 ---

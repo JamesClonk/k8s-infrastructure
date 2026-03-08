@@ -45,6 +45,8 @@ metadata:
   labels:
     app.kubernetes.io/name: envoy-gateway
     app.kubernetes.io/instance: envoy-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging" # TODO: change to prod once ready for prod deployment!
 spec:
   gatewayClassName: gateway
   addresses:
