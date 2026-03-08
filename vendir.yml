@@ -4,6 +4,25 @@ kind: Config
 minimumRequiredVersion: 0.12.0
 
 directories:
+- path: vendor/github.com/envoyproxy/gateway
+  contents:
+  - path: .
+    githubRelease:
+      slug: envoyproxy/gateway
+      tag: v1.7.0
+      assetNames: ["install.yaml", "envoy-gateway-crds.yaml"]
+      disableAutoChecksumValidation: true
+- path: envoy-gateway/templates/upstream
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/envoyproxy/gateway
+    includePaths:
+    - install.yaml
+    - envoy-gateway-crds.yaml
+    excludePaths:
+    - LICENSE
+
 - path: vendor/github.com/kubernetes/ingress-nginx
   contents:
   - path: .

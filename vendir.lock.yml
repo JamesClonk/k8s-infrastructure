@@ -1,6 +1,15 @@
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
+  - githubRelease:
+      url: https://api.github.com/repos/envoyproxy/gateway/releases/283544797
+    path: .
+  path: vendor/github.com/envoyproxy/gateway
+- contents:
+  - directory: {}
+    path: .
+  path: envoy-gateway/templates/upstream
+- contents:
   - git:
       commitTitle: 'gpg: Signature made Mon 02 Feb 2026 09:00:28 PM CET...'
       sha: 451747c70c6fca688e157a8329a3dd219a234fd9
