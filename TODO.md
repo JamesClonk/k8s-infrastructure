@@ -37,6 +37,9 @@
 			- loki
 			- vector
 
+- migrate all ytt "values.yml" to "values.yaml" (needs a change to all shellscripts which interact with ytt)
+- migrate all kbld "image.lock.yml" to "image.lock.yaml" (needs a change to all shellscripts which interact with kbld)
+
 - get rid of prometheus-msteams completely
 	- migrate to prometheus-discord ???
 

@@ -13,8 +13,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/component=proxy
-      app.kubernetes.io/name=envoy
+      app.kubernetes.io/component: proxy
+      app.kubernetes.io/name: envoy
   ingress:
   - {} #! allow all incoming traffic to envoy-gateway
 #@ end
