@@ -3,16 +3,17 @@
 - migrate to envoy-gateway?
 	- ~test first if you can make hostNetwork work, or some other way for port 80,443 with envoy-proxy???~
 	- if yes:
-		- remove HTTP-listener completely (and https-redirect), does it still work with letsencrypt http01 solver?
+		- ~remove HTTP-listener completely (and https-redirect), does it still work with letsencrypt http01 solver?~
+			- no, it does not. we need to keep http listener and https-redirect ‼️
 		- also implement Dex
 		- implement OIDC via Dex into Headlamp natively
 			- deploy headlamp via helm chart, as it can render oidc config directly
 			- implement headlamp httproute directly via its helm chart
 		- remove oauth2-proxy
 		- ~integrate with cert-manager~
-			- ~wildcard cert possible even?~
+			- ~wildcard cert possible even? NO~
 		- change all ingresses to httproutes, add oidc securitypolicy:
-			- dex
+			- ~dex~
 			- headlamp
 			- monitoring:
 				- grafana
