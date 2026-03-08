@@ -28,19 +28,19 @@ directories:
     - NOTICE
     - envoy-gateway-crds.yaml
 
-- path: vendor/github.com/oauth2-proxy/manifests
+- path: vendor/github.com/dexidp/helm-charts
   contents:
   - path: .
     git:
-      url: https://github.com/oauth2-proxy/manifests
-      ref: oauth2-proxy-9.0.1
+      url: https://github.com/dexidp/helm-charts
+      ref: dex-0.24.0
     includePaths:
-    - helm/oauth2-proxy/**/*
-- path: oauth2-proxy/build/chart
+    - charts/dex/**/*
+- path: dex/build/chart
   contents:
   - path: .
     directory:
-      path: vendor/github.com/oauth2-proxy/manifests/helm/oauth2-proxy
+      path: vendor/github.com/dexidp/helm-charts/charts/dex
     ignorePaths:
     - LICENSE
     - NOTICE
@@ -78,14 +78,12 @@ directories:
       url: https://github.com/kubernetes-sigs/headlamp
       ref: v0.40.1
     includePaths:
-    - kubernetes-headlamp.yaml
-- path: headlamp/templates/upstream
+    - charts/headlamp/**/*
+- path: headlamp/build/chart
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes-sigs/headlamp
-    includePaths:
-    - kubernetes-headlamp.yaml
+      path: vendor/github.com/kubernetes-sigs/headlamp/charts/headlamp
     ignorePaths:
     - LICENSE
     - NOTICE

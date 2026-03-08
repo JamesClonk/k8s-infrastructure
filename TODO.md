@@ -43,6 +43,7 @@
 
 - migrate all ytt "values.yml" to "values.yaml" (needs a change to all shellscripts which interact with ytt)
 - migrate all kbld "image.lock.yml" to "image.lock.yaml" (needs a change to all shellscripts which interact with kbld)
+- migrate all chart/.sh scripts from yml to yaml, also all their "values.yml" to "values.yaml"
 
 - get rid of prometheus-msteams completely
 	- migrate to prometheus-discord ???

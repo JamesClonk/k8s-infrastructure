@@ -11,16 +11,16 @@ directories:
   path: envoy-gateway/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Mon 08 Dec 2025 09:33:30 AM CET...'
-      sha: 4efa93b9158acaa99d439f6b32435cb26401dba0
+      commitTitle: 'gpg: Signature made Mon 01 Sep 2025 07:53:52 PM CEST...'
+      sha: c82afcc25e9d6a807111ba637b1a4568f9033fc6
       tags:
-      - oauth2-proxy-9.0.1
+      - dex-0.24.0
     path: .
-  path: vendor/github.com/oauth2-proxy/manifests
+  path: vendor/github.com/dexidp/helm-charts
 - contents:
   - directory: {}
     path: .
-  path: oauth2-proxy/build/chart
+  path: dex/build/chart
 - contents:
   - githubRelease:
       url: https://api.github.com/repos/cert-manager/cert-manager/releases/289893419
@@ -41,7 +41,7 @@ directories:
 - contents:
   - directory: {}
     path: .
-  path: headlamp/templates/upstream
+  path: headlamp/build/chart
 - contents:
   - git:
       commitTitle: 'gpg: Signature made Wed 24 Aug 2022 06:38:03 PM CEST...'

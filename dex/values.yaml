@@ -1,0 +1,12 @@
+#@data/values
+---
+dex:
+  enable_network_policy: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 192Mi

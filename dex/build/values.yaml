@@ -1,0 +1,32 @@
+ingress:
+  enabled: false
+
+config:
+  issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+  storage:
+    type: kubernetes
+    config:
+      inCluster: true
+  oauth2:
+    skipApprovalScreen: true
+  web:
+    http: 0.0.0.0:5556
+  telemetry:
+    http: 0.0.0.0:5558
+  enablePasswordDB: true
+  staticPasswords: # TODO: template via plato!!!
+  - email: "admin@jamesclonk.com"
+    hash: "$2y$10$j6peuxAD8el..vwAKsvBHu5Pxdu5nNRFmdk7nAPWknD43YzM2h/Yy"
+    username: "admin@jamesclonk.com"
+    userID: "287b3657-14a4-4eab-8040-98a69c963b43"
+  staticClients: # TODO: template via plato!!!
+  - id: envoy-gateway
+    name: envoy-gateway
+    redirectURIs:
+    - 'https://echo.jamesclonk.com/oauth2/callback'
+    - 'https://backman.jamesclonk.com/oauth2/callback'
+    - 'https://grafana.jamesclonk.com/oauth2/callback'
+    - 'https://prometheus.jamesclonk.com/oauth2/callback'
+    - 'https://dashboard.jamesclonk.com/oauth2/callback'
+    secret: "9589171b-b701-4237-bab1-ec43e97bb2d8"
+  connectors: [] # TODO: template via plato!!!
