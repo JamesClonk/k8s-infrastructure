@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("domain is missing or invalid")
+#@ end
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: headlamp
+  namespace: headlamp
+  labels:
+    k8s-app: headlamp
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+    sectionName: dashboard
+  hostnames:
+  #@ for/end host in data.values.configuration.ingress.domains:
+  - #@ "dashboard." + host
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: headlamp
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /

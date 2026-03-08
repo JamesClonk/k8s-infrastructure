@@ -14,10 +14,10 @@ spec:
     matchLabels:
       k8s-app: headlamp
   ingress:
-  - from: #! allow access for ingress-controller
+  - from: #! allow access for gateway-api-controller
     - namespaceSelector:
         matchLabels:
-          namespace.kubernetes.io/name: ingress-nginx
+          namespace.kubernetes.io/name: envoy-gateway-system
       podSelector: {}
     ports:
     - port: 4466

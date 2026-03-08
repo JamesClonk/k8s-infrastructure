@@ -4,9 +4,12 @@
 	- ~test first if you can make hostNetwork work, or some other way for port 80,443 with envoy-proxy???~
 	- if yes:
 		- also implement Dex
+		- implement OIDC via Dex into Headlamp natively
+			- deploy headlamp via helm chart, as it can render oidc config directly
+			- implement headlamp httproute directly via its helm chart
 		- remove oauth2-proxy
-		- integrate with cert-manager
-			- wildcard cert possible even?
+		- ~integrate with cert-manager~
+			- ~wildcard cert possible even?~
 		- change all ingresses to httproutes, add oidc securitypolicy:
 			- dex
 			- headlamp
