@@ -5,7 +5,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: gateway
+  name: envoy-gateway
   namespace: envoy-gateway-system
   labels:
     app.kubernetes.io/name: envoy-gateway
@@ -40,7 +40,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: gateway
+  name: envoy-gateway
   namespace: envoy-gateway-system
   labels:
     app.kubernetes.io/name: envoy-gateway
@@ -48,10 +48,10 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-staging" # TODO: change to prod once ready for prod deployment!
 spec:
-  gatewayClassName: gateway
+  gatewayClassName: envoy-gateway
   addresses:
   - type: IPAddress
-    value: 116.203.156.9
+    value: 116.203.156.9 # TODO: must be read and injected via shellscript / templating / ytt, cannot be hardcoded!
   listeners:
   - name: http
     protocol: HTTP

@@ -79,7 +79,7 @@ metadata:
     app: echo
 spec:
   parentRefs:
-  - name: gateway
+  - name: envoy-gateway
   hostnames:
   - "echo.jamesclonk.com"
   rules:
