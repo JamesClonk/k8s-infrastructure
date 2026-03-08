@@ -11,18 +11,6 @@ directories:
   path: envoy-gateway/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Mon 02 Feb 2026 09:00:28 PM CET...'
-      sha: 451747c70c6fca688e157a8329a3dd219a234fd9
-      tags:
-      - controller-v1.14.3
-    path: .
-  path: vendor/github.com/kubernetes/ingress-nginx
-- contents:
-  - directory: {}
-    path: .
-  path: ingress-nginx/templates/upstream
-- contents:
-  - git:
       commitTitle: 'gpg: Signature made Mon 08 Dec 2025 09:33:30 AM CET...'
       sha: 4efa93b9158acaa99d439f6b32435cb26401dba0
       tags:
@@ -42,18 +30,6 @@ directories:
   - directory: {}
     path: .
   path: cert-manager/templates/upstream
-- contents:
-  - git:
-      commitTitle: 'gpg: Signature made Tue 10 Feb 2026 06:18:38 PM CET...'
-      sha: 434a12263a6bd9d25f86f8bfa00d9992ac2672e3
-      tags:
-      - v0.40.1
-    path: .
-  path: vendor/github.com/kubernetes-sigs/headlamp
-- contents:
-  - directory: {}
-    path: .
-  path: headlamp/templates/upstream
 - contents:
   - git:
       commitTitle: 'gpg: Signature made Wed 24 Aug 2022 06:38:03 PM CEST...'

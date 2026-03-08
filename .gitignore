@@ -31,3 +31,8 @@
 
 # oauth2-proxy helm
 /oauth2-proxy/build/chart/charts/redis-*.tgz
+
+# vendir garbage
+/**/LICENSE
+/**/NOTICE
+/**/COPYRIGHT

@@ -66,6 +66,10 @@ directories:
       ref: v0.40.1
     includePaths:
     - kubernetes-headlamp.yaml
+    excludePaths:
+    - LICENSE
+    - NOTICE
+    legalPaths: []
 - path: headlamp/templates/upstream
   contents:
   - path: .
@@ -76,6 +80,7 @@ directories:
     excludePaths:
     - LICENSE
     - NOTICE
+    legalPaths: []
 
 - path: vendor/github.com/kubernetes/kube-state-metrics
   contents:
