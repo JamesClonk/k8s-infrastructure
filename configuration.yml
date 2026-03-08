@@ -40,7 +40,7 @@ configuration:
       type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
 
     k3s:
-      version: "v1.34.2+k3s1" # https://github.com/rancher/k3s/releases
+      version: "v1.34.5+k3s1" # https://github.com/rancher/k3s/releases
 
   ingress:
     domains:
@@ -56,7 +56,7 @@ configuration:
     email:
       enabled: "true"
     teams_webhook:
-      enabled: "true"
+      enabled: "false" # TODO: change for prod??? probably doesnt work anymore...
 
   msteams:
-    enabled: "true"
+    enabled: "false" # TODO: change for prod??? probably doesnt work anymore...
