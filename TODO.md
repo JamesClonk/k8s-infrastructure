@@ -54,5 +54,7 @@
 			- vector
 			- prometheus-discord ???
 
+- go through all remaining "# TODO:" comments
+
 - switch cx32 to cpx32 once ready for prod deployment
 
