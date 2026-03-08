@@ -94,9 +94,9 @@ jobs:
       if: ${{ always() }}
       run: task cleanup
 
-  kubernetes-dashboard:
+  headlamp:
     if: "!contains(github.event.head_commit.message, 'skip')"
-    name: kubernetes-dashboard
+    name: headlamp
     needs: [ oauth2-proxy, cert-manager ]
     runs-on: ubuntu-latest
     steps:
@@ -104,8 +104,8 @@ jobs:
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
-    - name: deploy kubernetes dashboard
-      run: task kubernetes-dashboard:deploy
+    - name: deploy headlamp
+      run: task headlamp:deploy
     - name: cleanup
       if: ${{ always() }}
       run: task cleanup
@@ -209,7 +209,7 @@ jobs:
   testing:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: k8s e2e testing
-    needs: [ postgres, grafana, kubernetes-dashboard ]
+    needs: [ postgres, grafana, headlamp ]
     runs-on: ubuntu-latest
     steps:
     - name: checkout k8s-testing

@@ -9,14 +9,14 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes/ingress-nginx
-      ref: helm-chart-4.14.1
+      ref: helm-chart-4.14.3
     includePaths:
-    - deploy/static/provider/cloud/*
+    - deploy/static/provider/baremetal/*
 - path: ingress-nginx/templates/upstream
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/cloud
+      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
     includePaths:
     - deploy.yaml
     excludePaths:
@@ -58,23 +58,24 @@ directories:
     excludePaths:
     - LICENSE
 
-- path: vendor/github.com/kubernetes/dashboard
+- path: vendor/github.com/kubernetes-sigs/headlamp
   contents:
   - path: .
     git:
-      url: https://github.com/kubernetes/dashboard
-      ref:  v2.6.1
+      url: https://github.com/kubernetes-sigs/headlamp
+      ref: v0.40.1
     includePaths:
-    - aio/deploy/*
-- path: kubernetes-dashboard/templates/upstream
+    - kubernetes-headlamp.yaml
+- path: headlamp/templates/upstream
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes/dashboard/aio/deploy
+      path: vendor/github.com/kubernetes-sigs/headlamp
     includePaths:
-    - recommended.yaml
+    - kubernetes-headlamp.yaml
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/kubernetes/kube-state-metrics
   contents:

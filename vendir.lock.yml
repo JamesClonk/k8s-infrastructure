@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Fri 05 Dec 2025 12:21:37 PM CET...'
-      sha: e832d044efc57ccae15e93ea26a169f64238bf6b
+      commitTitle: 'gpg: Signature made Mon 02 Feb 2026 09:00:28 PM CET...'
+      sha: 451747c70c6fca688e157a8329a3dd219a234fd9
       tags:
-      - controller-v1.14.1
+      - controller-v1.14.3
     path: .
   path: vendor/github.com/kubernetes/ingress-nginx
 - contents:
@@ -26,7 +26,6 @@ directories:
   path: oauth2-proxy/build/chart
 - contents:
   - githubRelease:
-      tag: v1.9.1
       url: https://api.github.com/repos/cert-manager/cert-manager/releases/72867571
     path: .
   path: vendor/github.com/jetstack/cert-manager
@@ -36,16 +35,16 @@ directories:
   path: cert-manager/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Fri 12 Aug 2022 03:10:43 PM CEST...'
-      sha: 2ce9133f71d80ce549e9b0493f1075de3e8d5d1a
+      commitTitle: 'gpg: Signature made Tue 10 Feb 2026 06:18:38 PM CET...'
+      sha: 434a12263a6bd9d25f86f8bfa00d9992ac2672e3
       tags:
-      - v2.6.1
+      - v0.40.1
     path: .
-  path: vendor/github.com/kubernetes/dashboard
+  path: vendor/github.com/kubernetes-sigs/headlamp
 - contents:
   - directory: {}
     path: .
-  path: kubernetes-dashboard/templates/upstream
+  path: headlamp/templates/upstream
 - contents:
   - git:
       commitTitle: 'gpg: Signature made Wed 24 Aug 2022 06:38:03 PM CEST...'
