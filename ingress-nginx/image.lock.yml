@@ -1,13 +1,13 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.47.0
+minimumRequiredVersion: 0.32.0
 overrides:
 - image: jamesclonk/basic-auth:678636aaca212f20c4e263d05b75efabdc6aef2c
   newImage: index.docker.io/jamesclonk/basic-auth@sha256:16808463ecb5319a04347f97a4cb3a1d8a9fbdd63b9119f546daf97e4dc8adc9
   preresolved: true
-- image: registry.k8s.io/ingress-nginx/controller:v1.14.1@sha256:f95a79b85fb93ac3de752c71a5c27d5ceae10a18b61904dec224c1c6a4581e47
-  newImage: registry.k8s.io/ingress-nginx/controller@sha256:f95a79b85fb93ac3de752c71a5c27d5ceae10a18b61904dec224c1c6a4581e47
+- image: registry.k8s.io/ingress-nginx/controller:v1.14.3@sha256:82917be97c0939f6ada1717bb39aa7e66c229d6cfb10dcfc8f1bd42f9efe0f81
+  newImage: registry.k8s.io/ingress-nginx/controller@sha256:82917be97c0939f6ada1717bb39aa7e66c229d6cfb10dcfc8f1bd42f9efe0f81
   preresolved: true
-- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.5@sha256:03a00eb0e255e8a25fa49926c24cde0f7e12e8d072c445cdf5136ec78b546285
-  newImage: registry.k8s.io/ingress-nginx/kube-webhook-certgen@sha256:03a00eb0e255e8a25fa49926c24cde0f7e12e8d072c445cdf5136ec78b546285
+- image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.7@sha256:7c74a715af2c94cb734785b4d3ea1357b4f02b88e1e123c622a9cb68b62f669c
+  newImage: registry.k8s.io/ingress-nginx/kube-webhook-certgen@sha256:7c74a715af2c94cb734785b4d3ea1357b4f02b88e1e123c622a9cb68b62f669c
   preresolved: true
