@@ -16,8 +16,8 @@ tasks:
     - task: hetzner:deploy
     # let's own the kube-system namespace
     - task: kube-system:deploy
-    # we need some fancy ingress routing
-    - task: ingress:deploy
+    # we need some fancy gateway-api routing
+    - task: envoy-gateway:deploy
     # and automatic let's encrypt certificate management
     - task: cert-manager:deploy
     # and use github oauth
@@ -48,7 +48,7 @@ tasks:
 includes:
   hetzner: ./hetzner-k3s
   kube-system: ./kube-system
-  ingress: ./ingress-nginx
+  envoy-gateway: ./envoy-gateway
   cert-manager: ./cert-manager
   dex: ./dex
   oauth2-proxy: ./oauth2-proxy

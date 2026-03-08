@@ -19,28 +19,9 @@ directories:
       path: vendor/github.com/envoyproxy/gateway
     includePaths:
     - install.yaml
+    excludePaths:
+    - LICENSE
     - envoy-gateway-crds.yaml
-    excludePaths:
-    - LICENSE
-
-- path: vendor/github.com/kubernetes/ingress-nginx
-  contents:
-  - path: .
-    git:
-      url: https://github.com/kubernetes/ingress-nginx
-      ref: helm-chart-4.14.3
-    includePaths:
-    - deploy/static/provider/baremetal/*
-- path: ingress-nginx/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
-    includePaths:
-    - deploy.yaml
-    excludePaths:
-    - LICENSE
-    - kustomization.yaml
 
 - path: vendor/github.com/oauth2-proxy/manifests
   contents:

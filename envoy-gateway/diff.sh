@@ -4,8 +4,9 @@ set -u
 set -o pipefail
 source ../setup.sh
 
-# lock image
-echo "locking images for [ingress-nginx] ..."
+# diff
+kapp app-change list -a envoy-gateway
 sops -d ${SECRETS_FILE} |
 	ytt --ignore-unknown-comments -f templates -f values.yml -f ${CONFIGURATION_FILE} -f - |
-	kbld -f - --lock-output "image.lock.yml"
+	kbld -f - -f image.lock.yml |
+	kapp deploy -a envoy-gateway -c --diff-run -f -

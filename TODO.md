@@ -1,7 +1,7 @@
 # TODO
 
 - migrate to envoy-gateway?
-	- test first if you can make hostNetwork work, or some other way for port 80,443 with envoy-proxy???
+	- ~test first if you can make hostNetwork work, or some other way for port 80,443 with envoy-proxy???~
 	- if yes:
 		- also implement Dex
 		- remove oauth2-proxy

@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"envoy-gateway"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"envoy-gateway"}), expects=1
+      - name: envoy-gateway
+        #@overlay/replace
+        resources: #@ data.values.gateway.resources

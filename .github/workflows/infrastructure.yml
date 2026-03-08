@@ -39,15 +39,15 @@ jobs:
       if: ${{ always() }}
       run: task cleanup
 
-  ingress-nginx:
+  envoy-gateway:
     if: "!contains(github.event.head_commit.message, 'skip')"
-    name: ingress-nginx
+    name: envoy-gateway
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: deploy kubernetes ingress controller
-      run: task ingress-nginx:deploy
+    - name: deploy kubernetes gateway-api controller
+      run: task envoy-gateway:deploy
     - name: cleanup
       if: ${{ always() }}
       run: task cleanup
@@ -55,7 +55,7 @@ jobs:
   cert-manager:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: cert-manager
-    needs: [ ingress-nginx ]
+    needs: [ envoy-gateway ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -71,7 +71,7 @@ jobs:
   dex:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: dex
-    needs: [ cert-manager, ingress-nginx ]
+    needs: [ cert-manager, envoy-gateway ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
