@@ -19,8 +19,13 @@ directories:
       path: vendor/github.com/envoyproxy/gateway
     includePaths:
     - install.yaml
+    ignorePaths:
+    - LICENSE
+    - NOTICE
+    - envoy-gateway-crds.yaml
     excludePaths:
     - LICENSE
+    - NOTICE
     - envoy-gateway-crds.yaml
 
 - path: vendor/github.com/oauth2-proxy/manifests
@@ -36,8 +41,12 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/oauth2-proxy/manifests/helm/oauth2-proxy
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/jetstack/cert-manager
   contents:
@@ -55,8 +64,12 @@ directories:
       path: vendor/github.com/jetstack/cert-manager
     includePaths:
     - cert-manager.yaml
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/kubernetes-sigs/headlamp
   contents:
@@ -73,6 +86,9 @@ directories:
       path: vendor/github.com/kubernetes-sigs/headlamp
     includePaths:
     - kubernetes-headlamp.yaml
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
     - NOTICE
@@ -90,8 +106,12 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/kubernetes/kube-state-metrics/examples/standard
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/prometheus-community/helm-charts
   contents:
@@ -106,8 +126,12 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/prometheus-community/helm-charts/charts/prometheus
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/grafana/grafana
   contents:
@@ -122,8 +146,12 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/grafana/grafana/charts/grafana
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/grafana/promtail
   contents:
@@ -138,8 +166,12 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/grafana/promtail/charts/promtail
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/grafana/loki
   contents:
@@ -154,5 +186,9 @@ directories:
   - path: .
     directory:
       path: vendor/github.com/grafana/loki/charts/loki
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
