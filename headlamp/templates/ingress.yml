@@ -8,21 +8,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: kubernetes-dashboard-ingress
-  namespace: kubernetes-dashboard
+  name: headlamp-ingress
+  namespace: headlamp
   labels:
-    k8s-app: kubernetes-dashboard
+    k8s-app: headlamp
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/auth-signin: #@ "https://oauth2-proxy." + data.values.configuration.ingress.domains[0] + "/oauth2/start"
     nginx.ingress.kubernetes.io/auth-url: #@ "https://oauth2-proxy." + data.values.configuration.ingress.domains[0] + "/oauth2/auth"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: kubernetes-dashboard-ingress-tls
+  - secretName: headlamp-ingress-tls
     hosts:
     #@ for/end host in data.values.configuration.ingress.domains:
     - #@ "dashboard." + host
@@ -33,8 +32,8 @@ spec:
       paths:
       - backend:
           service:
-            name: kubernetes-dashboard
+            name: headlamp
             port:
-              number: 443
+              number: 80
         path: /
         pathType: Prefix

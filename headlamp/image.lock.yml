@@ -1,0 +1,7 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.32.0
+overrides:
+- image: ghcr.io/headlamp-k8s/headlamp:latest
+  newImage: ghcr.io/headlamp-k8s/headlamp@sha256:281756c64d13d4961068bff9b2f8a90713d2525d1f8f3912b24d397f0299a514
+  preresolved: true

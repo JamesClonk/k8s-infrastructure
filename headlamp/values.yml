@@ -2,13 +2,10 @@
 ---
 dashboard:
   enable_network_policy: true
-  kubeconfig: ""
-  kubeconfig_enabled: "true"
-
   resources:
     requests:
-      cpu: 10m
-      memory: 32Mi
+      cpu: 50m
+      memory: 64Mi
     limits:
       cpu: 150m
-      memory: 64Mi
+      memory: 128Mi

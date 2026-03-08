@@ -5,14 +5,14 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
+  name: headlamp
+  namespace: headlamp
   labels:
-    k8s-app: kubernetes-dashboard
+    k8s-app: headlamp
 spec:
   podSelector:
     matchLabels:
-      k8s-app: kubernetes-dashboard
+      k8s-app: headlamp
   ingress:
   - from: #! allow access for ingress-controller
     - namespaceSelector:
@@ -20,5 +20,12 @@ spec:
           namespace.kubernetes.io/name: ingress-nginx
       podSelector: {}
     ports:
-    - port: 8443
+    - port: 4466
+  - from: #! allow access for prometheus
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9090
 #@ end
