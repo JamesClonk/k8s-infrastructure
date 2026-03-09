@@ -76,7 +76,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes-sigs/headlamp
-      ref: v0.40.1
+      ref: headlamp-helm-0.40.0
     includePaths:
     - charts/headlamp/**/*
 - path: headlamp/build/chart
@@ -151,7 +151,7 @@ directories:
     - LICENSE
     - NOTICE
 
-- path: vendor/github.com/grafana/promtail
+- path: vendor/github.com/grafana/promtail # TODO: replace with vector!
   contents:
   - path: .
     git:

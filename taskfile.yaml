@@ -20,10 +20,8 @@ tasks:
     - task: envoy-gateway:deploy
     # and automatic let's encrypt certificate management
     - task: cert-manager:deploy
-    # and use github oauth
+    # and use github oauth/oidc
     - task: dex:deploy
-    # and do the login-dance via proxy
-    - task: oauth2-proxy:deploy
     # it also never hurts to have a dashboard!
     - task: headlamp:deploy
     # we can always use a good database..
@@ -51,7 +49,6 @@ includes:
   envoy-gateway: ./envoy-gateway
   cert-manager: ./cert-manager
   dex: ./dex
-  oauth2-proxy: ./oauth2-proxy
   headlamp: ./headlamp
   postgres: ./postgres
   monitoring: ./monitoring

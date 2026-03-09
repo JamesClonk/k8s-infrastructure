@@ -1,0 +1,45 @@
+config:
+  inCluster: false
+  inClusterContextName: ""
+
+env:
+- name: TZ
+  value: Europe/Zurich
+
+volumes:
+- name: kubeconfig
+  secret:
+    secretName: headlamp
+
+volumeMounts:
+- mountPath: /home/headlamp/.kube/config
+  subPath: config
+  name: kubeconfig
+  readOnly: true
+- mountPath: /home/headlamp/.config/Headlamp/kubeconfigs/config
+  subPath: config
+  name: kubeconfig
+  readOnly: true
+
+ingress:
+  enabled: false
+
+securityContext:
+  runAsNonRoot: true
+  privileged: false
+  runAsUser: 100
+  runAsGroup: 101
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+    - ALL
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi

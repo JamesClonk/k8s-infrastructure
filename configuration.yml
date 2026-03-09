@@ -42,7 +42,7 @@ configuration:
     k3s:
       version: "v1.34.5+k3s1" # https://github.com/rancher/k3s/releases
 
-  ingress:
+  ingress: # TODO: change this to $.domain (single value only)
     domains:
     - "jamesclonk.com" # TODO: change for prod
 

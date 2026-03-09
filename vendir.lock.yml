@@ -32,10 +32,10 @@ directories:
   path: cert-manager/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Tue 10 Feb 2026 06:18:38 PM CET...'
-      sha: 434a12263a6bd9d25f86f8bfa00d9992ac2672e3
+      commitTitle: 'gpg: Signature made Thu 05 Feb 2026 06:33:58 PM CET...'
+      sha: 6acceb3a2d77474ce8d29c7c98aa9b25c3468499
       tags:
-      - v0.40.1
+      - headlamp-helm-0.40.0
     path: .
   path: vendor/github.com/kubernetes-sigs/headlamp
 - contents:

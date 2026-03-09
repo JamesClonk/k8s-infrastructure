@@ -30,3 +30,37 @@ spec:
     - path:
         type: PathPrefix
         value: /
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: headlamp
+  namespace: headlamp
+  labels:
+    k8s-app: headlamp
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: headlamp
+  oidc:
+    provider:
+      issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+    clientID: envoy-gateway
+    clientSecret:
+      name: headlamp-oidc-client-secret
+    redirectURL: https://dashboard.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+    logoutPath: /logout
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: headlamp-oidc-client-secret
+  namespace: headlamp
+  labels:
+    k8s-app: headlamp
+type: Opaque
+stringData:
+  client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!

@@ -2,10 +2,13 @@
 ---
 dashboard:
   enable_network_policy: true
+  replicas: 1
+  image: ghcr.io/headlamp-k8s/headlamp:v0.40.1
+
   resources:
     requests:
-      cpu: 50m
-      memory: 64Mi
+      cpu: 100m
+      memory: 128Mi
     limits:
-      cpu: 150m
+      cpu: 250m
       memory: 128Mi

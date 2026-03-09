@@ -1,0 +1,13 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"headlamp"}}), expects=1
+---
+spec:
+  replicas: #@ data.values.dashboard.replicas
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"headlamp"}), expects=1
+      - name: headlamp
+        image: #@ data.values.dashboard.image

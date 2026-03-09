@@ -46,7 +46,7 @@ metadata:
     app.kubernetes.io/name: envoy-gateway
     app.kubernetes.io/instance: envoy-gateway
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" # TODO: change to prod once ready for prod deployment!
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   gatewayClassName: envoy-gateway
   addresses:
@@ -59,19 +59,18 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
-  # TODO: comment out "echo" listener before going to prod!
-  - name: echo
-    protocol: HTTPS
-    port: 443
-    hostname: echo.jamesclonk.com
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - kind: Secret
-        name: echo-certificate
-    allowedRoutes:
-      namespaces:
-        from: Same
+  # - name: echo
+  #   protocol: HTTPS
+  #   port: 443
+  #   hostname: echo.jamesclonk.com
+  #   tls:
+  #     mode: Terminate
+  #     certificateRefs:
+  #     - kind: Secret
+  #       name: echo-certificate
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
   - name: dex
     protocol: HTTPS
     port: 443
