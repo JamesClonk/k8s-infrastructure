@@ -23,7 +23,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 type: Opaque
 data:
-  config.yaml: Y29ubmVjdG9yczogW10KZW5hYmxlUGFzc3dvcmREQjogdHJ1ZQppc3N1ZXI6IGh0dHBzOi8vZGV4LmphbWVzY2xvbmsuY29tL2RleApvYXV0aDI6CiAgc2tpcEFwcHJvdmFsU2NyZWVuOiB0cnVlCnN0YXRpY0NsaWVudHM6Ci0gaWQ6IGVudm95LWdhdGV3YXkKICBuYW1lOiBlbnZveS1nYXRld2F5CiAgcmVkaXJlY3RVUklzOgogIC0gaHR0cHM6Ly9lY2hvLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9iYWNrbWFuLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9ncmFmYW5hLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9wcm9tZXRoZXVzLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9kYXNoYm9hcmQuamFtZXNjbG9uay5jb20vb2F1dGgyL2NhbGxiYWNrCiAgc2VjcmV0OiA5NTg5MTcxYi1iNzAxLTQyMzctYmFiMS1lYzQzZTk3YmIyZDgKLSBpZDogaGVhZGxhbXAKICBuYW1lOiBoZWFkbGFtcAogIHJlZGlyZWN0VVJJczoKICAtIGh0dHBzOi8vZGFzaGJvYXJkLmphbWVzY2xvbmsuY29tL29pZGMtY2FsbGJhY2sKICBzZWNyZXQ6IDU5YjQxOTAwLWY5ZWEtNDZmZS04YWJhLTNiZThlZDJjYTgzOQpzdGF0aWNQYXNzd29yZHM6Ci0gZW1haWw6IGFkbWluQGphbWVzY2xvbmsuY29tCiAgaGFzaDogJDJ5JDEwJGo2cGV1eEFEOGVsLi52d0FLc3ZCSHU1UHhkdTVuTlJGbWRrN25BUFdrbkQ0M1l6TTJoL1l5CiAgdXNlcklEOiAyODdiMzY1Ny0xNGE0LTRlYWItODA0MC05OGE2OWM5NjNiNDMKICB1c2VybmFtZTogYWRtaW5AamFtZXNjbG9uay5jb20Kc3RvcmFnZToKICBjb25maWc6CiAgICBpbkNsdXN0ZXI6IHRydWUKICB0eXBlOiBrdWJlcm5ldGVzCnRlbGVtZXRyeToKICBodHRwOiAwLjAuMC4wOjU1NTgKd2ViOgogIGh0dHA6IDAuMC4wLjA6NTU1Ng==
+  config.yaml: Y29ubmVjdG9yczogW10KZW5hYmxlUGFzc3dvcmREQjogdHJ1ZQpmcm9udGVuZDoKICBkaXI6IC9zcnYvZGV4L3dlYgogIGlzc3VlcjogSmFtZXNDbG9uay5pbwogIGxvZ29VUkw6IGh0dHBzOi8vamFtZXNjbG9uay5pby9pbWFnZXMvamFtZXNjbG9ua19jb2EucG5nCiAgdGhlbWU6IGN1c3RvbQppc3N1ZXI6IGh0dHBzOi8vZGV4LmphbWVzY2xvbmsuY29tL2RleApvYXV0aDI6CiAgc2tpcEFwcHJvdmFsU2NyZWVuOiB0cnVlCnN0YXRpY0NsaWVudHM6Ci0gaWQ6IGVudm95LWdhdGV3YXkKICBuYW1lOiBlbnZveS1nYXRld2F5CiAgcmVkaXJlY3RVUklzOgogIC0gaHR0cHM6Ly9lY2hvLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9iYWNrbWFuLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9ncmFmYW5hLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9wcm9tZXRoZXVzLmphbWVzY2xvbmsuY29tL29hdXRoMi9jYWxsYmFjawogIC0gaHR0cHM6Ly9kYXNoYm9hcmQuamFtZXNjbG9uay5jb20vb2F1dGgyL2NhbGxiYWNrCiAgc2VjcmV0OiA5NTg5MTcxYi1iNzAxLTQyMzctYmFiMS1lYzQzZTk3YmIyZDgKc3RhdGljUGFzc3dvcmRzOgotIGVtYWlsOiBhZG1pbkBqYW1lc2Nsb25rLmNvbQogIGhhc2g6ICQyeSQxMCRqNnBldXhBRDhlbC4udndBS3N2Qkh1NVB4ZHU1bk5SRm1kazduQVBXa25ENDNZek0yaC9ZeQogIHVzZXJJRDogMjg3YjM2NTctMTRhNC00ZWFiLTgwNDAtOThhNjljOTYzYjQzCiAgdXNlcm5hbWU6IGFkbWluQGphbWVzY2xvbmsuY29tCnN0b3JhZ2U6CiAgY29uZmlnOgogICAgaW5DbHVzdGVyOiB0cnVlCiAgdHlwZToga3ViZXJuZXRlcwp0ZWxlbWV0cnk6CiAgaHR0cDogMC4wLjAuMDo1NTU4CndlYjoKICBodHRwOiAwLjAuMC4wOjU1NTY=
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -151,7 +151,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: c84e6b59619b7e9b171a6c321f124a99f822dd7bc85d5f170a8ad381be3bf2ae
+        checksum/config: 9d70952ca8cc0775124ff2e4dc37724955361fab13f5eaf51738e7b578cd6ecd
       labels:
         app.kubernetes.io/name: dex
         app.kubernetes.io/instance: dex
@@ -171,7 +171,11 @@ spec:
         - --telemetry-addr
         - 0.0.0.0:5558
         - /etc/dex/config.yaml
-        env: null
+        env:
+        - name: name
+          value: TZ
+        - name: value
+          value: Europe/Zurich
         ports:
         - name: http
           containerPort: 5556
@@ -192,7 +196,12 @@ spec:
         - name: config
           mountPath: /etc/dex
           readOnly: true
+        - mountPath: /srv/dex/web/themes/custom
+          name: custom-theme
       volumes:
       - name: config
         secret:
           secretName: dex
+      - configMap:
+          name: dex-custom-theme
+        name: custom-theme

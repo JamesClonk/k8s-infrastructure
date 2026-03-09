@@ -1,24 +1,48 @@
 ingress:
   enabled: false
 
+env:
+  name: TZ
+  value: Europe/Zurich
+
+volumes:
+- name: custom-theme
+  configMap:
+    name: dex-custom-theme
+
+volumeMounts:
+- name: custom-theme
+  mountPath: /srv/dex/web/themes/custom
+
 config:
   issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+
+  frontend:
+    theme: custom
+    issuer: "JamesClonk.io"
+    logoURL: "https://jamesclonk.io/images/jamesclonk_coa.png"
+    dir: /srv/dex/web
+
   storage:
     type: kubernetes
     config:
       inCluster: true
+
   oauth2:
     skipApprovalScreen: true
+
   web:
     http: 0.0.0.0:5556
   telemetry:
     http: 0.0.0.0:5558
+
   enablePasswordDB: true
   staticPasswords:
   - email: "admin@jamesclonk.com" # TODO: template via plato!!!
     hash: "$2y$10$j6peuxAD8el..vwAKsvBHu5Pxdu5nNRFmdk7nAPWknD43YzM2h/Yy" # TODO: template via plato!!!
     username: "admin@jamesclonk.com" # TODO: template via plato!!!
     userID: "287b3657-14a4-4eab-8040-98a69c963b43" # TODO: template via plato!!!
+
   staticClients:
   - id: envoy-gateway
     name: envoy-gateway
@@ -29,4 +53,5 @@ config:
     - 'https://prometheus.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://dashboard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     secret: "9589171b-b701-4237-bab1-ec43e97bb2d8" # TODO: template via plato!!!
+
   connectors: [] # TODO: template via plato!!!
