@@ -1,0 +1,92 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yaml", "labels")
+
+#@ if data.values.prometheus.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus
+  namespace: prometheus
+  labels: #@ labels("prometheus")
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: server
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/instance: prometheus
+  ingress:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9090
+    - port: 8080
+  - from: #! allow access for grafana
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: grafana
+      podSelector: {}
+    ports:
+    - port: 9090
+  - from: #! allow access for gateway-api-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: envoy-gateway-system
+      podSelector: {}
+    ports:
+    - port: 9090
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-kube-state-metrics
+  namespace: prometheus
+  labels: #@ labels("kube-state-metrics")
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics
+      app.kubernetes.io/instance: prometheus
+  ingress:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 8080
+    - port: 8081
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-alertmanager
+  namespace: prometheus
+  labels: #@ labels("alertmanager")
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/instance: prometheus
+  ingress:
+  - from: #! allow ingress traffic from all prometheus components
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9093
+  - from: #! allow access for gateway-api-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: envoy-gateway-system
+      podSelector: {}
+    ports:
+    - port: 9093
+#@ end

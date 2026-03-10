@@ -17,7 +17,7 @@
 			- ~headlamp~
 			- monitoring:
 				- grafana
-				- prometheus
+				- ~prometheus~
 
 - migrate to vector
 	- remove promtail
@@ -31,9 +31,9 @@
 	- deployments migrated:
 		- hetzner-k3s
 		- kube-system
-		- ingress-nginx | envoy-gateway
+		- envoy-gateway
 		- cert-manager
-		- dex | oauth2-proxy (depends on envoy-gateway question)
+		- dex
 		- headlamp
 		- postgres
 		- monitoring:
@@ -51,14 +51,14 @@
 
 - update deployments to latest version
 	- update vendir.yml, sync, and verify if still rendering and deploying fine:
-		- ingress-nginx | envoy-gateway
-		- cert-manager
-		- dex | oauth2-proxy (depends on envoy-gateway question)
-		- headlamp
+		- ~envoy-gateway~
+		- ~cert-manager~
+		- ~dex~
+		- ~headlamp~
 		- postgres
 		- monitoring:
 			- grafana
-			- prometheus
+			- ~prometheus~
 			- loki
 			- vector
 			- prometheus-discord ???

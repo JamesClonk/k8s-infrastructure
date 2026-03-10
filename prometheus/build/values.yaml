@@ -1,0 +1,327 @@
+forceNamespace: prometheus
+
+server:
+  ingress:
+    enabled: false
+
+  strategy:
+    type: Recreate
+
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+  emptyDir:
+    sizeLimit: 10Gi
+  retention: "7d"
+  retentionSize: "8GB"
+
+  replicaCount: 1
+
+  statefulSet:
+    enabled: false
+  daemonSet:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+serverFiles:
+  alerting_rules.yml: {}
+  #   groups:
+  #   - name: instances
+  #     rules:
+  #     - alert: Instance_Down
+  #       expr: up == 0
+  #       for: 5m
+  #       annotations:
+  #         title: 'Instance {{ $labels.instance }} / {{ $labels.job }} down'
+  #         description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+  #       labels:
+  #         severity: warning
+
+  #   - name: cpu
+  #     rules:
+  #     - alert: CPU_Requests
+  #       expr: (sum(kube_pod_container_resource_requests{resource="cpu"}) by (node) / sum(kube_node_status_allocatable{resource="cpu"}) by (node) * 100) > 85
+  #       for: 5m
+  #       annotations:
+  #         title: 'K8s node {{ $labels.node }} CPU resource requests > 85%'
+  #         description: 'Kubernetes node {{ $labels.node }} has resource requests on CPU shares over 85% for more than 5 minutes.'
+  #       labels:
+  #         severity: warning
+  #     - alert: CPU_Usage
+  #       expr: ceil(sum (rate (container_cpu_usage_seconds_total{id="/"}[5m])) / sum (kube_node_status_allocatable{resource="cpu"}) * 100) > 60
+  #       for: 10m
+  #       annotations:
+  #         title: 'K8s cluster CPU usage > 60%'
+  #         description: 'Kubernetes cluster has a CPU usage of `{{ $value }}%` for more than 10 minutes.'
+  #       labels:
+  #         severity: critical
+
+  #   - name: memory
+  #     rules:
+  #     - alert: Memory_Requests
+  #       expr: (sum(kube_pod_container_resource_requests{resource="memory"}) by (node) / sum(kube_node_status_allocatable{resource="memory"}) by (node) * 100) > 75
+  #       for: 5m
+  #       annotations:
+  #         title: 'K8s node {{ $labels.instance }} memory resource requests > 75%'
+  #         description: 'Kubernetes node {{ $labels.instance }} has resource requests on memory over 75% for more than 5 minutes.'
+  #       labels:
+  #         severity: warning
+  #     - alert: Memory_Usage
+  #       expr: ceil((sum (container_memory_working_set_bytes{id="/"})) / (sum(kube_node_status_allocatable{resource=~"memory"})) * 100) > 70
+  #       for: 10m
+  #       annotations:
+  #         title: 'K8s cluster memory usage > 70%'
+  #         description: 'Kubernetes cluster has a memory usage of `{{ $value }}%` for more than 10 minutes.'
+  #       labels:
+  #         severity: critical
+
+  #   - name: disk
+  #     rules:
+  #     - alert: Disk_Usage
+  #       expr: ceil(sum (container_fs_usage_bytes{device=~"^/dev/.*$",id="/"}) by (device, instance) / sum (container_fs_limit_bytes{device=~"^/dev/.*$",id="/"}) by (device, instance) * 100) > 70
+  #       for: 10m
+  #       annotations:
+  #         title: 'K8s {{ $labels.instance }}:{{ $labels.device }} disk usage > 70%'
+  #         description: 'Kubernetes node {{ $labels.instance }} / device {{ $labels.device }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+  #       labels:
+  #         severity: critical
+  #     - alert: PVC_Usage
+  #       expr: (max(kubelet_volume_stats_used_bytes) by (persistentvolumeclaim, namespace) / min(kubelet_volume_stats_capacity_bytes) by (persistentvolumeclaim, namespace)) * 100 > 75
+  #       for: 10m
+  #       annotations:
+  #         title: 'K8s {{ $labels.namespace }}:{{ $labels.persistentvolumeclaim }} pvc usage > 75%'
+  #         description: 'Kubernetes PVC {{ $labels.namespace }} / {{ $labels.persistentvolumeclaim }} has a disk usage of `{{ $value }}%` for more than 10 minutes.'
+  #       labels:
+  #         severity: critical
+
+  #   - name: certificate
+  #     rules:
+  #     - alert: Certificate_Expiration
+  #       expr: min(nginx_ingress_controller_ssl_expire_time_seconds) by (host) - time() < 1234567
+  #       for: 10m
+  #       annotations:
+  #         title: 'K8s host {{ $labels.host }} certificate expiration'
+  #         description: 'The certificate of Kubernetes host/ingress {{ $labels.host }} is about to expire!'
+  #       labels:
+  #         severity: critical
+
+  #   - name: postgres
+  #     rules:
+  #     - alert: PostgreSQL_MaxConnectionsReached
+  #       expr: sum(pg_stat_activity_count) by (instance) >= sum(pg_settings_max_connections) by (instance) - sum(pg_settings_superuser_reserved_connections) by (instance) - 5
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.instance }} has maxed out Postgres connections'
+  #         description: '{{ $labels.instance }} is exceeding the currently configured maximum Postgres connection limit (current value: {{ $value }}s). Services may be degraded - please take immediate action (you probably need to increase max_connections and redeploy!'
+  #       labels:
+  #         severity: critical
+  #     - alert: PostgreSQL_HighConnections
+  #       expr: sum(pg_stat_activity_count) by (instance) > (sum(pg_settings_max_connections) by (instance) - sum(pg_settings_superuser_reserved_connections) by (instance)) * 0.75
+  #       for: 10m
+  #       annotations:
+  #         title: '{{ $labels.instance }} is over 75% of max Postgres connections.'
+  #         description: '{{ $labels.instance }} is exceeding 75% of the currently configured maximum Postgres connection limit (current value: {{ $value }}s).'
+  #       labels:
+  #         severity: warning
+  #     - alert: PostgreSQL_Down
+  #       expr: pg_up != 1
+  #       for: 5m
+  #       annotations:
+  #         title: 'PostgreSQL is down: {{ $labels.instance }}'
+  #         description: '{{ $labels.instance }} is rejecting query requests from the exporter, the database instance is likely down!'
+  #       labels:
+  #         severity: critical
+  #     - alert: PostgreSQL_SlowQueries
+  #       expr: avg(rate(pg_stat_activity_max_tx_duration{datname!~"template.*"}[2m])) by (datname) > 2 * 60
+  #       for: 5m
+  #       annotations:
+  #         title: 'PostgreSQL high number of slow queries on {{ $labels.instance }} for database {{ $labels.datname }}'
+  #         description: 'PostgreSQL high number of slow queries {{ $labels.instance }} for database {{ $labels.datname }} with a value of {{ $value }}'
+  #       labels:
+  #         severity: warning
+  #     - alert: PostgreSQL_QPS
+  #       expr: avg(irate(pg_stat_database_xact_commit{datname!~"template.*"}[5m]) + irate(pg_stat_database_xact_rollback{datname!~"template.*"}[5m])) by (datname) > 1000
+  #       for: 5m
+  #       annotations:
+  #         title: 'PostgreSQL high number of queries per second {{ $labels.instance }} for database {{ $labels.datname }}'
+  #         description: 'PostgreSQL high number of queries per second on {{ $labels.instance }} for database {{ $labels.datname }} with a value of {{ $value }}'
+  #       labels:
+  #         severity: warning
+  #     - alert: PostgreSQL_CacheHitRatio
+  #       expr: avg(rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) / (rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) + rate(pg_stat_database_blks_read{datname!~"template.*"}[5m]))) by (datname) < 0.96
+  #       for: 5m
+  #       annotations:
+  #         title: 'PostgreSQL low cache hit rate on {{ $labels.instance }} for database {{ $labels.datname }}'
+  #         description: 'PostgreSQL low on cache hit rate on {{ $labels.instance }} for database {{ $labels.datname }} with a value of {{ $value }}'
+  #       labels:
+  #         severity: warning
+
+  #   - name: backman
+  #     rules:
+  #     - alert: Backup_Failure
+  #       expr: sum(rate(backman_scheduler_backup_failures_total[24h])) by (job) > 0
+  #       for: 10m
+  #       annotations:
+  #         title: '{{ $labels.job }}: backup failure'
+  #         description: '{{ $labels.job }} is reporting `{{ $value }}%` failed backups!'
+  #       labels:
+  #         severity: critical
+  #     - alert: Backup_Filesize
+  #       expr: min(backman_backup_filesize_last) by (name, type) < 100000
+  #       for: 10m
+  #       annotations:
+  #         title: 'backman filesize issue detected'
+  #         description: '{{ $labels.type }} backup {{ $labels.name }} is reporting a filesize of only `{{ $value | humanize1024 }}` for its last backup!'
+  #       labels:
+  #         severity: critical
+
+  #   - name: jcio
+  #     rules:
+  #     - alert: Frontend_Newsfeed_Failure
+  #       expr: rate(jcio_frontend_newsfeed_failures[10m]) > 0
+  #       for: 10m
+  #       annotations:
+  #         title: '{{ $labels.app }}: newsfeed failure'
+  #         description: '{{ $labels.app }} is reporting newsfeed failures!'
+  #       labels:
+  #         severity: warning
+  #     - alert: Stdlib_Newsreader_Failure
+  #       expr: rate(jcio_stdlib_newsreader_feed_failures[10m]) > 0
+  #       for: 10m
+  #       annotations:
+  #         title: '{{ $labels.app }}: newsreader feed failure'
+  #         description: '{{ $labels.app }} is reporting newsreader feed failures!'
+  #       labels:
+  #         severity: warning
+
+  #   - name: home-info
+  #     rules:
+  #     - alert: Alerting_Error
+  #       expr: rate(homeinfo_dashboard_alerting_errors_total[5m]) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app }}: home-info alerting error'
+  #         description: '{{ $labels.app }} is reporting home-info alerting errors!'
+  #       labels:
+  #         severity: warning
+  #     - alert: Sensor_Error
+  #       expr: rate(homeinfo_dashboard_sensor_errors_total[5m]) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app }}: home-info sensor error'
+  #         description: '{{ $labels.app }} is reporting home-info sensor errors!'
+  #       labels:
+  #         severity: warning
+
+  #   - name: irvisualizer
+  #     rules:
+  #     - alert: Visualizer_Error
+  #       expr: rate(irvisualizer_errors_total[5m]) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app_kubernetes_io_component }}: visualizer error'
+  #         description: '{{ $labels.app_kubernetes_io_component }} is reporting visualizer errors!'
+  #       labels:
+  #         severity: warning
+
+  #   - name: ircollector
+  #     rules:
+  #     - alert: Client_Login_Failure
+  #       expr: rate(ircollector_api_client_login_error_total[5m]) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app_kubernetes_io_component }}: API client login failure'
+  #         description: '{{ $labels.app_kubernetes_io_component }} is reporting API client login failures!'
+  #       labels:
+  #         severity: warning
+  #     - alert: Client_Error
+  #       expr: rate(ircollector_api_client_request_error_total[5m]) > 0.05
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app_kubernetes_io_component }}: API client error'
+  #         description: '{{ $labels.app_kubernetes_io_component }} is reporting API client request errors!'
+  #       labels:
+  #         severity: warning
+  #     - alert: Collector_Error
+  #       expr: rate(ircollector_errors_total[5m]) > 0.05
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app_kubernetes_io_component }}: collector error'
+  #         description: '{{ $labels.app_kubernetes_io_component }} is reporting collector errors!'
+  #       labels:
+  #         severity: warning
+
+  #   - name: promtail
+  #     rules:
+  #     - alert: GolangPanic
+  #       expr: avg(promtail_custom_app_panic_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app }}: Golang panic'
+  #         description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting Golang panics!'
+  #       labels:
+  #         severity: critical
+  #     - alert: Error
+  #       expr: avg(promtail_custom_app_error_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
+  #       for: 5m
+  #       annotations:
+  #         title: '{{ $labels.app }}: error'
+  #         description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting errors.'
+  #       labels:
+  #         severity: info
+  #     - alert: PushFailure
+  #       expr: avg(promtail_custom_repo_mirrorer_failed_push) by (job) > 0
+  #       for: 10m
+  #       annotations:
+  #         title: '{{ $labels.job }}: push failure'
+  #         description: '{{ $labels.job }} is reporting push failures.'
+  #       labels:
+  #         severity: warning
+
+alertmanager:
+  enabled: true
+  configFromSecret: "prometheus-alertmanager"
+  ingress:
+    enabled: false
+  persistence:
+    enabled: false
+    size: 1Gi
+  emptyDir:
+    sizeLimit: 1Gi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+kube-state-metrics:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+prometheus-node-exporter:
+  enabled: true
+  resources:
+    limits:
+      cpu: 200m
+      memory: 64Mi
+    requests:
+      cpu: 50m
+      memory: 32Mi
+
+prometheus-pushgateway:
+  enabled: false

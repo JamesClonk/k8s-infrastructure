@@ -51,6 +51,7 @@ config:
     - 'https://backman.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://grafana.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://prometheus.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://alertmanager.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://dashboard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     secret: "9589171b-b701-4237-bab1-ec43e97bb2d8" # TODO: template via plato!!!
 

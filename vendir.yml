@@ -91,35 +91,15 @@ directories:
     - LICENSE
     - NOTICE
 
-- path: vendor/github.com/kubernetes/kube-state-metrics
-  contents:
-  - path: .
-    git:
-      url: https://github.com/kubernetes/kube-state-metrics
-      ref: v2.6.0
-    includePaths:
-    - examples/standard/*
-- path: monitoring/kube-state-metrics/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/kubernetes/kube-state-metrics/examples/standard
-    ignorePaths:
-    - LICENSE
-    - NOTICE
-    excludePaths:
-    - LICENSE
-    - NOTICE
-
 - path: vendor/github.com/prometheus-community/helm-charts
   contents:
   - path: .
     git:
       url: https://github.com/prometheus-community/helm-charts
-      ref: prometheus-15.16.1
+      ref: prometheus-28.13.0
     includePaths:
     - charts/prometheus/**/*
-- path: monitoring/prometheus/build/chart
+- path: prometheus/build/chart
   contents:
   - path: .
     directory:
@@ -139,31 +119,11 @@ directories:
       ref: grafana-6.42.2
     includePaths:
     - charts/grafana/**/*
-- path: monitoring/grafana/build/chart
+- path: grafana/build/chart
   contents:
   - path: .
     directory:
       path: vendor/github.com/grafana/grafana/charts/grafana
-    ignorePaths:
-    - LICENSE
-    - NOTICE
-    excludePaths:
-    - LICENSE
-    - NOTICE
-
-- path: vendor/github.com/grafana/promtail # TODO: replace with vector!
-  contents:
-  - path: .
-    git:
-      url: https://github.com/grafana/helm-charts
-      ref: promtail-6.5.1
-    includePaths:
-    - charts/promtail/**/*
-- path: monitoring/loki/build/charts/promtail
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/grafana/promtail/charts/promtail
     ignorePaths:
     - LICENSE
     - NOTICE
@@ -179,7 +139,7 @@ directories:
       ref: loki-2.16.0
     includePaths:
     - charts/loki/**/*
-- path: monitoring/loki/build/charts/loki
+- path: loki/build/charts/loki
   contents:
   - path: .
     directory:

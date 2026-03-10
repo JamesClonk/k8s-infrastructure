@@ -27,7 +27,10 @@ tasks:
     # we can always use a good database..
     - task: postgres:deploy
     # metrics, monitoring, alerting, logs, what would we do without those?
-    - task: monitoring:deploy
+    - task: prometheus:deploy
+    - task: loki:deploy
+    - task: vector:deploy
+    - task: grafana:deploy
     # admire our work!
     - task: list-apps
     # cleanup properly afterwards ...
@@ -51,4 +54,7 @@ includes:
   dex: ./dex
   headlamp: ./headlamp
   postgres: ./postgres
-  monitoring: ./monitoring
+  prometheus: ./prometheus
+  loki: ./loki
+  vector: ./vector
+  grafana: ./grafana

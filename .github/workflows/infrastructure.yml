@@ -81,23 +81,10 @@ jobs:
       if: ${{ always() }}
       run: task cleanup
 
-  oauth2-proxy:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: oauth2-proxy
-    needs: [ dex ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy oauth2-proxy
-      run: task oauth2-proxy:deploy
-    - name: cleanup
-      if: ${{ always() }}
-      run: task cleanup
-
   headlamp:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: headlamp
-    needs: [ oauth2-proxy, cert-manager ]
+    needs: [ dex, cert-manager ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -126,26 +113,10 @@ jobs:
       if: ${{ always() }}
       run: task cleanup
 
-  kube-state-metrics:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: kube-state-metrics
-    needs: [ kube-system ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: setup
-      if: ${{ always() }}
-      run: ./setup.sh
-    - name: deploy kube-state-metrics
-      run: task monitoring:deploy-kube-state-metrics
-    - name: cleanup
-      if: ${{ always() }}
-      run: task cleanup
-
   prometheus:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: prometheus
-    needs: [ oauth2-proxy, cert-manager, kube-state-metrics ]
+    needs: [ dex, cert-manager, kube-system ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -153,23 +124,7 @@ jobs:
       if: ${{ always() }}
       run: ./setup.sh
     - name: deploy prometheus
-      run: task monitoring:deploy-prometheus
-    - name: cleanup
-      if: ${{ always() }}
-      run: task cleanup
-
-  prometheus-msteams:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: prometheus-msteams
-    needs: [ oauth2-proxy, cert-manager, kube-state-metrics ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: setup
-      if: ${{ always() }}
-      run: ./setup.sh
-    - name: deploy prometheus-msteams proxy
-      run: task monitoring:deploy-prometheus-msteams
+      run: task prometheus:deploy
     - name: cleanup
       if: ${{ always() }}
       run: task cleanup
@@ -177,7 +132,7 @@ jobs:
   loki:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: loki
-    needs: [ oauth2-proxy, cert-manager ]
+    needs: [ dex, cert-manager ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -185,7 +140,23 @@ jobs:
       if: ${{ always() }}
       run: ./setup.sh
     - name: deploy loki
-      run: task monitoring:deploy-loki
+      run: task loki:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
+
+  vector:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: vector
+    needs: [ prometheus, loki ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy vector
+      run: task vector:deploy
     - name: cleanup
       if: ${{ always() }}
       run: task cleanup
@@ -201,7 +172,7 @@ jobs:
       if: ${{ always() }}
       run: ./setup.sh
     - name: deploy grafana
-      run: task monitoring:deploy-grafana
+      run: task grafana:deploy
     - name: cleanup
       if: ${{ always() }}
       run: task cleanup

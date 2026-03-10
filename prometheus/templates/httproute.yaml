@@ -1,0 +1,122 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("_ytt.lib.yaml", "labels")
+
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("domain is missing or invalid")
+#@ end
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: prometheus-server
+  namespace: prometheus
+  labels: #@ labels("httproute")
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+    sectionName: prometheus
+  hostnames:
+  #@ for/end host in data.values.configuration.ingress.domains:
+  - #@ "prometheus." + host
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: prometheus-server
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: prometheus-alertmanager
+  namespace: prometheus
+  labels: #@ labels("httproute")
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+    sectionName: alertmanager
+  hostnames:
+  #@ for/end host in data.values.configuration.ingress.domains:
+  - #@ "alertmanager." + host
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: prometheus-alertmanager
+      port: 9093
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus-server
+  namespace: prometheus
+  labels: #@ labels("security-policy")
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: prometheus-server
+  oidc:
+    provider:
+      issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+    clientID: envoy-gateway
+    clientSecret:
+      name: prometheus-oidc-client-secret
+    redirectURL: https://prometheus.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+    logoutPath: /logout
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus-alertmanager
+  namespace: prometheus
+  labels: #@ labels("security-policy")
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: prometheus-alertmanager
+  oidc:
+    provider:
+      issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+    clientID: envoy-gateway
+    clientSecret:
+      name: alertmanager-oidc-client-secret
+    redirectURL: https://alertmanager.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+    logoutPath: /logout
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prometheus-oidc-client-secret
+  namespace: prometheus
+  labels: #@ labels("oidc-secret")
+type: Opaque
+stringData:
+  client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alertmanager-oidc-client-secret
+  namespace: prometheus
+  labels: #@ labels("oidc-secret")
+type: Opaque
+stringData:
+  client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!

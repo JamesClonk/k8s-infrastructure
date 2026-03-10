@@ -56,10 +56,10 @@ directories:
   path: monitoring/kube-state-metrics/templates/upstream
 - contents:
   - git:
-      commitTitle: 'gpg: Signature made Sat 15 Oct 2022 05:09:33 PM CEST...'
-      sha: 1a0c21e0be9e0d3d046a1a77293241371ada03e6
+      commitTitle: 'gpg: Signature made Sun 01 Mar 2026 12:09:00 AM CET...'
+      sha: f738b5d4d5a325223701e4d5ba30d95c46e10bb9
       tags:
-      - prometheus-15.16.1
+      - prometheus-28.13.0
     path: .
   path: vendor/github.com/prometheus-community/helm-charts
 - contents:

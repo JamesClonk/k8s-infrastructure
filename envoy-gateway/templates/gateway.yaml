@@ -101,6 +101,36 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: headlamp
+  - name: prometheus
+    protocol: HTTPS
+    port: 443
+    hostname: prometheus.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: prometheus-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: prometheus
+  - name: alertmanager
+    protocol: HTTPS
+    port: 443
+    hostname: alertmanager.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: alertmanager-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: prometheus
 
 ---
 apiVersion: gateway.networking.k8s.io/v1
