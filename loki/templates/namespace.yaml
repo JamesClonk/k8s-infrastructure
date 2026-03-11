@@ -1,5 +1,5 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("_ytt.lib.yml", "labels")
+#@ load("_ytt.lib.yaml", "labels")
 
 ---
 apiVersion: v1

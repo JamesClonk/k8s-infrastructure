@@ -6,4 +6,4 @@ cd $(dirname ${BASH_SOURCE[0]})
 
 # update
 echo "updating [dex] charts ..."
-pushd chart; helm dependency update .; popd
+pushd chart; helm dependency update .; rm -f .gitignore || true; popd

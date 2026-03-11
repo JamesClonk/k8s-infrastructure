@@ -11,14 +11,3 @@ spec:
       - name: loki
         #@overlay/replace
         resources: #@ data.values.loki.resources
-
-#@overlay/match by=overlay.subset({"kind":"DaemonSet", "metadata":{"name":"promtail-loki"}}), expects=1
----
-spec:
-  template:
-    spec:
-      containers:
-      #@overlay/match by=overlay.subset({"name":"promtail"}), expects=1
-      - name: promtail
-        #@overlay/replace
-        resources: #@ data.values.promtail.resources
