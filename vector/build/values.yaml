@@ -1,0 +1,83 @@
+role: "Agent"
+
+rollWorkload: true
+rollWorkloadSecrets: true
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+ingress:
+  enabled: false
+
+persistence:
+  enabled: false
+
+podMonitor:
+  enabled: false
+
+haproxy:
+  enabled: false
+
+containerPorts:
+- name: prom-exporter
+  containerPort: 9090
+  protocol: TCP
+
+podAnnotations:
+  prometheus.io/path: /metrics
+  prometheus.io/port: "9090"
+  prometheus.io/scrape: "true"
+
+customConfig:
+  data_dir: /vector-data-dir
+  api:
+    enabled: false
+
+  sources:
+    internal_metrics:
+      type: internal_metrics
+    journald_source:
+      type: journald
+      batch_size: 16
+      current_boot_only: true
+      journal_directory: /var/log/journal
+    kubernetes_logs:
+      type: kubernetes_logs
+
+  transforms:
+    parse_kubernetes_logs:
+      type: remap
+      inputs:
+      - kubernetes_logs
+      source: |
+        .message = string!(.message)
+        .namespace = .kubernetes.pod_namespace
+        .pod = .kubernetes.pod_name
+        .pod_labels = .kubernetes.pod_labels
+
+  sinks:
+    prom_exporter:
+      type: prometheus_exporter
+      inputs: [internal_metrics]
+      address: 0.0.0.0:9090
+    loki:
+      type: loki
+      inputs:
+      - journald_source
+      - parse_kubernetes_logs
+      endpoint: http://loki-gateway.loki.svc.cluster.local
+      path: /loki/api/v1/push
+      labels:
+        namespace: "{{ namespace }}"
+        pod: "{{ pod }}"
+        pod_labels: "{{ pod_labels }}"
+      encoding:
+        codec: json
+      batch:
+        max_bytes: 1048576
+      out_of_order_action: accept

@@ -24,17 +24,17 @@ tasks:
     - task: dex:deploy
     # it also never hurts to have a dashboard!
     - task: headlamp:deploy
-    # we can always use a good database..
-    - task: postgres:deploy
+    # # we can always use a good database..
+    # TODO: uncomnent: - task: postgres:deploy
     # metrics, monitoring, alerting, logs, what would we do without those?
     - task: prometheus:deploy
     - task: loki:deploy
     - task: vector:deploy
     - task: grafana:deploy
-    # admire our work!
-    - task: list-apps
-    # cleanup properly afterwards ...
-    - task: cleanup
+    # # admire our work!
+    # TODO: uncomnent: - task: list-apps
+    # # cleanup properly afterwards ...
+    # TODO: uncomnent: - task: cleanup
 
   list-apps:
     desc: "List all running apps/components"
@@ -53,7 +53,7 @@ includes:
   cert-manager: ./cert-manager
   dex: ./dex
   headlamp: ./headlamp
-  postgres: ./postgres
+  # TODO: uncomnent: postgres: ./postgres
   prometheus: ./prometheus
   loki: ./loki
   vector: ./vector

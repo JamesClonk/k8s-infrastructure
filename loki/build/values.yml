@@ -1,0 +1,100 @@
+loki:
+  commonConfig:
+    replication_factor: 1
+
+  storage:
+    type: filesystem
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+
+  schemaConfig:
+    configs:
+    - from: "2024-01-01"
+      store: tsdb
+      object_store: 'filesystem'
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+  storage_config:
+    tsdb_shipper:
+      active_index_directory: /var/loki/index
+      cache_location: /var/loki/cache
+
+  chunk_store_config:
+    max_look_back_period: 72h
+
+  compactor:
+    working_directory: /var/loki/boltdb-shipper-compactor
+    delete_request_store: filesystem
+    compaction_interval: 10m
+    retention_enabled: true
+    retention_delete_delay: 10m
+    retention_delete_worker_count: 150
+    max_compaction_parallelism: 10
+
+  pattern_ingester:
+    enabled: true
+
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+    retention_period: 72h
+    reject_old_samples: true
+    reject_old_samples_max_age: 72h
+    max_cache_freshness_per_query: 10m
+    split_queries_by_interval: 15m
+
+  ruler:
+    enable_api: true
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3100"
+
+deploymentMode: SingleBinary
+singleBinary:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  extraEnv:
+  - name: GOMEMLIMIT
+    value: 850MiB
+  persistence:
+    enableStatefulSetAutoDeletePVC: true
+    enabled: true
+    accessModes:
+    - ReadWriteOnce
+    size: 10Gi
+
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0

@@ -4,4 +4,4 @@ set -u
 set -o pipefail
 cd $(dirname ${BASH_SOURCE[0]})
 
-helm inspect values "$(pwd)/charts/headlamp" > headlamp.values
+helm inspect values "$(pwd)/chart" > headlamp.values

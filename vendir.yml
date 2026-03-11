@@ -139,11 +139,31 @@ directories:
       ref: helm-loki-6.54.0
     includePaths:
     - production/helm/loki/**/*
-- path: loki/build/charts/loki
+- path: loki/build/chart
   contents:
   - path: .
     directory:
       path: vendor/github.com/grafana/loki/production/helm/loki
+    ignorePaths:
+    - LICENSE
+    - NOTICE
+    excludePaths:
+    - LICENSE
+    - NOTICE
+
+- path: vendor/github.com/vectordotdev/helm-charts
+  contents:
+  - path: .
+    git:
+      url: https://github.com/vectordotdev/helm-charts
+      ref: vector-0.51.0
+    includePaths:
+    - charts/vector/**/*
+- path: vector/build/chart
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/vectordotdev/helm-charts/charts/vector
     ignorePaths:
     - LICENSE
     - NOTICE

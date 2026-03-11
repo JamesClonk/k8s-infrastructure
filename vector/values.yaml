@@ -1,0 +1,12 @@
+#@data/values
+---
+vector:
+  enable_network_policy: true
+
+  resources:
+    requests:
+      cpu: 150m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
