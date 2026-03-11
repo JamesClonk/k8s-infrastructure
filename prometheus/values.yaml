@@ -8,5 +8,5 @@ prometheus:
       cpu: 200m
       memory: 512Mi
     limits:
-      cpu: 500m
+      cpu: 666m
       memory: 1Gi
