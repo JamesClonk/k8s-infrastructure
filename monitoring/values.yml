@@ -3,15 +3,6 @@
 monitoring:
   enable_network_policy: true
 
-grafana:
-  resources:
-    requests:
-      cpu: 100m
-      memory: 192Mi
-    limits:
-      cpu: 200m
-      memory: 192Mi
-
 loki:
   resources:
     requests:
@@ -30,14 +21,3 @@ promtail:
       cpu: 150m
       memory: 128Mi
 
-prometheus:
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi
-
-msteams:
-  replicas: 1

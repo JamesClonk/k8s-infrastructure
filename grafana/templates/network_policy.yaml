@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yaml", "labels")
+
+#@ if data.values.grafana.enable_network_policy:
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/instance: grafana
+  ingress:
+  - from: #! allow access for prometheus
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 3000
+  - from: #! allow access for gateway-api-controller
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: envoy-gateway-system
+      podSelector: {}
+    ports:
+    - port: 3000
+#@ end

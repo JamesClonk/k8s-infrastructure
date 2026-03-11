@@ -1,0 +1,12 @@
+#@data/values
+---
+grafana:
+  enable_network_policy: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 192Mi
+    limits:
+      cpu: 200m
+      memory: 192Mi

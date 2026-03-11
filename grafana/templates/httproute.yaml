@@ -1,0 +1,64 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yaml", "labels")
+#@ load("@ytt:assert", "assert")
+
+#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
+#@  assert.fail("configuration.ingress.domain is missing or invalid")
+#@ end
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+    sectionName: grafana
+  hostnames:
+  #@ for/end host in data.values.configuration.ingress.domains:
+  - #@ "grafana." + host
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: grafana
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: grafana
+  oidc:
+    provider:
+      issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+    clientID: envoy-gateway
+    clientSecret:
+      name: grafana-oidc-client-secret
+    redirectURL: https://grafana.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+    logoutPath: /logout
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-oidc-client-secret
+  namespace: grafana
+  labels: #@ labels()
+type: Opaque
+stringData:
+  client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!

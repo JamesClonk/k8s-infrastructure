@@ -115,8 +115,8 @@ directories:
   contents:
   - path: .
     git:
-      url: https://github.com/grafana/helm-charts
-      ref: grafana-6.42.2
+      url: https://github.com/grafana-community/helm-charts
+      ref: grafana-11.3.2
     includePaths:
     - charts/grafana/**/*
 - path: grafana/build/chart
@@ -135,15 +135,15 @@ directories:
   contents:
   - path: .
     git:
-      url: https://github.com/grafana/helm-charts
-      ref: loki-2.16.0
+      url: https://github.com/grafana/loki
+      ref: helm-loki-6.54.0
     includePaths:
-    - charts/loki/**/*
+    - production/helm/loki/**/*
 - path: loki/build/charts/loki
   contents:
   - path: .
     directory:
-      path: vendor/github.com/grafana/loki/charts/loki
+      path: vendor/github.com/grafana/loki/production/helm/loki
     ignorePaths:
     - LICENSE
     - NOTICE

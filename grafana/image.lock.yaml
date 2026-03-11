@@ -1,0 +1,10 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.32.0
+overrides:
+- image: docker.io/grafana/grafana:12.4.1
+  newImage: index.docker.io/grafana/grafana@sha256:e932bd6ed0e026595b08483cd0141e5103e1ab7ff8604839ff899b8dc54cabcb
+  preresolved: true
+- image: docker.io/library/busybox:1.37.0
+  newImage: index.docker.io/library/busybox@sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f
+  preresolved: true

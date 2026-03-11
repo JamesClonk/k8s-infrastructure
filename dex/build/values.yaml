@@ -38,10 +38,10 @@ config:
 
   enablePasswordDB: true
   staticPasswords:
-  - email: "admin@jamesclonk.com" # TODO: template via plato!!!
-    hash: "$2y$10$j6peuxAD8el..vwAKsvBHu5Pxdu5nNRFmdk7nAPWknD43YzM2h/Yy" # TODO: template via plato!!!
-    username: "admin@jamesclonk.com" # TODO: template via plato!!!
-    userID: "287b3657-14a4-4eab-8040-98a69c963b43" # TODO: template via plato!!!
+  - email: "admin@jamesclonk.com" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
+    hash: "$2y$10$j6peuxAD8el..vwAKsvBHu5Pxdu5nNRFmdk7nAPWknD43YzM2h/Yy" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
+    username: "admin@jamesclonk.com" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
+    userID: "287b3657-14a4-4eab-8040-98a69c963b43" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
 
   staticClients:
   - id: envoy-gateway
@@ -53,6 +53,6 @@ config:
     - 'https://prometheus.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://alertmanager.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://dashboard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
-    secret: "9589171b-b701-4237-bab1-ec43e97bb2d8" # TODO: template via plato!!!
+    secret: "9589171b-b701-4237-bab1-ec43e97bb2d8" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
 
-  connectors: [] # TODO: template via plato!!!
+  connectors: [] # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)

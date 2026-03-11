@@ -11,3 +11,20 @@ spec:
       - name: prometheus-server
         #@overlay/replace
         resources: #@ data.values.prometheus.resources
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"prometheus-kube-state-metrics"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"kube-state-metrics"}), expects=1
+      - name: kube-state-metrics
+        #@overlay/match missing_ok=True
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi

@@ -131,6 +131,21 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: prometheus
+  - name: grafana
+    protocol: HTTPS
+    port: 443
+    hostname: grafana.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: grafana-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: grafana
 
 ---
 apiVersion: gateway.networking.k8s.io/v1
