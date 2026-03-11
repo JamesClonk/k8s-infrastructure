@@ -26,11 +26,9 @@
 # sops unencrypted
 *_unencrypted
 
-# kube-state-metrics helm
-/monitoring/prometheus/build/chart/charts/kube-state-metrics-*.tgz
+# dont commit rendered helm chart output
+/**/templates/chart-output/*
 
-# oauth2-proxy helm
-/oauth2-proxy/build/chart/charts/redis-*.tgz
 
 # vendir garbage
 /**/LICENSE

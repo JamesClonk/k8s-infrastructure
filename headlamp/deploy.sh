@@ -6,6 +6,7 @@ source ../setup.sh
 
 # deploy
 echo "deploying [headlamp] ..."
+build/render.sh
 sops -d ${SECRETS_FILE} |
 	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - --data-value-file dashboard.kubeconfig="${KUBECONFIG}" |
 	kbld -f - -f image.lock.yaml |

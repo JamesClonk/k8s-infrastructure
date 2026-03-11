@@ -6,6 +6,7 @@ source ../setup.sh
 
 # lock image
 echo "locking images for [headlamp] ..."
+build/render.sh
 sops -d ${SECRETS_FILE} |
 	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - --data-value-file dashboard.kubeconfig="${KUBECONFIG}" |
 	kbld -f - --lock-output "image.lock.yaml"

@@ -5,7 +5,7 @@
 	- add vector
 
 - switch all templating & secrets management to `plato`
-	- all helm chart building/rendering needs to happen EVERYTIME in deploy/diff/lock_image too!
+	- dont plato-render secrets into helm chart values.yamls, since helm chart output gets stored in git
 	- all helm chart dependencies need to be accounted for and mirrored/vendired too! No internet!
 	- get rid of ytt secrets loading, render secrets instead directly in ytt yamls
 	- get rid of env var secrets load, render secrets instead directly in shellscripts
