@@ -1,29 +1,12 @@
 # TODO
 
-- migrate to envoy-gateway?
-	- ~test first if you can make hostNetwork work, or some other way for port 80,443 with envoy-proxy???~
-	- if yes:
-		- ~remove HTTP-listener completely (and https-redirect), does it still work with letsencrypt http01 solver?~
-			- ~no, it does not. we need to keep http listener and https-redirect ‼️~
-		- ~also implement Dex~
-		- ~implement OIDC via Dex into Headlamp natively~
-			- ~deploy headlamp via helm chart, as it can render oidc config directly~
-			- ~implement headlamp httproute directly via its helm chart~
-		- ~remove oauth2-proxy~
-		- ~integrate with cert-manager~
-			- ~wildcard cert possible even? NO~
-		- change all ingresses to httproutes, add oidc securitypolicy:
-			- ~dex~
-			- ~headlamp~
-			- monitoring:
-				- grafana
-				- ~prometheus~
-
 - migrate to vector
 	- remove promtail
 	- add vector
 
 - switch all templating & secrets management to `plato`
+	- all helm chart building/rendering needs to happen EVERYTIME in deploy/diff/lock_image too!
+	- all helm chart dependencies need to be accounted for and mirrored/vendired too! No internet!
 	- get rid of ytt secrets loading, render secrets instead directly in ytt yamls
 	- get rid of env var secrets load, render secrets instead directly in shellscripts
 	- yaml-encrypted secrets.yaml, instead of binary-encrypted .sops file
@@ -57,7 +40,7 @@
 		- ~headlamp~
 		- postgres
 		- monitoring:
-			- grafana
+			- ~grafana~
 			- ~prometheus~
 			- loki
 			- vector
