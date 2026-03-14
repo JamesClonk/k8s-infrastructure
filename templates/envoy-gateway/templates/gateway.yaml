@@ -51,7 +51,7 @@ spec:
   gatewayClassName: envoy-gateway
   addresses:
   - type: IPAddress
-    value: #@ data.values.envoy.gateway_ip
+    value: {{{ .environment.ip }}}
   listeners:
   - name: http
     protocol: HTTP
@@ -62,7 +62,7 @@ spec:
   # - name: echo
   #   protocol: HTTPS
   #   port: 443
-  #   hostname: echo.jamesclonk.com
+  #   hostname: echo.{{{ .environment.domain }}}
   #   tls:
   #     mode: Terminate
   #     certificateRefs:
@@ -74,7 +74,7 @@ spec:
   - name: dex
     protocol: HTTPS
     port: 443
-    hostname: dex.jamesclonk.com
+    hostname: dex.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -89,7 +89,7 @@ spec:
   - name: dashboard
     protocol: HTTPS
     port: 443
-    hostname: dashboard.jamesclonk.com
+    hostname: dashboard.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -104,7 +104,7 @@ spec:
   - name: prometheus
     protocol: HTTPS
     port: 443
-    hostname: prometheus.jamesclonk.com
+    hostname: prometheus.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -119,7 +119,7 @@ spec:
   - name: alertmanager
     protocol: HTTPS
     port: 443
-    hostname: alertmanager.jamesclonk.com
+    hostname: alertmanager.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -134,7 +134,7 @@ spec:
   - name: grafana
     protocol: HTTPS
     port: 443
-    hostname: grafana.jamesclonk.com
+    hostname: grafana.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -149,7 +149,7 @@ spec:
   - name: backman
     protocol: HTTPS
     port: 443
-    hostname: backman.jamesclonk.com
+    hostname: backman.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -164,7 +164,7 @@ spec:
   - name: pgweb
     protocol: HTTPS
     port: 443
-    hostname: pgweb.jamesclonk.com
+    hostname: pgweb.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -179,7 +179,7 @@ spec:
   - name: cf-env
     protocol: HTTPS
     port: 443
-    hostname: cf-env.jamesclonk.com
+    hostname: cf-env.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -194,7 +194,7 @@ spec:
   - name: home-info
     protocol: HTTPS
     port: 443
-    hostname: home-info.jamesclonk.com
+    hostname: home-info.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -209,7 +209,7 @@ spec:
   - name: ircollector
     protocol: HTTPS
     port: 443
-    hostname: ircollector.jamesclonk.com
+    hostname: ircollector.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -224,7 +224,7 @@ spec:
   - name: irvisualizer
     protocol: HTTPS
     port: 443
-    hostname: irvisualizer.jamesclonk.com
+    hostname: irvisualizer.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -239,7 +239,7 @@ spec:
   - name: resume
     protocol: HTTPS
     port: 443
-    hostname: resume.jamesclonk.com
+    hostname: resume.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -254,7 +254,7 @@ spec:
   - name: blog
     protocol: HTTPS
     port: 443
-    hostname: blog.jamesclonk.com
+    hostname: blog.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -269,7 +269,7 @@ spec:
   - name: kuard
     protocol: HTTPS
     port: 443
-    hostname: kuard.jamesclonk.com
+    hostname: kuard.{{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:
@@ -284,7 +284,7 @@ spec:
   - name: jcio
     protocol: HTTPS
     port: 443
-    hostname: jamesclonk.com
+    hostname: {{{ .environment.domain }}}
     tls:
       mode: Terminate
       certificateRefs:

@@ -46,11 +46,11 @@ spec:
     name: headlamp
   oidc:
     provider:
-      issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+      issuer: https://dex.{{{ .environment.domain }}}/dex
     clientID: envoy-gateway
     clientSecret:
       name: headlamp-oidc-client-secret
-    redirectURL: https://dashboard.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+    redirectURL: https://dashboard.{{{ .environment.domain }}}/oauth2/callback
     logoutPath: /logout
 
 ---
@@ -63,4 +63,4 @@ metadata:
     k8s-app: headlamp
 type: Opaque
 stringData:
-  client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!
+  client-secret: {{{ .dex.oidc_client_secret }}}

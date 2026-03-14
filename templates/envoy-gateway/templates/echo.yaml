@@ -83,7 +83,7 @@
 #     namespace: envoy-gateway-system
 #     sectionName: echo
 #   hostnames:
-#   - "echo.jamesclonk.com" # TODO: template via plato!!!
+#   - "echo.{{{ .environment.domain }}}"
 #   rules:
 #   - backendRefs:
 #     - group: ""
@@ -109,11 +109,11 @@
 #     name: echo
 #   oidc:
 #     provider:
-#       issuer: https://dex.jamesclonk.com/dex # TODO: template via plato!!!
+#       issuer: https://dex.{{{ .environment.domain }}}/dex
 #     clientID: envoy-gateway
 #     clientSecret:
 #       name: echo-oidc-client-secret
-#     redirectURL: https://echo.jamesclonk.com/oauth2/callback # TODO: template via plato!!!
+#     redirectURL: https://echo.{{{ .environment.domain }}}/oauth2/callback
 #     logoutPath: /logout
 
 # ---
@@ -124,4 +124,4 @@
 #   namespace: envoy-gateway-system
 # type: Opaque
 # stringData:
-#   client-secret: 9589171b-b701-4237-bab1-ec43e97bb2d8 # TODO: template via plato!!!
+#   client-secret: {{{ .environment.domain }}}

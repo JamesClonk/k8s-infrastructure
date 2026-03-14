@@ -4,6 +4,7 @@ plato:
 
 environment:
   domain: jamesclonk.com
+  ip: 46.225.89.78
   network_policy_enabled: true
 
 hetzner:

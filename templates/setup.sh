@@ -157,8 +157,14 @@ export HETZNER_K3S_VERSION=$(yq -e eval '.configuration.hetzner.k3s.version' ${C
 ########################################################################################################################
 # envoy-gateway / ingress configuration
 ########################################################################################################################
-export INGRESS_DOMAIN=$(yq -e eval '.configuration.ingress.domains[0]' ${CONFIGURATION_FILE})
-export INGRESS_DOMAIN_IP=$(dig "${INGRESS_DOMAIN}" +short)
+export INGRESS_DOMAIN="{{{ .environment.domain }}}"
+export INGRESS_DOMAIN_IP=$(dig "{{{ .environment.domain }}}" +short)
+if [ "${INGRESS_DOMAIN_IP}" != "{{{ .environment.ip }}}" ]; then
+	echo "verifying DNS entry for [{{{ .environment.domain }}}] ..."
+	echo "Error, configured IP [{{{ .environment.ip }}}] and DNS response IP [${INGRESS_DOMAIN_IP}] of [{{{ .environment.domain }}}] do not match!"
+	echo "Please fix either the DNS records or the configuration in plato.yaml (.environment.ip)!"
+	exit 1
+fi
 
 ########################################################################################################################
 # wireguard client
