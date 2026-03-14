@@ -1,6 +1,4 @@
-#@ load("@ytt:data", "data")
-
-#@ if data.values.cert_manager.enable_network_policy:
+{{{- if .environment.network_policy_enabled -}}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -38,4 +36,4 @@ spec:
       podSelector: {}
     ports:
     - port: 9402
-#@ end
+{{{- end -}}}

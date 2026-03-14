@@ -11,7 +11,7 @@
 		- hetzner-k3s
 		- kube-system
 		- envoy-gateway
-		- cert-manager
+		- ~cert-manager~
 		- dex
 		- headlamp
 		- postgres

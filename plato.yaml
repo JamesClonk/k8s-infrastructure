@@ -4,6 +4,7 @@ plato:
 
 environment:
   domain: jamesclonk.com
+  network_policy_enabled: true
 
 hetzner:
   ssh:

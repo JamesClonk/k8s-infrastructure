@@ -1,4 +1,0 @@
-#@data/values
----
-cert_manager:
-  enable_network_policy: true

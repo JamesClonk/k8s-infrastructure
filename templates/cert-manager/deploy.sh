@@ -7,7 +7,7 @@ source ../setup.sh
 # deploy
 echo "deploying [cert-manager] ..."
 sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - |
+	ytt --ignore-unknown-comments -f templates -f - |
 	kbld -f - -f image.lock.yaml |
 	kapp deploy -a cert-manager -c -y -f -
 kapp app-change garbage-collect -a cert-manager --max 5 -y

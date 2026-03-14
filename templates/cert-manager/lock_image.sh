@@ -7,6 +7,6 @@ source ../setup.sh
 # lock image
 echo "locking images for [cert-manager] ..."
 sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - |
+	ytt --ignore-unknown-comments -f templates -f - |
 	kbld -f - --lock-output "image.lock.yaml"
 cp -f image.lock.yaml ../../templates/cert-manager/.
