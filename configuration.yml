@@ -55,8 +55,3 @@ configuration:
   alertmanager:
     email:
       enabled: "true"
-    teams_webhook:
-      enabled: "false" # TODO: change for prod??? probably doesnt work anymore...
-
-  msteams:
-    enabled: "false" # TODO: change for prod??? probably doesnt work anymore...

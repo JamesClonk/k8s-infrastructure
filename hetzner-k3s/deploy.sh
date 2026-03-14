@@ -91,14 +91,22 @@ HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name
 echo "server IPs: ${HETZNER_NODE_IP}, ${HETZNER_NODE_PRIVATE_IP}"
 echo " "
 
+echo "verifying DNS entry for [${INGRESS_DOMAIN}] ..."
+INGRESS_DOMAIN_IP=$(dig "${INGRESS_DOMAIN}" +short)
+if [ "${INGRESS_DOMAIN_IP}" != "${HETZNER_NODE_IP}" ]; then
+	echo "Error, actual server IP [${HETZNER_NODE_IP}] and DNS response IP [${INGRESS_DOMAIN_IP}] of [${INGRESS_DOMAIN}] do not match!"
+	echo "Please fix the DNS records!"
+	exit 1
+fi
+
 ########################################################################################################################
 ####### wireguard ######################################################################################################
 ########################################################################################################################
 echo "checking wireguard ..."
 
 # (re)start local wireguard client connection to server
-wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
-wg-quick up "${LOCAL_WIREGUARD_FILE}"
+sudo wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
+sudo wg-quick up "${LOCAL_WIREGUARD_FILE}"
 
 # test if we can still reach SSH from outside
 export HETZNER_FIREWALL_LOADED_ALREADY="false"

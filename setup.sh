@@ -160,11 +160,6 @@ export HETZNER_K3S_VERSION=$(yq -e eval '.configuration.hetzner.k3s.version' ${C
 export INGRESS_DOMAIN=$(yq -e eval '.configuration.ingress.domains[0]' ${CONFIGURATION_FILE})
 
 ########################################################################################################################
-# other configuration
-########################################################################################################################
-export PROMETHEUS_ALERTMANAGER_TEAMS_WEBHOOK_ENABLED=$(yq -e eval '.configuration.msteams.enabled' ${CONFIGURATION_FILE})
-
-########################################################################################################################
 # wireguard client
 ########################################################################################################################
 if [ ! -d "$HOME/.tmp" ]; then mkdir "$HOME/.tmp"; fi
