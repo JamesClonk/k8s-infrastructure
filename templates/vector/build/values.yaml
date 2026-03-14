@@ -1,3 +1,5 @@
+nameOverride: vector
+
 role: "Agent"
 
 rollWorkload: true
@@ -73,9 +75,9 @@ customConfig:
       endpoint: http://loki-gateway.loki.svc.cluster.local
       path: /loki/api/v1/push
       labels:
-        namespace: "{{ namespace }}"
-        pod: "{{ pod }}"
-        pod_labels: "{{ pod_labels }}"
+        namespace: '{{"{{"}} .namespace {{"}}"}}'
+        pod: '{{"{{"}} .pod {{"}}"}}'
+        pod_labels: '{{"{{"}} .pod_labels {{"}}"}}'
       encoding:
         codec: json
       batch:

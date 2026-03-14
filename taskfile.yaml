@@ -8,7 +8,7 @@ tasks:
     cmds:
     - task -l
 
-  deploy:
+  render:
     desc: "Render the templates"
     cmds:
     - task: plato render
@@ -17,6 +17,11 @@ tasks:
     desc: "Vendor all files"
     cmds:
     - vendir sync
+    - task: update-charts
+
+  update-charts:
+    desc: "Update all helm charts"
+    cmds:
     - bash templates/dex/build/update.sh
     - bash templates/grafana/build/update.sh
     - bash templates/headlamp/build/update.sh
