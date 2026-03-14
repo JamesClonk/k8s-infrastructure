@@ -16,7 +16,7 @@ export LOCAL_WIREGUARD_FILE="$HOME/.tmp/hetzner0.conf"
 # wireguard
 ########################################################################################################################
 echo "taking down wireguard with [${LOCAL_WIREGUARD_FILE}] ..."
-wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
+sudo wg-quick down "${LOCAL_WIREGUARD_FILE}" || true
 echo "removing [${LOCAL_WIREGUARD_FILE}] ..."
 rm -f "${LOCAL_WIREGUARD_FILE}" || true
 
