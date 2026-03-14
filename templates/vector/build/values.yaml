@@ -54,10 +54,9 @@ customConfig:
       source: |
         .message = string!(.message)
         .namespace = .kubernetes.pod_namespace
-        .app = .kubernetes.pod_labels.app
+        .app = if exists(.kubernetes.pod_labels."app.kubernetes.io/name") { .kubernetes.pod_labels."app.kubernetes.io/name" } else if exists(.kubernetes.pod_labels.app) { .kubernetes.pod_labels.app } else { "unknown" }
         .container = .kubernetes.container_name
         .pod = .kubernetes.pod_name
-        .pod_labels = .kubernetes.pod_labels
 
   sinks:
     prom_exporter:
@@ -75,7 +74,6 @@ customConfig:
         app: "{{\"{{\"}} .app {{\"}}\"}}"
         container: "{{\"{{\"}} .container {{\"}}\"}}"
         pod: "{{\"{{\"}} .pod {{\"}}\"}}"
-        pod_labels: "{{\"{{\"}} .pod_labels {{\"}}\"}}"
       remove_label_fields: true
       encoding:
         codec: json
