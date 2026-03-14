@@ -12,7 +12,7 @@ directories:
       tag: v1.7.0
       assetNames: ["install.yaml", "envoy-gateway-crds.yaml"]
       disableAutoChecksumValidation: true
-- path: envoy-gateway/templates/upstream
+- path: templates/envoy-gateway/templates/upstream
   contents:
   - path: .
     directory:
@@ -36,7 +36,7 @@ directories:
       ref: dex-0.24.0
     includePaths:
     - charts/dex/**/*
-- path: dex/build/chart
+- path: templates/dex/build/chart
   contents:
   - path: .
     directory:
@@ -57,7 +57,7 @@ directories:
       disableAutoChecksumValidation: true
     includePaths:
     - cert-manager.yaml
-- path: cert-manager/templates/upstream
+- path: templates/cert-manager/templates/upstream
   contents:
   - path: .
     directory:
@@ -79,7 +79,7 @@ directories:
       ref: headlamp-helm-0.40.0
     includePaths:
     - charts/headlamp/**/*
-- path: headlamp/build/chart
+- path: templates/headlamp/build/chart
   contents:
   - path: .
     directory:
@@ -99,7 +99,7 @@ directories:
       ref: prometheus-28.13.0
     includePaths:
     - charts/prometheus/**/*
-- path: prometheus/build/chart
+- path: templates/prometheus/build/chart
   contents:
   - path: .
     directory:
@@ -119,7 +119,7 @@ directories:
       ref: grafana-11.3.2
     includePaths:
     - charts/grafana/**/*
-- path: grafana/build/chart
+- path: templates/grafana/build/chart
   contents:
   - path: .
     directory:
@@ -139,7 +139,7 @@ directories:
       ref: helm-loki-6.54.0
     includePaths:
     - production/helm/loki/**/*
-- path: loki/build/chart
+- path: templates/loki/build/chart
   contents:
   - path: .
     directory:
@@ -159,7 +159,7 @@ directories:
       ref: vector-0.51.0
     includePaths:
     - charts/vector/**/*
-- path: vector/build/chart
+- path: templates/vector/build/chart
   contents:
   - path: .
     directory:

@@ -155,9 +155,10 @@ export HETZNER_LOADBALANCER_TYPE=$(yq -e eval '.configuration.hetzner.loadbalanc
 export HETZNER_K3S_VERSION=$(yq -e eval '.configuration.hetzner.k3s.version' ${CONFIGURATION_FILE})
 
 ########################################################################################################################
-# ingress-nginx configuration
+# envoy-gateway / ingress configuration
 ########################################################################################################################
 export INGRESS_DOMAIN=$(yq -e eval '.configuration.ingress.domains[0]' ${CONFIGURATION_FILE})
+export INGRESS_DOMAIN_IP=$(dig "${INGRESS_DOMAIN}" +short)
 
 ########################################################################################################################
 # wireguard client

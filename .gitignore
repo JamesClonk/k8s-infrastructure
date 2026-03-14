@@ -23,12 +23,15 @@
 # kubeconfig
 /kubeconfig
 
+# plato rendered output
+/rendered
+/output
+
 # sops unencrypted
 *_unencrypted
 
 # dont commit rendered helm chart output
 /**/templates/chart-output/*
-
 
 # vendir garbage
 /**/LICENSE

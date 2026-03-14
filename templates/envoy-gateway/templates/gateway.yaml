@@ -51,7 +51,7 @@ spec:
   gatewayClassName: envoy-gateway
   addresses:
   - type: IPAddress
-    value: 116.203.156.9 # TODO: must be read and injected via shellscript / templating / ytt, cannot be hardcoded!
+    value: #@ data.values.envoy.gateway_ip
   listeners:
   - name: http
     protocol: HTTP
