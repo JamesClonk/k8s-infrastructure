@@ -13,17 +13,3 @@ spec:
           privileged: false
           #@overlay/match missing_ok=True
           allowPrivilegeEscalation: false
-
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"promtail-loki"}}), expects=1
----
-spec:
-  template:
-    spec:
-      containers:
-      #@overlay/match by=overlay.subset({"name":"promtail"}), expects=1
-      - name: promtail
-        securityContext:
-          #@overlay/match missing_ok=True
-          privileged: false
-          #@overlay/match missing_ok=True
-          allowPrivilegeEscalation: false

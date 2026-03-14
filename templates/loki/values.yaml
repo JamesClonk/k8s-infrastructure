@@ -1,0 +1,12 @@
+#@data/values
+---
+loki:
+  enable_network_policy: true
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi

@@ -7,33 +7,21 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: promtail
+  name: loki
   namespace: loki
   labels: #@ labels()
 spec:
   podSelector:
     matchLabels:
       app.kubernetes.io/name: loki
-      app.kubernetes.io/instance: promtail
+      app.kubernetes.io/instance: loki
+      app.kubernetes.io/component: single-binary
   ingress:
-  - from: #! allow access for prometheus
+  - from: #! allow access for vector
     - namespaceSelector:
         matchLabels:
-          namespace.kubernetes.io/name: prometheus
+          namespace.kubernetes.io/name: vector
       podSelector: {}
-    ports:
-    - port: 3101
-
-#@overlay/match by=overlay.subset({"kind": "NetworkPolicy", "metadata":{"name":"loki"}}), expects=1
----
-spec:
-  #@overlay/replace, expects=1
-  ingress:
-  - from: #! allow access for promtail
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: loki
-          app.kubernetes.io/instance: promtail
     ports:
     - port: 3100
   - from: #! allow access for prometheus

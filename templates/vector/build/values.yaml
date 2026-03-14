@@ -54,6 +54,8 @@ customConfig:
       source: |
         .message = string!(.message)
         .namespace = .kubernetes.pod_namespace
+        .app = .kubernetes.pod_labels.app
+        .container = .kubernetes.container_name
         .pod = .kubernetes.pod_name
         .pod_labels = .kubernetes.pod_labels
 
@@ -66,12 +68,15 @@ customConfig:
       type: loki
       inputs:
       - parse_kubernetes_logs
-      endpoint: http://loki-gateway.loki.svc.cluster.local
+      endpoint: http://loki.loki.svc.cluster.local:3100
       path: /loki/api/v1/push
       labels:
-        namespace: '{{"{{"}} .namespace {{"}}"}}'
-        pod: '{{"{{"}} .pod {{"}}"}}'
-        pod_labels: '{{"{{"}} .pod_labels {{"}}"}}'
+        namespace: "{{\"{{\"}} .namespace {{\"}}\"}}"
+        app: "{{\"{{\"}} .app {{\"}}\"}}"
+        container: "{{\"{{\"}} .container {{\"}}\"}}"
+        pod: "{{\"{{\"}} .pod {{\"}}\"}}"
+        pod_labels: "{{\"{{\"}} .pod_labels {{\"}}\"}}"
+      remove_label_fields: true
       encoding:
         codec: json
       batch:

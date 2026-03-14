@@ -1,4 +1,6 @@
 loki:
+  auth_enabled: false
+
   commonConfig:
     replication_factor: 1
 
@@ -73,6 +75,27 @@ singleBinary:
     accessModes:
     - ReadWriteOnce
     size: 10Gi
+
+networkPolicy:
+  enabled: false
+
+lokiCanary:
+  enabled: false
+test:
+  enabled: false
+
+gateway:
+  enabled: false
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+memcachedExporter:
+  enabled: false
+memcached:
+  enabled: false
+ruler:
+  enabled: false
 
 backend:
   replicas: 0
