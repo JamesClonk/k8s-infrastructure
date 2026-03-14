@@ -1,20 +1,20 @@
 #@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yaml", "labels")
 
-#@ if data.values.dex.enable_network_policy:
+#@ if data.values.vector.enable_network_policy:
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: dex
-  namespace: dex
+  name: vector
+  namespace: vector
   labels: #@ labels()
 spec:
   podSelector:
     matchLabels:
-      app: dex
-      app.kubernetes.io/name: dex
-      app.kubernetes.io/instance: dex
+      app.kubernetes.io/name: vector
+      app.kubernetes.io/instance: vector
+      app.kubernetes.io/component: Agent
   ingress:
   - from: #! allow access for prometheus
     - namespaceSelector:
@@ -22,12 +22,5 @@ spec:
           namespace.kubernetes.io/name: prometheus
       podSelector: {}
     ports:
-    - port: 5558
-  - from: #! allow access for gateway-api-controller
-    - namespaceSelector:
-        matchLabels:
-          namespace.kubernetes.io/name: envoy-gateway-system
-      podSelector: {}
-    ports:
-    - port: 5556
+    - port: 9090
 #@ end

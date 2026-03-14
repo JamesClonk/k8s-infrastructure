@@ -1,13 +1,13 @@
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"dex"}}), expects=1
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"vector"}}), expects=1
 ---
 spec:
   template:
     spec:
       containers:
-      #@overlay/match by=overlay.subset({"name":"dex"}), expects=1
-      - name: dex
+      #@overlay/match by=overlay.subset({"name":"vector"}), expects=1
+      - name: vector
         #@overlay/match missing_ok=True
         securityContext:
           #@overlay/match missing_ok=True

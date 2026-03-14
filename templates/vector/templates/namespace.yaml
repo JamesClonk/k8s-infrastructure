@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: dex
+  name: vector
   labels: #@ labels()
 
 #@overlay/match by=overlay.all, expects="1+"
@@ -13,12 +13,12 @@ metadata:
 #@overlay/match missing_ok=True
 metadata:
   #@overlay/match missing_ok=True
-  namespace: dex
+  namespace: vector
 
-#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"dex"}}), expects=1
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"vector"}}), expects=1
 ---
 metadata:
   #@overlay/match missing_ok=True
   labels:
     #@overlay/match missing_ok=True
-    namespace.kubernetes.io/name: dex
+    namespace.kubernetes.io/name: vector

@@ -1,5 +1,5 @@
 #@ def labels():
-  helm.sh/chart: dex-0.24.0
-  app.kubernetes.io/name: dex
-  app.kubernetes.io/version: 2.44.0
+  app.kubernetes.io/name: vector
+  app.kubernetes.io/instance: vector
+  app.kubernetes.io/component: Agent
 #@ end

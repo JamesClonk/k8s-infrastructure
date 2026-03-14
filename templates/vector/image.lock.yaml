@@ -2,6 +2,6 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.32.0
 overrides:
-- image: ghcr.io/dexidp/dex:v2.44.0
-  newImage: ghcr.io/dexidp/dex@sha256:5d0656fce7d453c0e3b2706abf40c0d0ce5b371fb0b73b3cf714d05f35fa5f86
+- image: docker.io/timberio/vector:0.54.0-distroless-libc
+  newImage: index.docker.io/timberio/vector@sha256:2eb5350e821e77fc35a11a268e5cec4a1460134ddc75f3cb191a949739d36365
   preresolved: true
