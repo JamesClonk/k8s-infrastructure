@@ -43,11 +43,6 @@ customConfig:
   sources:
     internal_metrics:
       type: internal_metrics
-    journald_source:
-      type: journald
-      batch_size: 16
-      current_boot_only: true
-      journal_directory: /var/log/journal
     kubernetes_logs:
       type: kubernetes_logs
 
@@ -70,7 +65,6 @@ customConfig:
     loki:
       type: loki
       inputs:
-      - journald_source
       - parse_kubernetes_logs
       endpoint: http://loki-gateway.loki.svc.cluster.local
       path: /loki/api/v1/push
