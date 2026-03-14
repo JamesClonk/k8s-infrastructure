@@ -183,7 +183,7 @@ PersistentKeepalive = 25
 EOF
 	chmod 600 "${LOCAL_WIREGUARD_FILE}"
 fi
-wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
+sudo wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
 
 ########################################################################################################################
 # $HOME/.ssh
