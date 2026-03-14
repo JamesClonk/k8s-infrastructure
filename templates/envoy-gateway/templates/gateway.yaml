@@ -266,21 +266,6 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: blog
-  - name: kuard
-    protocol: HTTPS
-    port: 443
-    hostname: kuard.{{{ .environment.domain }}}
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - kind: Secret
-        name: kuard-certificate
-    allowedRoutes:
-      namespaces:
-        from: Selector
-        selector:
-          matchLabels:
-            namespace.kubernetes.io/name: kuard
   - name: jcio
     protocol: HTTPS
     port: 443
@@ -290,6 +275,51 @@ spec:
       certificateRefs:
       - kind: Secret
         name: jcio-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb-frontend
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb-frontend.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-frontend-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb-backend
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb-backend.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-backend-certificate
     allowedRoutes:
       namespaces:
         from: Selector
