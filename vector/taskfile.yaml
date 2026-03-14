@@ -31,10 +31,16 @@ tasks:
     desc: "Build helm chart template"
     dir: '{{.TASKFILE_DIR}}/build'
     cmds:
-    - bash build.sh
+    - bash render.sh
 
   inspect_helm:
     desc: "Inspect helm chart template"
     dir: '{{.TASKFILE_DIR}}/build'
     cmds:
     - bash inspect.sh
+
+  update_helm:
+    desc: "Update helm chart dependencies"
+    dir: '{{.TASKFILE_DIR}}/build'
+    cmds:
+    - bash update.sh

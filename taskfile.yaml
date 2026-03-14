@@ -46,6 +46,17 @@ tasks:
     cmds:
     - bash cleanup.sh
 
+  vendor:
+    desc: "Vendor all files"
+    cmds:
+    - vendir sync
+    - bash dex/build/update.sh
+    - bash grafana/build/update.sh
+    - bash headlamp/build/update.sh
+    - bash loki/build/update.sh
+    - bash prometheus/build/update.sh
+    - bash vector/build/update.sh
+
 includes:
   hetzner: ./hetzner-k3s
   kube-system: ./kube-system
