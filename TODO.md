@@ -21,19 +21,6 @@
 			- loki
 			- vector
 
-- update deployments to latest version
-	- update vendir.yml, sync, and verify if still rendering and deploying fine:
-		- ~envoy-gateway~
-		- ~cert-manager~
-		- ~dex~
-		- ~headlamp~
-		- postgres
-		- ~monitoring:~
-			- ~grafana~
-			- ~prometheus~
-			- ~loki~
-			- ~vector~
-
 - update all cert-manager annotations to point to "letsencrypt-prod" instead of "letsencrypt-staging"
 
 - go through all remaining "# TODO:" comments

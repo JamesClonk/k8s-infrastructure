@@ -25,7 +25,7 @@ tasks:
     # it also never hurts to have a dashboard!
     - task: headlamp:deploy
     # # we can always use a good database..
-    # TODO: uncomnent: - task: postgres:deploy
+    - task: postgres:deploy
     # metrics, monitoring, alerting, logs, what would we do without those?
     - task: prometheus:deploy
     - task: loki:deploy
@@ -46,10 +46,9 @@ tasks:
     cmds:
     - bash cleanup.sh
 
-  vendor:
-    desc: "Vendor all files"
+  update-charts:
+    desc: "Update all helm charts"
     cmds:
-    - vendir sync
     - bash dex/build/update.sh
     - bash grafana/build/update.sh
     - bash headlamp/build/update.sh
