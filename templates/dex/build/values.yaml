@@ -53,6 +53,21 @@ config:
     - 'https://prometheus.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://alertmanager.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     - 'https://dashboard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://pgweb.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://cf-env.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://home-info.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://ircollector.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://irvisualizer.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://image-puller.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://item-monitor.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://www.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://resume.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://blog.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://kuard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://minecraft.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://repo-mirrorer.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
+    - 'https://wireguard.jamesclonk.com/oauth2/callback' # TODO: template via plato!!!
     secret: "9589171b-b701-4237-bab1-ec43e97bb2d8" # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)
 
   connectors: [] # TODO: overwrite in ytt file, cannot be here as it will be checked into git (under ../templates/upstream/)

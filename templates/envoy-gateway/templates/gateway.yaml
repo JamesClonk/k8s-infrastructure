@@ -146,6 +146,156 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: grafana
+  - name: backman
+    protocol: HTTPS
+    port: 443
+    hostname: backman.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: backman-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: backman
+  - name: pgweb
+    protocol: HTTPS
+    port: 443
+    hostname: pgweb.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: pgweb-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: pgweb
+  - name: cf-env
+    protocol: HTTPS
+    port: 443
+    hostname: cf-env.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: cf-env-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: cf-env
+  - name: home-info
+    protocol: HTTPS
+    port: 443
+    hostname: home-info.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: home-info-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: home-info
+  - name: ircollector
+    protocol: HTTPS
+    port: 443
+    hostname: ircollector.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: ircollector-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: ircollector
+  - name: irvisualizer
+    protocol: HTTPS
+    port: 443
+    hostname: irvisualizer.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: irvisualizer-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: irvisualizer
+  - name: resume
+    protocol: HTTPS
+    port: 443
+    hostname: resume.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: resume-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: resume
+  - name: blog
+    protocol: HTTPS
+    port: 443
+    hostname: blog.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: blog-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: blog
+  - name: kuard
+    protocol: HTTPS
+    port: 443
+    hostname: kuard.jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: kuard-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: kuard
+  - name: jcio
+    protocol: HTTPS
+    port: 443
+    hostname: jamesclonk.com
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: jcio-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
 
 ---
 apiVersion: gateway.networking.k8s.io/v1
