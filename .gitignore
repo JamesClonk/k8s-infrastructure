@@ -27,6 +27,10 @@
 /rendered
 /output
 
+# postgres backups
+*.sql
+*.sql.gz
+
 # sops unencrypted
 *_unencrypted
 
