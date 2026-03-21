@@ -7,6 +7,11 @@ on:
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./rendered
+
 jobs:
   hetzner-k3s:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -15,7 +20,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -33,7 +40,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -51,7 +60,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: deploy kubernetes gateway-api controller
       run: task envoy-gateway:deploy
     - name: cleanup
@@ -66,7 +77,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -84,7 +97,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: deploy dex
       run: task dex:deploy
     - name: cleanup
@@ -99,7 +114,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -117,7 +134,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -135,7 +154,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -153,7 +174,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -171,7 +194,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
@@ -189,7 +214,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh

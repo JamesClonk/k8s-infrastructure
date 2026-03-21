@@ -6,6 +6,11 @@ on:
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
+defaults:
+  run:
+    shell: bash
+    working-directory: ./rendered
+
 jobs:
   reboot-vm:
     name: reboot-virtual-machine
@@ -13,7 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install wireguard tools
-      run: ./github_wireguard.sh
+      run: ../github_wireguard.sh
+    - name: install plato and render repo
+      run: ../github_render.sh
     - name: setup
       if: ${{ always() }}
       run: ./setup.sh
