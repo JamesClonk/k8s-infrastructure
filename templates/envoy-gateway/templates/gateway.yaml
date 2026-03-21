@@ -220,7 +220,7 @@ spec:
         from: Selector
         selector:
           matchLabels:
-            namespace.kubernetes.io/name: ircollector
+            namespace.kubernetes.io/name: irvisualizer
   - name: irvisualizer
     protocol: HTTPS
     port: 443
