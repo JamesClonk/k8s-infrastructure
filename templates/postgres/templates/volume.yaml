@@ -8,7 +8,6 @@
 #@ if len(data.values.postgres.resources.storage.size) == 0:
 #@  assert.fail("postgres.resources.storage.size cannot be empty")
 #@ end
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -24,14 +23,12 @@ spec:
       storage: #@ data.values.postgres.resources.storage.size
   storageClassName: #@ data.values.postgres.resources.storage.class_name
 
-#@ if data.values.pgbackup.enabled:
 #@ if len(data.values.pgbackup.resources.storage.class_name) == 0:
 #@  assert.fail("pgbackup.resources.storage.class_name cannot be empty")
 #@ end
 #@ if len(data.values.pgbackup.resources.storage.size) == 0:
 #@  assert.fail("pgbackup.resources.storage.size cannot be empty")
 #@ end
-
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -48,4 +45,3 @@ spec:
     requests:
       storage: #@ data.values.pgbackup.resources.storage.size
   storageClassName: #@ data.values.pgbackup.resources.storage.class_name
-#@ end
