@@ -1,10 +1,6 @@
 #@ load("@ytt:data", "data")
-#@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yaml", "labels")
 
-#@ if len(data.values.configuration.ingress.domains) == 0 or len(data.values.configuration.ingress.domains[0]) == 0 or data.values.configuration.ingress.domains[0] == "example.org":
-#@  assert.fail("domain is missing or invalid")
-#@ end
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -18,8 +14,7 @@ spec:
     namespace: envoy-gateway-system
     sectionName: dex
   hostnames:
-  #@ for/end host in data.values.configuration.ingress.domains:
-  - #@ "dex." + host
+  - dex.{{{ .environment.domain }}}
   rules:
   - backendRefs:
     - group: ""

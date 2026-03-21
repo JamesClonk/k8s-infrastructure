@@ -8,6 +8,6 @@ source ../setup.sh
 kapp app-change list -a prometheus
 build/render.sh
 sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - |
+	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
 	kbld -f - -f image.lock.yaml |
 	kapp deploy -a prometheus -c --diff-run -f -

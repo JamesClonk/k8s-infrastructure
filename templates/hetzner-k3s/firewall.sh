@@ -13,19 +13,19 @@ fi
 ########################################################################################################################
 ####### firewall #######################################################################################################
 ########################################################################################################################
-if [ "${HETZNER_FIREWALL_ENABLED}" == "true" ]; then
-	echo "checking for firewall [${HETZNER_FIREWALL_NAME}] ..."
-	hcloud firewall list -o noheader | grep "${HETZNER_FIREWALL_NAME}" 1>/dev/null ||
-		(echo "creating ${HETZNER_FIREWALL_NAME} ..." &&
-			cat firewall_rules.json | hcloud firewall create --name "${HETZNER_FIREWALL_NAME}" --rules-file - &&
+if [ "{{{ .hetzner.firewall.enabled }}}" == "true" ]; then
+	echo "checking for firewall [{{{ .hetzner.firewall.name }}}] ..."
+	hcloud firewall list -o noheader | grep "{{{ .hetzner.firewall.name }}}" 1>/dev/null ||
+		(echo "creating {{{ .hetzner.firewall.name }}} ..." &&
+			cat firewall_rules.json | hcloud firewall create --name "{{{ .hetzner.firewall.name }}}" --rules-file - &&
 			sleep 30)
 	# wait half a minute for firewall to be ready for sure
 
 	# setup firewall
 	echo "setting rules for firewall ..."
-	cat firewall_rules.json | hcloud firewall replace-rules "${HETZNER_FIREWALL_NAME}" --rules-file - 1>/dev/null
+	cat firewall_rules.json | hcloud firewall replace-rules "{{{ .hetzner.firewall.name }}}" --rules-file - 1>/dev/null
 
 	echo "applying firewall to server [{{{ .hetzner.node.name }}}] ..."
-	hcloud firewall apply-to-resource "${HETZNER_FIREWALL_NAME}" --server "{{{ .hetzner.node.name }}}" --type server 1>/dev/null || true
+	hcloud firewall apply-to-resource "{{{ .hetzner.firewall.name }}}" --server "{{{ .hetzner.node.name }}}" --type server 1>/dev/null || true
 	echo " "
 fi

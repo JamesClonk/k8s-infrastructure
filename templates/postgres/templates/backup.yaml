@@ -1,14 +1,6 @@
 #@ load("@ytt:data", "data")
-#@ load("@ytt:assert", "assert")
 #@ load("_ytt.lib.yaml", "labels")
 
-#@ if data.values.pgbackup.enabled:
-#@ if len(data.values.pgbackup.schedule) == 0:
-#@  assert.fail("pgbackup.schedule is missing")
-#@ end
-#@ if len(data.values.pgbackup.file_retention) == 0:
-#@  assert.fail("pgbackup.file_retention is missing")
-#@ end
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -20,7 +12,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
     kapp.k14s.io/change-rule.pgbackup: upsert after upserting pgbackup-pvc
 spec:
-  schedule: #@ data.values.pgbackup.schedule
+  schedule: "{{{ .postgres.backup.schedule }}}"
   concurrencyPolicy: Replace
   successfulJobsHistoryLimit: 10
   failedJobsHistoryLimit: 10

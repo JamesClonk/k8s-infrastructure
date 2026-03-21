@@ -23,10 +23,6 @@ exporter:
 pgbackup:
   image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
 
-  enabled: true
-  schedule: "55 5 * * *"
-  file_retention: "21"
-
   resources:
     memory_in_mb: 1024
     storage:

@@ -8,6 +8,6 @@ source ../setup.sh
 echo "locking images for [grafana] ..."
 build/render.sh
 sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f ${CONFIGURATION_FILE} -f - |
+	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
 	kbld -f - --lock-output "image.lock.yaml"
 cp -f image.lock.yaml ../../templates/grafana/.

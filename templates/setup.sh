@@ -7,7 +7,6 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 ########################################################################################################################
 # environment configuration
 ########################################################################################################################
-export CONFIGURATION_FILE="$(dirname ${BASH_SOURCE[0]})/configuration.yml"
 export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets.sops"
 export KUBECONFIG="$HOME/.kube/k8s-infrastructure"
 export LOCAL_WIREGUARD_FILE="$HOME/.tmp/hetzner0.conf"
@@ -117,20 +116,6 @@ git config --local diff.sopsdiffer.textconv "sops -d"
 # hetzner cloud
 ########################################################################################################################
 export HCLOUD_TOKEN="{{{ .hetzner.token }}}"
-
-export HETZNER_NODE_TYPE=$(yq -e eval '.configuration.hetzner.node.type' ${CONFIGURATION_FILE})
-export HETZNER_NODE_IMAGE=$(yq -e eval '.configuration.hetzner.node.image' ${CONFIGURATION_FILE})
-export HETZNER_NODE_LOCATION=$(yq -e eval '.configuration.hetzner.node.location' ${CONFIGURATION_FILE})
-
-export HETZNER_FIREWALL_ENABLED=$(yq -e eval '.configuration.hetzner.firewall.enabled' ${CONFIGURATION_FILE})
-export HETZNER_FIREWALL_NAME=$(yq -e eval '.configuration.hetzner.firewall.name' ${CONFIGURATION_FILE})
-
-export HETZNER_FLOATING_IP_ENABLED=$(yq -e eval '.configuration.hetzner.floating_ip.enabled' ${CONFIGURATION_FILE})
-export HETZNER_FLOATING_IP_NAME=$(yq -e eval '.configuration.hetzner.floating_ip.name' ${CONFIGURATION_FILE})
-
-export HETZNER_LOADBALANCER_ENABLED=$(yq -e eval '.configuration.hetzner.loadbalancer.enabled' ${CONFIGURATION_FILE})
-export HETZNER_LOADBALANCER_NAME=$(yq -e eval '.configuration.hetzner.loadbalancer.name' ${CONFIGURATION_FILE})
-export HETZNER_LOADBALANCER_TYPE=$(yq -e eval '.configuration.hetzner.loadbalancer.type' ${CONFIGURATION_FILE})
 
 ########################################################################################################################
 # envoy-gateway / ingress configuration

@@ -25,9 +25,9 @@ echo " "
 ########################################################################################################################
 ####### floating-ip ####################################################################################################
 ########################################################################################################################
-if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
+if [ "{{{ .hetzner.floating_ip.enabled }}}" == "true" ]; then
 	# get floating-ip
-	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.IP}}')
+	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "{{{ .hetzner.floating_ip.name }}}" -o format='{{.IP}}')
 fi
 
 ########################################################################################################################
@@ -40,7 +40,7 @@ echo " "
 
 mkdir -p $HOME/.kube || true
 HETZNER_K3S_IP=${HETZNER_NODE_PRIVATE_IP}
-if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
+if [ "{{{ .hetzner.floating_ip.enabled }}}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
 retry 15 45 nc -vz "${HETZNER_NODE_PRIVATE_IP}" 22333 -w5

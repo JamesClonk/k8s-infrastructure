@@ -1,41 +1,25 @@
 #@ load("@ytt:data", "data")
-#@ load("@ytt:assert", "assert")
 #@ load("@ytt:overlay", "overlay")
-
-#@ if data.values.configuration.alertmanager.email.enabled:
-  #@ if len(data.values.secrets.alertmanager.email.mail_from) == 0 or data.values.secrets.alertmanager.email.mail_from == "nobody@nobody":
-  #@  assert.fail("secrets.alertmanager.email.mail_from is missing or invalid")
-  #@ end
-  #@ if len(data.values.secrets.alertmanager.email.mail_to) == 0 or data.values.secrets.alertmanager.email.mail_to == "nobody@nobody":
-  #@  assert.fail("secrets.alertmanager.email.mail_to is missing or invalid")
-  #@ end
-  #@ if len(data.values.secrets.alertmanager.email.password) == 0 or data.values.secrets.alertmanager.email.password == "password":
-  #@  assert.fail("secrets.alertmanager.email.password is missing or invalid")
-  #@ end
-  #@ if len(data.values.secrets.alertmanager.email.host) == 0:
-  #@  assert.fail("secrets.alertmanager.email.host is missing")
-  #@ end
-#@ end
 
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"prometheus-alertmanager"}}), expects=1
 ---
 #@yaml/text-templated-strings
 data:
-  alertmanager.yml: | # TODO: render secrets in here with plato!
+  alertmanager.yml: |
     global:
       resolve_timeout: 5m
     receivers:
     - name: notifications
-      (@ if data.values.configuration.alertmanager.email.enabled: @)
+      {{{- if .alertmanager.email.enabled }}}
       email_configs:
-      - to: '(@= data.values.secrets.alertmanager.email.mail_to @)'
-        from: '(@= data.values.secrets.alertmanager.email.mail_from @)'
-        smarthost: '(@= data.values.secrets.alertmanager.email.host @)'
-        auth_username: '(@= data.values.secrets.alertmanager.email.mail_from @)'
-        auth_identity: '(@= data.values.secrets.alertmanager.email.mail_from @)'
-        auth_password: '(@= data.values.secrets.alertmanager.email.password @)'
+      - to: '{{{ .alertmanager.email.mail_to }}}'
+        from: '{{{ .alertmanager.email.mail_from }}}'
+        smarthost: '{{{ .alertmanager.email.host }}}'
+        auth_username: '{{{ .alertmanager.email.mail_from }}}'
+        auth_identity: '{{{ .alertmanager.email.mail_from }}}'
+        auth_password: '{{{ .alertmanager.email.password }}}'
         send_resolved: false
-      (@ end @)
+      {{{- end }}}
     route:
       group_interval: 10m
       group_wait: 1m

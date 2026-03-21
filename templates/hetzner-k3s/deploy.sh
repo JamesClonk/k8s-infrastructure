@@ -40,8 +40,8 @@ echo " "
 ########################################################################################################################
 echo "checking for server [{{{ .hetzner.node.name }}}] ..."
 hcloud server list -o noheader | grep "{{{ .hetzner.node.name }}}" 1>/dev/null ||
-	(hcloud server create --name "{{{ .hetzner.node.name }}}" --type "${HETZNER_NODE_TYPE}" --image "${HETZNER_NODE_IMAGE}" \
-		--ssh-key "{{{ .hetzner.ssh.key_name }}}" --network "{{{ .hetzner.private_network.name }}}" --location "${HETZNER_NODE_LOCATION}" \
+	(hcloud server create --name "{{{ .hetzner.node.name }}}" --type "{{{ .hetzner.node.type }}}" --image "{{{ .hetzner.node.image }}}" \
+		--ssh-key "{{{ .hetzner.ssh.key_name }}}" --network "{{{ .hetzner.private_network.name }}}" --location "{{{ .hetzner.node.location }}}" \
 		--user-data-from-file "cloud-init.conf" && rm -f "${KUBECONFIG}" && echo "waiting for server to be ready ..." && sleep 177)
 # wait for a while for server when newly created to be ready for sure
 
@@ -156,22 +156,22 @@ echo " "
 ########################################################################################################################
 ####### floating-ip ####################################################################################################
 ########################################################################################################################
-if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
-	echo "checking for floating-ip [${HETZNER_FLOATING_IP_NAME}] ..."
-	hcloud floating-ip list -o noheader | grep "${HETZNER_FLOATING_IP_NAME}" 1>/dev/null ||
-		(hcloud floating-ip create --name "${HETZNER_FLOATING_IP_NAME}" --type "ipv4" \
-			--home-location "${HETZNER_NODE_LOCATION}" --server "{{{ .hetzner.node.name }}}" &&
+if [ "{{{ .hetzner.floating_ip.enabled }}}" == "true" ]; then
+	echo "checking for floating-ip [{{{ .hetzner.floating_ip.name }}}] ..."
+	hcloud floating-ip list -o noheader | grep "{{{ .hetzner.floating_ip.name }}}" 1>/dev/null ||
+		(hcloud floating-ip create --name "{{{ .hetzner.floating_ip.name }}}" --type "ipv4" \
+			--home-location "{{{ .hetzner.node.location }}}" --server "{{{ .hetzner.node.name }}}" &&
 			sleep 15)
 	# wait 15 seconds for floating-ip to be ready for sure
 
 	# is it now assigned?
-	hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.Server.ID}}' 2>/dev/null ||
-		(hcloud floating-ip assign "${HETZNER_FLOATING_IP_NAME}" "{{{ .hetzner.node.name }}}" &&
+	hcloud floating-ip describe "{{{ .hetzner.floating_ip.name }}}" -o format='{{.Server.ID}}' 2>/dev/null ||
+		(hcloud floating-ip assign "{{{ .hetzner.floating_ip.name }}}" "{{{ .hetzner.node.name }}}" &&
 			sleep 15)
 	# wait 15 seconds for floating-ip to be assigned for sure
 
 	# add floating-ip to server network interfaces
-	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "${HETZNER_FLOATING_IP_NAME}" -o format='{{.IP}}')
+	HETZNER_FLOATING_IP=$(hcloud floating-ip describe "{{{ .hetzner.floating_ip.name }}}" -o format='{{.IP}}')
 	ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} "cat /etc/netplan/60-floating-ip.yaml | grep '${HETZNER_FLOATING_IP}' 1>/dev/null" ||
 		(ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 			"cat > /etc/netplan/60-floating-ip.yaml << EOF
@@ -194,29 +194,29 @@ fi
 ########################################################################################################################
 ####### load-balancer ###################################################################################################
 ########################################################################################################################
-if [ "${HETZNER_LOADBALANCER_ENABLED}" == "true" ]; then
-	echo "checking for load-balancer [${HETZNER_LOADBALANCER_NAME}] ..."
-	hcloud load-balancer list -o noheader | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null ||
-		(hcloud load-balancer create --name "${HETZNER_LOADBALANCER_NAME}" --type "${HETZNER_LOADBALANCER_TYPE}" \
-			--location "${HETZNER_NODE_LOCATION}" --network-zone "{{{ .hetzner.private_network.zone }}}" &&
+if [ "{{{ .hetzner.loadbalancer.enabled }}}" == "true" ]; then
+	echo "checking for load-balancer [{{{ .hetzner.loadbalancer.name }}}] ..."
+	hcloud load-balancer list -o noheader | grep "{{{ .hetzner.loadbalancer.name }}}" 1>/dev/null ||
+		(hcloud load-balancer create --name "{{{ .hetzner.loadbalancer.name }}}" --type "{{{ .hetzner.loadbalancer.type }}}" \
+			--location "{{{ .hetzner.node.location }}}" --network-zone "{{{ .hetzner.private_network.zone }}}" &&
 			sleep 15)
 	# wait 15 seconds for load-balancer to be ready for sure
 
-	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" | grep "${HETZNER_LOADBALANCER_NAME}" 1>/dev/null ||
-		hcloud load-balancer attach-to-network --network "{{{ .hetzner.private_network.name }}}" "${HETZNER_LOADBALANCER_NAME}"
+	hcloud load-balancer describe "{{{ .hetzner.loadbalancer.name }}}" | grep "{{{ .hetzner.loadbalancer.name }}}" 1>/dev/null ||
+		hcloud load-balancer attach-to-network --network "{{{ .hetzner.private_network.name }}}" "{{{ .hetzner.loadbalancer.name }}}"
 
-	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "http 80 80" 1>/dev/null ||
-		(hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
+	hcloud load-balancer describe "{{{ .hetzner.loadbalancer.name }}}" -o format='{{.Services}}' | grep "http 80 80" 1>/dev/null ||
+		(hcloud load-balancer add-service "{{{ .hetzner.loadbalancer.name }}}" \
 			--protocol "http" --listen-port 80 --destination-port 80 &&
-			hcloud load-balancer update-service "${HETZNER_LOADBALANCER_NAME}" \
+			hcloud load-balancer update-service "{{{ .hetzner.loadbalancer.name }}}" \
 				--protocol "http" --listen-port 80 --destination-port 80 --health-check-http-status-codes "2??,3??,404")
 
-	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{.Services}}' | grep "tcp 443 443" 1>/dev/null ||
-		hcloud load-balancer add-service "${HETZNER_LOADBALANCER_NAME}" \
+	hcloud load-balancer describe "{{{ .hetzner.loadbalancer.name }}}" -o format='{{.Services}}' | grep "tcp 443 443" 1>/dev/null ||
+		hcloud load-balancer add-service "{{{ .hetzner.loadbalancer.name }}}" \
 			--protocol "tcp" --listen-port 443 --destination-port 443
 
-	hcloud load-balancer describe "${HETZNER_LOADBALANCER_NAME}" -o format='{{index .Targets 0}}' | grep "server" 1>/dev/null ||
-		hcloud load-balancer add-target "${HETZNER_LOADBALANCER_NAME}" --server "{{{ .hetzner.node.name }}}" --use-private-ip
+	hcloud load-balancer describe "{{{ .hetzner.loadbalancer.name }}}" -o format='{{index .Targets 0}}' | grep "server" 1>/dev/null ||
+		hcloud load-balancer add-target "{{{ .hetzner.loadbalancer.name }}}" --server "{{{ .hetzner.node.name }}}" --use-private-ip
 	echo " "
 fi
 
@@ -232,7 +232,7 @@ test -f "${KUBECONFIG}" || sleep 60 # wait a moment if this looks like it is k3s
 
 mkdir -p $HOME/.kube || true
 HETZNER_K3S_IP="${HETZNER_NODE_PRIVATE_IP}"
-if [ "${HETZNER_FLOATING_IP_ENABLED}" == "true" ]; then
+if [ "{{{ .hetzner.floating_ip.enabled }}}" == "true" ]; then
 	HETZNER_K3S_IP="${HETZNER_FLOATING_IP}"
 fi
 retry 5 10 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
