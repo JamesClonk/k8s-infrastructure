@@ -1,6 +1,6 @@
 #@ load("_ytt.lib.yaml", "labels")
 
-{{{- if .environment.network_policy_enabled -}}}
+{{{- if .environment.network_policy_enabled }}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
