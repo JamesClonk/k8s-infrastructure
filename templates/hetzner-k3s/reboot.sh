@@ -14,7 +14,7 @@ fi
 ####### server #########################################################################################################
 ########################################################################################################################
 # get private server-ip
-HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"{{{ .hetzner.node.name }}}\") | .private_net[0].ip")
 
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_PRIVATE_IP}" 1>/dev/null ||
@@ -33,9 +33,9 @@ fi
 ########################################################################################################################
 ####### kubernetes #####################################################################################################
 ########################################################################################################################
-echo "rebooting server [${HETZNER_NODE_NAME}] ..."
+echo "rebooting server [{{{ .hetzner.node.name }}}] ..."
 
-hcloud server reboot "${HETZNER_NODE_NAME}"
+hcloud server reboot "{{{ .hetzner.node.name }}}"
 echo " "
 
 mkdir -p $HOME/.kube || true

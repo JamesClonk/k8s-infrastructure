@@ -21,13 +21,10 @@
 			- loki
 			- vector
 
-- update all cert-manager annotations to point to "letsencrypt-prod" instead of "letsencrypt-staging"
-
 - go through all remaining "# TODO:" comments
 
 - implement OIDC via GitHub in Dex, add connector and test it
 
-- cleanup current prod postgres database before merging this branch, the current backups are overly large, we dont need more than lets say 2 years of data in irvisualizer db
 - run a new pgbackup job after db cleanup, to make sure you got a backup after size reduction (in both, backman and pgbackup sidecar cronjob)
 
 - switch cx32 to cpx32 once ready for prod deployment

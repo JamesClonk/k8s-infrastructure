@@ -14,7 +14,7 @@ fi
 ####### server #########################################################################################################
 ########################################################################################################################
 # get private server-ip
-HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"{{{ .hetzner.node.name }}}\") | .private_net[0].ip")
 
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_PRIVATE_IP}" 1>/dev/null ||
@@ -25,5 +25,5 @@ echo " "
 ########################################################################################################################
 ####### ssh ############################################################################################################
 ########################################################################################################################
-echo "connecting via ssh to [${HETZNER_NODE_NAME}] ..."
+echo "connecting via ssh to [{{{ .hetzner.node.name }}}] ..."
 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP}

@@ -3,23 +3,6 @@
 #@overlay/match missing_ok=True
 configuration:
   hetzner:
-    ssh:
-      key_name: {{{ .hetzner.ssh.key_name }}}
-
-    wireguard:
-      server:
-        range: {{{ .hetzner.wireguard.server.range }}}
-        ip: {{{ .hetzner.wireguard.server.ip }}}
-        port: {{{ .hetzner.wireguard.server.port }}}
-      client:
-        ip: {{{ .hetzner.wireguard.client.ip }}}
-
-    private_network:
-      name: {{{ .hetzner.private_network.name }}}
-      range: {{{ .hetzner.private_network.range }}}
-      subnet: {{{ .hetzner.private_network.subnet }}}
-      zone: {{{ .hetzner.private_network.zone }}}
-
     node:
       name: {{{ .hetzner.node.name }}}
       type: {{{ .hetzner.node.type }}}
@@ -38,9 +21,6 @@ configuration:
       enabled: "{{{ .hetzner.loadbalancer.enabled }}}"
       name: {{{ .hetzner.loadbalancer.name }}}
       type: {{{ .hetzner.loadbalancer.type }}}
-
-    k3s:
-      version: {{{ .hetzner.k3s.version }}}
 
   ingress:
     domains:

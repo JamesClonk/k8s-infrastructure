@@ -14,7 +14,7 @@ fi
 ####### server #########################################################################################################
 ########################################################################################################################
 # get private server-ip
-HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"{{{ .hetzner.node.name }}}\") | .private_net[0].ip")
 
 # add server-ip to ssh known_hosts
 cat "$HOME/.ssh/known_hosts" 2>/dev/null | grep "${HETZNER_NODE_PRIVATE_IP}" 1>/dev/null ||
@@ -33,10 +33,10 @@ fi
 ########################################################################################################################
 ####### kubernetes #####################################################################################################
 ########################################################################################################################
-echo "restarting k3s on server [${HETZNER_NODE_NAME}] ..."
+echo "restarting k3s on server [{{{ .hetzner.node.name }}}] ..."
 
 ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
-	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='${HETZNER_K3S_VERSION}' INSTALL_K3S_EXEC='--tls-san=${HETZNER_NODE_PRIVATE_IP} --disable=traefik --disable=servicelb' sh -"
+	"curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='{{{ .hetzner.k3s.version }}}' INSTALL_K3S_EXEC='--tls-san=${HETZNER_NODE_PRIVATE_IP} --disable=traefik --disable=servicelb' sh -"
 echo " "
 
 # fix iptables issues (https://github.com/k3s-io/k3s/issues/535)

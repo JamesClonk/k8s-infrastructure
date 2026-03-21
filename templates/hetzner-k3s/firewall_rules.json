@@ -6,7 +6,7 @@
       "::/0"
     ],
     "protocol": "udp",
-    "port": "${HETZNER_WIREGUARD_SERVER_PORT}"
+    "port": "{{{ .hetzner.wireguard.server.port }}}"
   },
   {
     "direction": "in",

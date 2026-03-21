@@ -23,7 +23,7 @@ exporter:
 pgbackup:
   image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
 
-  enabled: false # TODO: change for prod
+  enabled: true
   schedule: "55 5 * * *"
   file_retention: "21"
 

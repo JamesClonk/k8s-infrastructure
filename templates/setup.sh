@@ -114,30 +114,10 @@ git config --local core.hooksPath .githooks/
 git config --local diff.sopsdiffer.textconv "sops -d"
 
 ########################################################################################################################
-# hetzner cloud - k3s configuration
+# hetzner cloud
 ########################################################################################################################
-export HCLOUD_TOKEN=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.token' -)
+export HCLOUD_TOKEN="{{{ .hetzner.token }}}"
 
-export HETZNER_SSH_KEY_NAME=$(yq -e eval '.configuration.hetzner.ssh.key_name' ${CONFIGURATION_FILE})
-export HETZNER_PUBLIC_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.public_key' -)
-export HETZNER_PRIVATE_SSH_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.ssh.private_key' -)
-
-export HETZNER_WIREGUARD_SERVER_RANGE=$(yq -e eval '.configuration.hetzner.wireguard.server.range' ${CONFIGURATION_FILE})
-export HETZNER_WIREGUARD_SERVER_IP=$(yq -e eval '.configuration.hetzner.wireguard.server.ip' ${CONFIGURATION_FILE})
-export HETZNER_WIREGUARD_SERVER_PORT=$(yq -e eval '.configuration.hetzner.wireguard.server.port' ${CONFIGURATION_FILE})
-export HETZNER_WIREGUARD_SERVER_PUBLIC_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.server.public_key' -)
-export HETZNER_WIREGUARD_SERVER_PRIVATE_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.server.private_key' -)
-
-export HETZNER_WIREGUARD_CLIENT_IP=$(yq -e eval '.configuration.hetzner.wireguard.client.ip' ${CONFIGURATION_FILE})
-export HETZNER_WIREGUARD_CLIENT_PUBLIC_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.client.public_key' -)
-export HETZNER_WIREGUARD_CLIENT_PRIVATE_KEY=$(sops -d ${SECRETS_FILE} | yq -e eval '.secrets.hetzner.wireguard.client.private_key' -)
-
-export HETZNER_PRIVATE_NETWORK_NAME=$(yq -e eval '.configuration.hetzner.private_network.name' ${CONFIGURATION_FILE})
-export HETZNER_PRIVATE_NETWORK_RANGE=$(yq -e eval '.configuration.hetzner.private_network.range' ${CONFIGURATION_FILE})
-export HETZNER_PRIVATE_NETWORK_SUBNET=$(yq -e eval '.configuration.hetzner.private_network.subnet' ${CONFIGURATION_FILE})
-export HETZNER_PRIVATE_NETWORK_ZONE=$(yq -e eval '.configuration.hetzner.private_network.zone' ${CONFIGURATION_FILE})
-
-export HETZNER_NODE_NAME=$(yq -e eval '.configuration.hetzner.node.name' ${CONFIGURATION_FILE})
 export HETZNER_NODE_TYPE=$(yq -e eval '.configuration.hetzner.node.type' ${CONFIGURATION_FILE})
 export HETZNER_NODE_IMAGE=$(yq -e eval '.configuration.hetzner.node.image' ${CONFIGURATION_FILE})
 export HETZNER_NODE_LOCATION=$(yq -e eval '.configuration.hetzner.node.location' ${CONFIGURATION_FILE})
@@ -151,8 +131,6 @@ export HETZNER_FLOATING_IP_NAME=$(yq -e eval '.configuration.hetzner.floating_ip
 export HETZNER_LOADBALANCER_ENABLED=$(yq -e eval '.configuration.hetzner.loadbalancer.enabled' ${CONFIGURATION_FILE})
 export HETZNER_LOADBALANCER_NAME=$(yq -e eval '.configuration.hetzner.loadbalancer.name' ${CONFIGURATION_FILE})
 export HETZNER_LOADBALANCER_TYPE=$(yq -e eval '.configuration.hetzner.loadbalancer.type' ${CONFIGURATION_FILE})
-
-export HETZNER_K3S_VERSION=$(yq -e eval '.configuration.hetzner.k3s.version' ${CONFIGURATION_FILE})
 
 ########################################################################################################################
 # envoy-gateway / ingress configuration
@@ -171,20 +149,8 @@ fi
 ########################################################################################################################
 if [ ! -d "$HOME/.tmp" ]; then mkdir "$HOME/.tmp"; fi
 chmod 700 "$HOME/.tmp" || true
-if [ ! -f "${LOCAL_WIREGUARD_FILE}" ]; then
-	cat >"${LOCAL_WIREGUARD_FILE}" <<EOF
-[Interface]
-Address = ${HETZNER_WIREGUARD_CLIENT_IP}
-PrivateKey = ${HETZNER_WIREGUARD_CLIENT_PRIVATE_KEY}
-
-[Peer]
-PublicKey = ${HETZNER_WIREGUARD_SERVER_PUBLIC_KEY}
-Endpoint = ${INGRESS_DOMAIN}:${HETZNER_WIREGUARD_SERVER_PORT}
-AllowedIPs = ${HETZNER_WIREGUARD_SERVER_RANGE}, ${HETZNER_PRIVATE_NETWORK_SUBNET}
-PersistentKeepalive = 25
-EOF
-	chmod 600 "${LOCAL_WIREGUARD_FILE}"
-fi
+cp -f "$(dirname ${BASH_SOURCE[0]})/hetzner-k3s/wireguard_local.conf" "${LOCAL_WIREGUARD_FILE}"
+chmod 600 "${LOCAL_WIREGUARD_FILE}"
 sudo wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
 
 ########################################################################################################################
@@ -193,12 +159,10 @@ sudo wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
 if [ ! -d "$HOME/.ssh" ]; then mkdir "$HOME/.ssh"; fi
 chmod 700 "$HOME/.ssh" || true
 set +u
-if [ ! -z "${HETZNER_PRIVATE_SSH_KEY}" ]; then
-	cat >"$HOME/.ssh/id_rsa" <<EOF
-${HETZNER_PRIVATE_SSH_KEY}
+cat >"$HOME/.ssh/id_rsa" <<EOF
+{{{ .hetzner.ssh.private_key }}}
 EOF
-	chmod 600 "$HOME/.ssh/id_rsa"
-fi
+chmod 600 "$HOME/.ssh/id_rsa"
 set -u
 set -o pipefail
 
@@ -208,10 +172,10 @@ set -o pipefail
 if [ ! -f "$HOME/.ssh/known_hosts" ]; then
 	# check for server
 	export HETZNER_SERVER_EXISTS="true"
-	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
+	hcloud server list -o noheader | grep "{{{ .hetzner.node.name }}}" || export HETZNER_SERVER_EXISTS="false"
 	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
-		HETZNER_NODE_IP=$(hcloud server ip "${HETZNER_NODE_NAME}")
-		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+		HETZNER_NODE_IP=$(hcloud server ip "{{{ .hetzner.node.name }}}")
+		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"{{{ .hetzner.node.name }}}\") | .private_net[0].ip")
 
 		# test if we can still reach SSH from outside
 		export HETZNER_FIREWALL_LOADED_ALREADY="false"
@@ -238,10 +202,10 @@ set +u
 if [ ! -f "${KUBECONFIG}" ]; then
 	# check for server
 	export HETZNER_SERVER_EXISTS="true"
-	hcloud server list -o noheader | grep "${HETZNER_NODE_NAME}" || export HETZNER_SERVER_EXISTS="false"
+	hcloud server list -o noheader | grep "{{{ .hetzner.node.name }}}" || export HETZNER_SERVER_EXISTS="false"
 	if [ "${HETZNER_SERVER_EXISTS}" == "true" ]; then
 		# must be done with private-ip via wireguard connection
-		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"${HETZNER_NODE_NAME}\") | .private_net[0].ip")
+		HETZNER_NODE_PRIVATE_IP=$(hcloud server list -o json | jq -r ".[] | select(.name == \"{{{ .hetzner.node.name }}}\") | .private_net[0].ip")
 
 		# test if we can actually reach the K8s-API
 		export HETZNER_KUBERNETES_API_RUNNING="true"
