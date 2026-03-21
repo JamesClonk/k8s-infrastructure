@@ -6,28 +6,24 @@ on:
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./rendered
-
 jobs:
   hetzner-k3s:
     name: kubernetes
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: install and upgrade k3s on hetzner cloud
+      working-directory: ./rendered
       run: task hetzner:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   kube-system:
@@ -36,15 +32,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: prepare kube-system namespace
+      working-directory: ./rendered
       run: task kube-system:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup

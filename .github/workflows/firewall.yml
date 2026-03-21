@@ -6,26 +6,22 @@ on:
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./rendered
-
 jobs:
   firewall:
     name: firewall
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: configure firewall
+      working-directory: ./rendered
       run: task hetzner:firewall
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup

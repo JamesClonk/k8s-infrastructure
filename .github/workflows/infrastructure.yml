@@ -7,11 +7,6 @@ on:
 env:
   SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./rendered
-
 jobs:
   hetzner-k3s:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -19,17 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: install and upgrade k3s on hetzner cloud
+      working-directory: ./rendered
       run: task hetzner:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   kube-system:
@@ -39,17 +35,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: prepare kube-system namespace
+      working-directory: ./rendered
       run: task kube-system:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   envoy-gateway:
@@ -59,14 +56,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
+    - name: setup
+      if: ${{ always() }}
+      working-directory: ./rendered
+      run: ./setup.sh
     - name: deploy kubernetes gateway-api controller
+      working-directory: ./rendered
       run: task envoy-gateway:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   cert-manager:
@@ -76,17 +77,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy cert-manager for let's encrypt
+      working-directory: ./rendered
       run: task cert-manager:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   dex:
@@ -96,14 +98,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
+    - name: setup
+      if: ${{ always() }}
+      working-directory: ./rendered
+      run: ./setup.sh
     - name: deploy dex
+      working-directory: ./rendered
       run: task dex:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   headlamp:
@@ -113,17 +119,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy headlamp
+      working-directory: ./rendered
       run: task headlamp:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   postgres:
@@ -133,17 +140,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy postgres database
+      working-directory: ./rendered
       run: task postgres:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   prometheus:
@@ -153,17 +161,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy prometheus
+      working-directory: ./rendered
       run: task prometheus:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   loki:
@@ -173,17 +182,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy loki
+      working-directory: ./rendered
       run: task loki:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   vector:
@@ -193,17 +203,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy vector
+      working-directory: ./rendered
       run: task vector:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   grafana:
@@ -213,17 +224,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install wireguard tools
-      run: ../github_wireguard.sh
-    - name: install plato and render repo
-      run: ../github_render.sh
+    - name: prepare github repo
+      run: ./github_prepare.sh
     - name: setup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: ./setup.sh
     - name: deploy grafana
+      working-directory: ./rendered
       run: task grafana:deploy
     - name: cleanup
       if: ${{ always() }}
+      working-directory: ./rendered
       run: task cleanup
 
   testing:
@@ -248,11 +260,11 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: repo
-    - name: install wireguard tools
+    - name: prepare github repo
       working-directory: repo
-      run: ./github_wireguard.sh
+      run: ./github_prepare.sh
     - name: setup kubeconfig
-      working-directory: repo
+      working-directory: repo/rendered
       run: ./setup.sh
 
     - name: run k8s-testing specs
@@ -262,7 +274,7 @@ jobs:
 
     - name: cleanup
       if: ${{ always() }}
-      working-directory: repo
+      working-directory: repo/rendered
       run: |
         rm -f ${HOME}/.kube/k8s-infrastructure || true
         ./cleanup.sh

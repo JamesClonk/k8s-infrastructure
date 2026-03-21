@@ -6,11 +6,6 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./rendered
-
 jobs:
   testing:
     name: 'k8s e2e testing'

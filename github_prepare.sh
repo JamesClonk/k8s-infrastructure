@@ -3,8 +3,11 @@ set -e
 set -u
 set -o pipefail
 
-# initial render to get the ball rolling, to be able to source setup.sh ...
+# install wireguard
+sudo DEBIAN_FRONTEND=noninteractive apt-get -qq update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -yqq wireguard-tools net-tools
 
+# initial render to get the ball rolling, to be able to source setup.sh ...
 # install sops and plato
 if [ ! -d "$HOME/bin" ]; then mkdir "$HOME/bin"; fi
 export PATH="$HOME/bin:$PATH"
