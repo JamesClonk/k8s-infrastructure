@@ -2,7 +2,7 @@
 #@ load("_ytt.lib.yaml", "labels")
 
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: pgbackup
