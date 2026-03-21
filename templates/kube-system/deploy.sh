@@ -6,7 +6,6 @@ source ../setup.sh
 
 # deploy
 echo "deploying [kube-system] ..."
-sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
+ytt --ignore-unknown-comments -f templates -f values.yaml |
 	kapp deploy -a kube-system -c -y -f -
 kapp app-change garbage-collect -a kube-system --max 5 -y

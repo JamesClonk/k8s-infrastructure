@@ -7,7 +7,6 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 ########################################################################################################################
 # environment configuration
 ########################################################################################################################
-export SECRETS_FILE="$(dirname ${BASH_SOURCE[0]})/secrets.sops"
 export KUBECONFIG="$HOME/.kube/k8s-infrastructure"
 export LOCAL_WIREGUARD_FILE="$HOME/.tmp/hetzner0.conf"
 

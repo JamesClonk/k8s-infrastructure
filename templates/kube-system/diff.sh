@@ -6,6 +6,5 @@ source ../setup.sh
 
 # diff
 kapp app-change list -a kube-system
-sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
+ytt --ignore-unknown-comments -f templates -f values.yaml |
 	kapp deploy -a kube-system -c --diff-run -f -

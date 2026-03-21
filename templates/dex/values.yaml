@@ -1,8 +1,6 @@
 #@data/values
 ---
 dex:
-  enable_network_policy: true
-
   resources:
     requests:
       cpu: 100m

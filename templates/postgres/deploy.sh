@@ -6,8 +6,7 @@ source ../setup.sh
 
 # deploy
 echo "deploying [postgres] ..."
-sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
+ytt --ignore-unknown-comments -f templates -f values.yaml |
 	kbld -f - -f image.lock.yaml |
 	kapp deploy -a postgres -c -y -f -
 kapp app-change garbage-collect -a postgres --max 5 -y

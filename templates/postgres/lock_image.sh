@@ -6,7 +6,6 @@ source ../setup.sh
 
 # lock image
 echo "locking images for [postgres] ..."
-sops -d ${SECRETS_FILE} |
-	ytt --ignore-unknown-comments -f templates -f values.yaml -f - |
+ytt --ignore-unknown-comments -f templates -f values.yaml |
 	kbld -f - --lock-output "image.lock.yaml"
 cp -f image.lock.yaml ../../templates/postgres/.
