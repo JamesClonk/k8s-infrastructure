@@ -1,0 +1,54 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"prometheus-prometheus-node-exporter"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"node-exporter"}), expects=1
+      - name: node-exporter
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+
+#@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"name":"prometheus-alertmanager"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"alertmanager"}), expects=1
+      - name: alertmanager
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"prometheus-server"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"prometheus-server-configmap-reload"}), expects=1
+      - name: prometheus-server-configmap-reload
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false
+      #@overlay/match by=overlay.subset({"name":"prometheus-server"}), expects=1
+      - name: prometheus-server
+        #@overlay/match missing_ok=True
+        securityContext:
+          #@overlay/match missing_ok=True
+          privileged: false
+          #@overlay/match missing_ok=True
+          allowPrivilegeEscalation: false

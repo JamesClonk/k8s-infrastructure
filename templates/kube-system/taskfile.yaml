@@ -1,0 +1,22 @@
+---
+version: '3'
+set: [errexit, nounset, pipefail]
+
+tasks:
+  deploy:
+    desc: "Apply customizations"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash deploy.sh
+
+  diff:
+    desc: "Run a diff to the kubernetes cluster"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash diff.sh
+
+  status:
+    desc: "Display the kapp status"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash status.sh

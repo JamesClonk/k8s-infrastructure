@@ -4,189 +4,169 @@ kind: Config
 minimumRequiredVersion: 0.12.0
 
 directories:
-- path: vendor/github.com/kubernetes-sigs/metrics-server
+- path: vendor/github.com/envoyproxy/gateway
   contents:
   - path: .
     githubRelease:
-      slug: kubernetes-sigs/metrics-server
-      tag: v0.6.1
+      slug: envoyproxy/gateway
+      tag: v1.7.0
+      assetNames: ["install.yaml", "envoy-gateway-crds.yaml"]
       disableAutoChecksumValidation: true
-    includePaths:
-    - components.yaml
-- path: metrics-server/templates/upstream
+- path: templates/envoy-gateway/templates/upstream
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes-sigs/metrics-server
+      path: vendor/github.com/envoyproxy/gateway
     includePaths:
-    - components.yaml
+    - install.yaml
+    ignorePaths:
+    - LICENSE
+    - NOTICE
+    - envoy-gateway-crds.yaml
+    excludePaths:
+    - LICENSE
+    - NOTICE
+    - envoy-gateway-crds.yaml
 
-- path: vendor/github.com/hetznercloud/csi-driver
+- path: vendor/github.com/dexidp/helm-charts
   contents:
   - path: .
     git:
-      url: https://github.com/hetznercloud/csi-driver
-      ref: v1.6.0
+      url: https://github.com/dexidp/helm-charts
+      ref: dex-0.24.0
     includePaths:
-    - deploy/kubernetes/*
-- path: hcloud-csi/templates/upstream
+    - charts/dex/**/*
+- path: templates/dex/build/chart
   contents:
   - path: .
     directory:
-      path: vendor/github.com/hetznercloud/csi-driver/deploy/kubernetes
-    includePaths:
-    - hcloud-csi.yml
+      path: vendor/github.com/dexidp/helm-charts/charts/dex
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
-
-- path: vendor/github.com/kubernetes/ingress-nginx
-  contents:
-  - path: .
-    git:
-      url: https://github.com/kubernetes/ingress-nginx
-      ref: helm-chart-4.3.0
-    includePaths:
-    - deploy/static/provider/baremetal/*
-- path: ingress-nginx/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal
-    includePaths:
-    - deploy.yaml
-    excludePaths:
-    - LICENSE
-    - kustomization.yaml
-
-- path: vendor/github.com/oauth2-proxy/manifests
-  contents:
-  - path: .
-    git:
-      url: https://github.com/oauth2-proxy/manifests
-      ref: oauth2-proxy-6.2.7
-    includePaths:
-    - helm/oauth2-proxy/**/*
-- path: oauth2-proxy/build/chart
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/oauth2-proxy/manifests/helm/oauth2-proxy
-    excludePaths:
-    - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/jetstack/cert-manager
   contents:
   - path: .
     githubRelease:
       slug: jetstack/cert-manager
-      tag: v1.9.1
+      tag: v1.19.4
       disableAutoChecksumValidation: true
     includePaths:
     - cert-manager.yaml
-- path: cert-manager/templates/upstream
+- path: templates/cert-manager/templates/upstream
   contents:
   - path: .
     directory:
       path: vendor/github.com/jetstack/cert-manager
     includePaths:
     - cert-manager.yaml
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
-- path: vendor/github.com/kubernetes/dashboard
+- path: vendor/github.com/kubernetes-sigs/headlamp
   contents:
   - path: .
     git:
-      url: https://github.com/kubernetes/dashboard
-      ref:  v2.6.1
+      url: https://github.com/kubernetes-sigs/headlamp
+      ref: headlamp-helm-0.40.0
     includePaths:
-    - aio/deploy/*
-- path: kubernetes-dashboard/templates/upstream
+    - charts/headlamp/**/*
+- path: templates/headlamp/build/chart
   contents:
   - path: .
     directory:
-      path: vendor/github.com/kubernetes/dashboard/aio/deploy
-    includePaths:
-    - recommended.yaml
+      path: vendor/github.com/kubernetes-sigs/headlamp/charts/headlamp
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
-
-- path: vendor/github.com/kubernetes/kube-state-metrics
-  contents:
-  - path: .
-    git:
-      url: https://github.com/kubernetes/kube-state-metrics
-      ref: v2.6.0
-    includePaths:
-    - examples/standard/*
-- path: monitoring/kube-state-metrics/templates/upstream
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/kubernetes/kube-state-metrics/examples/standard
-    excludePaths:
-    - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/prometheus-community/helm-charts
   contents:
   - path: .
     git:
       url: https://github.com/prometheus-community/helm-charts
-      ref: prometheus-15.16.1
+      ref: prometheus-28.13.0
     includePaths:
     - charts/prometheus/**/*
-- path: monitoring/prometheus/build/chart
+- path: templates/prometheus/build/chart
   contents:
   - path: .
     directory:
       path: vendor/github.com/prometheus-community/helm-charts/charts/prometheus
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/grafana/grafana
   contents:
   - path: .
     git:
-      url: https://github.com/grafana/helm-charts
-      ref: grafana-6.42.2
+      url: https://github.com/grafana-community/helm-charts
+      ref: grafana-11.3.2
     includePaths:
     - charts/grafana/**/*
-- path: monitoring/grafana/build/chart
+- path: templates/grafana/build/chart
   contents:
   - path: .
     directory:
       path: vendor/github.com/grafana/grafana/charts/grafana
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
-
-- path: vendor/github.com/grafana/promtail
-  contents:
-  - path: .
-    git:
-      url: https://github.com/grafana/helm-charts
-      ref: promtail-6.5.1
-    includePaths:
-    - charts/promtail/**/*
-- path: monitoring/loki/build/charts/promtail
-  contents:
-  - path: .
-    directory:
-      path: vendor/github.com/grafana/promtail/charts/promtail
-    excludePaths:
-    - LICENSE
+    - NOTICE
 
 - path: vendor/github.com/grafana/loki
   contents:
   - path: .
     git:
-      url: https://github.com/grafana/helm-charts
-      ref: loki-2.16.0
+      url: https://github.com/grafana/loki
+      ref: helm-loki-6.54.0
     includePaths:
-    - charts/loki/**/*
-- path: monitoring/loki/build/charts/loki
+    - production/helm/loki/**/*
+- path: templates/loki/build/chart
   contents:
   - path: .
     directory:
-      path: vendor/github.com/grafana/loki/charts/loki
+      path: vendor/github.com/grafana/loki/production/helm/loki
+    ignorePaths:
+    - LICENSE
+    - NOTICE
     excludePaths:
     - LICENSE
+    - NOTICE
+
+- path: vendor/github.com/vectordotdev/helm-charts
+  contents:
+  - path: .
+    git:
+      url: https://github.com/vectordotdev/helm-charts
+      ref: vector-0.51.0
+    includePaths:
+    - charts/vector/**/*
+- path: templates/vector/build/chart
+  contents:
+  - path: .
+    directory:
+      path: vendor/github.com/vectordotdev/helm-charts/charts/vector
+    ignorePaths:
+    - LICENSE
+    - NOTICE
+    excludePaths:
+    - LICENSE
+    - NOTICE

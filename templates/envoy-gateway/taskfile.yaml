@@ -1,0 +1,28 @@
+---
+version: '3'
+set: [errexit, nounset, pipefail]
+
+tasks:
+  deploy:
+    desc: "Deploy component"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash deploy.sh
+
+  diff:
+    desc: "Run a diff to the kubernetes cluster"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash diff.sh
+
+  status:
+    desc: "Display the kapp status"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash status.sh
+
+  lock_image:
+    desc: "Lock images"
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+    - bash lock_image.sh

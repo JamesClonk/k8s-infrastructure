@@ -1,0 +1,10 @@
+#@data/values
+---
+grafana:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 192Mi
+    limits:
+      cpu: 333m
+      memory: 192Mi

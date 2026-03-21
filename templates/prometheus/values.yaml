@@ -1,0 +1,10 @@
+#@data/values
+---
+prometheus:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 800m
+      memory: 1Gi

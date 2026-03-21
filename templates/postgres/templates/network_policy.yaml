@@ -1,0 +1,39 @@
+#@ load("_ytt.lib.yaml", "labels")
+
+{{{- if .environment.network_policy_enabled }}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres
+  namespace: postgres
+  labels: #@ labels("netpol")
+spec:
+  podSelector:
+    matchLabels: #@ labels("database")
+  ingress:
+  - from: #! allow metrics access for prometheus
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: prometheus
+      podSelector: {}
+    ports:
+    - port: 9187
+  - from: #! allow database access for pgbackup
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/name: postgres
+      podSelector:
+        matchLabels: #@ labels("backup")
+    ports:
+    - port: 5432
+  - from: #! allow database access for all specifically labeled apps
+    - namespaceSelector:
+        matchLabels:
+          namespace.kubernetes.io/database-access: enabled
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/database-access: enabled
+    ports:
+    - port: 5432
+{{{ end }}}

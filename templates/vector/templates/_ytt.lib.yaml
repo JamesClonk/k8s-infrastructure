@@ -1,0 +1,5 @@
+#@ def labels():
+  app.kubernetes.io/name: vector
+  app.kubernetes.io/instance: vector
+  app.kubernetes.io/component: Agent
+#@ end

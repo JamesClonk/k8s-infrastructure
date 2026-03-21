@@ -1,0 +1,64 @@
+#@ load("@ytt:overlay", "overlay")
+{{{ if .lets_encrypt.prod_key }}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-prod: secret
+    kapp.k14s.io/change-rule.letsencrypt: upsert after upserting deployments
+type: Opaque
+data:
+  tls.key: {{{ .lets_encrypt.prod_key }}}
+{{{- end }}}
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-prod: clusterissuer
+    kapp.k14s.io/change-rule.letsencrypt-prod: upsert after upserting secret
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{{ .lets_encrypt.email }}}
+    {{{- if .lets_encrypt.prod_key }}}
+    disableAccountKeyGeneration: true{{{ end }}}
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - kind: Gateway
+            name: envoy-gateway
+            namespace: envoy-gateway-system
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group.letsencrypt: deployments
+
+#@overlay/match by=overlay.subset({"kind":"Service"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group.letsencrypt: deployments

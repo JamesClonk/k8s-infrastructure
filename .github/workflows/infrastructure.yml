@@ -14,12 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: install and upgrade k3s on hetzner cloud
-      working-directory: hetzner-k3s
-      run: ./deploy.sh
+      run: task hetzner:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   kube-system:
     if: "!contains(github.event.head_commit.message, 'skip')"
@@ -28,171 +32,177 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: prepare kube-system namespace
-      working-directory: kube-system
-      run: ./deploy.sh
+      run: task kube-system:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
-  hcloud-csi:
+  envoy-gateway:
     if: "!contains(github.event.head_commit.message, 'skip')"
-    name: hcloud-csi
+    name: envoy-gateway
     needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: install hetzner csi driver
-      working-directory: hcloud-csi
-      run: ./deploy.sh
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: deploy kubernetes gateway-api controller
+      run: task envoy-gateway:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
-
-  ingress-nginx:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: ingress-nginx
-    needs: [ kube-system ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy kubernetes ingress controller
-      working-directory: ingress-nginx
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   cert-manager:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: cert-manager
-    needs: [ ingress-nginx ]
+    needs: [ envoy-gateway ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy cert-manager for let's encrypt
-      working-directory: cert-manager
-      run: ./deploy.sh
+      run: task cert-manager:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
-  oauth2-proxy:
+  dex:
     if: "!contains(github.event.head_commit.message, 'skip')"
-    name: oauth2-proxy
-    needs: [ ingress-nginx ]
+    name: dex
+    needs: [ cert-manager, envoy-gateway ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: deploy oauth2-proxy
-      working-directory: oauth2-proxy
-      run: ./deploy.sh
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: deploy dex
+      run: task dex:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
-  kubernetes-dashboard:
+  headlamp:
     if: "!contains(github.event.head_commit.message, 'skip')"
-    name: kubernetes-dashboard
-    needs: [ oauth2-proxy, cert-manager ]
+    name: headlamp
+    needs: [ dex, cert-manager ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: deploy kubernetes dashboard
-      working-directory: kubernetes-dashboard
-      run: ./deploy.sh
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy headlamp
+      run: task headlamp:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
-
-  kube-state-metrics:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: kube-state-metrics
-    needs: [ kube-system ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy kube-state-metrics
-      working-directory: monitoring/kube-state-metrics
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
-
-  prometheus:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: prometheus
-    needs: [ oauth2-proxy, cert-manager, kube-state-metrics, hcloud-csi ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy prometheus
-      working-directory: monitoring/prometheus
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
-
-  prometheus-msteams:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: prometheus-msteams
-    needs: [ oauth2-proxy, cert-manager, kube-state-metrics ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy prometheus-msteams proxy
-      working-directory: monitoring/prometheus-msteams
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
-
-  loki:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: loki
-    needs: [ oauth2-proxy, cert-manager, hcloud-csi ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy loki
-      working-directory: monitoring/loki
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
-
-  grafana:
-    if: "!contains(github.event.head_commit.message, 'skip')"
-    name: grafana
-    needs: [ prometheus, loki, hcloud-csi ]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: deploy grafana
-      working-directory: monitoring/grafana
-      run: ./deploy.sh
-    - name: cleanup
-      if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
 
   postgres:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: postgres
-    needs: [ kube-system, hcloud-csi ]
+    needs: [ kube-system ]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
     - name: deploy postgres database
-      working-directory: postgres
-      run: ./deploy.sh
+      run: task postgres:deploy
     - name: cleanup
       if: ${{ always() }}
-      run: ./cleanup.sh
+      run: task cleanup
+
+  prometheus:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: prometheus
+    needs: [ dex, cert-manager, kube-system ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy prometheus
+      run: task prometheus:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
+
+  loki:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: loki
+    needs: [ dex, cert-manager ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy loki
+      run: task loki:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
+
+  vector:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: vector
+    needs: [ prometheus, loki ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy vector
+      run: task vector:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
+
+  grafana:
+    if: "!contains(github.event.head_commit.message, 'skip')"
+    name: grafana
+    needs: [ prometheus, loki ]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install wireguard tools
+      run: ./github_wireguard.sh
+    - name: setup
+      if: ${{ always() }}
+      run: ./setup.sh
+    - name: deploy grafana
+      run: task grafana:deploy
+    - name: cleanup
+      if: ${{ always() }}
+      run: task cleanup
 
   testing:
     if: "!contains(github.event.head_commit.message, 'skip')"
     name: k8s e2e testing
-    needs: [ postgres, grafana, kubernetes-dashboard ]
+    needs: [ postgres, grafana, headlamp ]
     runs-on: ubuntu-latest
     steps:
     - name: checkout k8s-testing
@@ -211,6 +221,9 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: repo
+    - name: install wireguard tools
+      working-directory: repo
+      run: ./github_wireguard.sh
     - name: setup kubeconfig
       working-directory: repo
       run: ./setup.sh

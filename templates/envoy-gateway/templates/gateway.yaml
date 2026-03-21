@@ -1,0 +1,348 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+  labels:
+    app.kubernetes.io/name: envoy-gateway
+    app.kubernetes.io/instance: envoy-gateway
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: envoy-proxy-config
+    namespace: envoy-gateway-system
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-proxy-config
+  namespace: envoy-gateway-system
+  labels:
+    app.kubernetes.io/name: envoy-gateway
+    app.kubernetes.io/instance: envoy-gateway
+spec:
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyDeployment:
+        replicas: 1
+        container:
+          resources: #@ data.values.envoy.resources
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+  labels:
+    app.kubernetes.io/name: envoy-gateway
+    app.kubernetes.io/instance: envoy-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  gatewayClassName: envoy-gateway
+  addresses:
+  - type: IPAddress
+    value: {{{ .environment.ip }}}
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: Same
+  # - name: echo
+  #   protocol: HTTPS
+  #   port: 443
+  #   hostname: echo.{{{ .environment.domain }}}
+  #   tls:
+  #     mode: Terminate
+  #     certificateRefs:
+  #     - kind: Secret
+  #       name: echo-certificate
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
+  - name: dex
+    protocol: HTTPS
+    port: 443
+    hostname: dex.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: dex-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: dex
+  - name: dashboard
+    protocol: HTTPS
+    port: 443
+    hostname: dashboard.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: headlamp-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: headlamp
+  - name: prometheus
+    protocol: HTTPS
+    port: 443
+    hostname: prometheus.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: prometheus-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: prometheus
+  - name: alertmanager
+    protocol: HTTPS
+    port: 443
+    hostname: alertmanager.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: alertmanager-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: prometheus
+  - name: grafana
+    protocol: HTTPS
+    port: 443
+    hostname: grafana.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: grafana-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: grafana
+  - name: backman
+    protocol: HTTPS
+    port: 443
+    hostname: backman.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: backman-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: backman
+  - name: pgweb
+    protocol: HTTPS
+    port: 443
+    hostname: pgweb.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: pgweb-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: pgweb
+  - name: cf-env
+    protocol: HTTPS
+    port: 443
+    hostname: cf-env.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: cf-env-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: cf-env
+  - name: home-info
+    protocol: HTTPS
+    port: 443
+    hostname: home-info.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: home-info-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: home-info
+  - name: ircollector
+    protocol: HTTPS
+    port: 443
+    hostname: ircollector.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: ircollector-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: irvisualizer
+  - name: irvisualizer
+    protocol: HTTPS
+    port: 443
+    hostname: irvisualizer.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: irvisualizer-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: irvisualizer
+  - name: resume
+    protocol: HTTPS
+    port: 443
+    hostname: resume.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: resume-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: resume
+  - name: blog
+    protocol: HTTPS
+    port: 443
+    hostname: blog.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: blog-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: blog
+  - name: jcio
+    protocol: HTTPS
+    port: 443
+    hostname: {{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: jcio-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb-frontend
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb-frontend.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-frontend-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+  - name: moviedb-backend
+    protocol: HTTPS
+    port: 443
+    hostname: moviedb-backend.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: moviedb-backend-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: jcio
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: https-redirect
+  namespace: envoy-gateway-system
+  labels:
+    app.kubernetes.io/name: envoy-gateway
+    app.kubernetes.io/instance: envoy-gateway
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    sectionName: http
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+        statusCode: 301

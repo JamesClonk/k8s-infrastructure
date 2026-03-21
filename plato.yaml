@@ -1,0 +1,60 @@
+---
+plato:
+  log_level: debug
+
+environment:
+  domain: jamesclonk.io
+  ip: 178.104.49.223
+  network_policy_enabled: true
+
+hetzner:
+  ssh:
+    key_name: kubernetes
+
+  wireguard:
+    server:
+      range: 10.10.250.0/24
+      ip: 10.10.250.1
+      port: 58585
+    client:
+      ip: 10.10.250.10
+
+  private_network:
+    name: kubernetes
+    range: 10.8.0.0/16
+    subnet: 10.8.0.0/24
+    zone: "eu-central"
+
+  node:
+    name: kubernetes
+    type: cpx32 # https://www.hetzner.com/cloud#pricing
+    image: ubuntu-24.04
+    location: nbg1 # https://docs.hetzner.com/general/others/data-centers-and-connection
+
+  firewall:
+    enabled: true # set to 'true' if you want to use a Hetzner firewall to protect your server
+    name: kubernetes
+
+  floating_ip:
+    enabled: false # set to 'true' if you want a floating-ip assigned to your server
+    name: kubernetes
+
+  loadbalancer:
+    enabled: false # set to 'true' if you want a Hetzner load-balancer in front of your server
+    name: kubernetes
+    type: lb11 # https://www.hetzner.com/cloud/load-balancer#pricing
+
+  k3s:
+    version: "v1.34.5+k3s1" # https://github.com/rancher/k3s/releases
+
+postgres:
+  backup:
+    schedule: "55 5 * * *"
+    s3:
+      enabled: true
+      file_retention: 21
+      retention_days: "21d"
+
+alertmanager:
+  email:
+    enabled: true

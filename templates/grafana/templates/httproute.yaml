@@ -1,0 +1,59 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yaml", "labels")
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  parentRefs:
+  - name: envoy-gateway
+    namespace: envoy-gateway-system
+    sectionName: grafana
+  hostnames:
+  - grafana.{{{ .environment.domain }}}
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: grafana
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: grafana
+  namespace: grafana
+  labels: #@ labels()
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: grafana
+  oidc:
+    provider:
+      issuer: https://dex.{{{ .environment.domain }}}/dex
+    clientID: envoy-gateway
+    clientSecret:
+      name: grafana-oidc-client-secret
+    redirectURL: https://grafana.{{{ .environment.domain }}}/oauth2/callback
+    logoutPath: /logout
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-oidc-client-secret
+  namespace: grafana
+  labels: #@ labels()
+type: Opaque
+stringData:
+  client-secret: {{{ .dex.oidc_client_secret }}}

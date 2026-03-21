@@ -1,0 +1,16 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: envoy-gateway-system
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"envoy-gateway-system"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: envoy-gateway-system

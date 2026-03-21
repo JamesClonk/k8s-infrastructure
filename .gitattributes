@@ -1,1 +1,2 @@
 *.sops diff=sopsdiffer
+secrets.yaml diff=sopsdiffer

@@ -1,0 +1,24 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yaml", "labels")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: loki
+  labels: #@ labels()
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: loki
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"loki"}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    namespace.kubernetes.io/name: loki

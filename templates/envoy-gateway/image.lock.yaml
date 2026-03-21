@@ -1,0 +1,10 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.32.0
+overrides:
+- image: envoyproxy/gateway:v1.7.0
+  newImage: index.docker.io/envoyproxy/gateway@sha256:66bfa45b557aeb086223064261d51dfb983fe962f35f821f8135e67e1b1a981f
+  preresolved: true
+- image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+  newImage: gcr.io/k8s-staging-gateway-api/echo-basic@sha256:22f6999b51e1198b0a8f94fde7b1baed41119e57eeb799425d4af9616b840cdf
+  preresolved: true

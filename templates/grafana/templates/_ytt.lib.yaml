@@ -1,0 +1,6 @@
+#@ def labels():
+  helm.sh/chart: grafana-11.3.2
+  app.kubernetes.io/name: grafana
+  app.kubernetes.io/instance: grafana
+  app.kubernetes.io/version: 12.4.1
+#@ end

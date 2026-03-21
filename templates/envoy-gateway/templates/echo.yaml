@@ -1,0 +1,127 @@
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: echo
+#   namespace: envoy-gateway-system
+#   labels:
+#     app.kubernetes.io/name: envoy-gateway
+#     app.kubernetes.io/instance: envoy-gateway
+#     app: echo
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: echo
+#   namespace: envoy-gateway-system
+#   labels:
+#     app.kubernetes.io/name: envoy-gateway
+#     app.kubernetes.io/instance: envoy-gateway
+#     app: echo
+#     service: echo
+# spec:
+#   ports:
+#   - name: http
+#     port: 3000
+#     targetPort: 3000
+#   selector:
+#     app: echo
+
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: echo
+#   namespace: envoy-gateway-system
+#   labels:
+#     app.kubernetes.io/name: envoy-gateway
+#     app.kubernetes.io/instance: envoy-gateway
+#     app: echo
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: echo
+#       version: v1
+#   template:
+#     metadata:
+#       labels:
+#         app: echo
+#         version: v1
+#     spec:
+#       serviceAccountName: echo
+#       containers:
+#       - image: gcr.io/k8s-staging-gateway-api/echo-basic:v20231214-v1.0.0-140-gf544a46e
+#         imagePullPolicy: IfNotPresent
+#         name: echo
+#         ports:
+#         - containerPort: 3000
+#         env:
+#         - name: POD_NAME
+#           valueFrom:
+#             fieldRef:
+#               fieldPath: metadata.name
+#         - name: NAMESPACE
+#           valueFrom:
+#             fieldRef:
+#               fieldPath: metadata.namespace
+
+# ---
+# apiVersion: gateway.networking.k8s.io/v1
+# kind: HTTPRoute
+# metadata:
+#   name: echo
+#   namespace: envoy-gateway-system
+#   labels:
+#     app.kubernetes.io/name: envoy-gateway
+#     app.kubernetes.io/instance: envoy-gateway
+#     app: echo
+# spec:
+#   parentRefs:
+#   - name: envoy-gateway
+#     namespace: envoy-gateway-system
+#     sectionName: echo
+#   hostnames:
+#   - "echo.{{{ .environment.domain }}}"
+#   rules:
+#   - backendRefs:
+#     - group: ""
+#       kind: Service
+#       name: echo
+#       port: 3000
+#       weight: 1
+#     matches:
+#     - path:
+#         type: PathPrefix
+#         value: /
+
+# ---
+# apiVersion: gateway.envoyproxy.io/v1alpha1
+# kind: SecurityPolicy
+# metadata:
+#   name: echo-oidc
+#   namespace: envoy-gateway-system
+# spec:
+#   targetRefs:
+#   - group: gateway.networking.k8s.io
+#     kind: HTTPRoute
+#     name: echo
+#   oidc:
+#     provider:
+#       issuer: https://dex.{{{ .environment.domain }}}/dex
+#     clientID: envoy-gateway
+#     clientSecret:
+#       name: echo-oidc-client-secret
+#     redirectURL: https://echo.{{{ .environment.domain }}}/oauth2/callback
+#     logoutPath: /logout
+
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: echo-oidc-client-secret
+#   namespace: envoy-gateway-system
+# type: Opaque
+# stringData:
+#   client-secret: {{{ .environment.domain }}}

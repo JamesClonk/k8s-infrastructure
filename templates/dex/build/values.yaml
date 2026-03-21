@@ -1,0 +1,73 @@
+ingress:
+  enabled: false
+
+env:
+  name: TZ
+  value: Europe/Zurich
+
+volumes:
+- name: custom-theme
+  configMap:
+    name: dex-custom-theme
+
+volumeMounts:
+- name: custom-theme
+  mountPath: /srv/dex/web/themes/custom
+
+config:
+  issuer: https://dex.{{{ .environment.domain }}}/dex
+
+  frontend:
+    theme: custom
+    issuer: "JamesClonk.io"
+    logoURL: "https://jamesclonk.io/images/jamesclonk_coa.png"
+    dir: /srv/dex/web
+
+  storage:
+    type: kubernetes
+    config:
+      inCluster: true
+
+  oauth2:
+    skipApprovalScreen: true
+
+  web:
+    http: 0.0.0.0:5556
+  telemetry:
+    http: 0.0.0.0:5558
+
+  enablePasswordDB: true
+  staticPasswords:{{{ range .dex.static_users }}}
+  - email: "{{{ .email }}}"
+    hash: "{{{ .hash }}}"
+    username: "{{{ .username }}}"
+    userID: "{{{ .user_id }}}"{{{ end }}}
+
+  staticClients:
+  - id: envoy-gateway
+    name: envoy-gateway
+    redirectURIs:
+    - 'https://echo.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://backman.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://grafana.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://prometheus.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://alertmanager.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://dashboard.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://pgweb.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://cf-env.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://home-info.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://ircollector.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://irvisualizer.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://image-puller.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://item-monitor.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://www.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://resume.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://blog.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://kuard.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://minecraft.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://repo-mirrorer.{{{ .environment.domain }}}/oauth2/callback'
+    - 'https://wireguard.{{{ .environment.domain }}}/oauth2/callback'
+    secret: "{{{ .dex.oidc_client_secret }}}"
+
+  connectors: [] # TODO: render with plato!!!

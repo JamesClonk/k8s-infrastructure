@@ -1,0 +1,28 @@
+#@data/values
+---
+postgres:
+  image: "postgres:12"
+
+  resources:
+    memory_in_mb: 1024
+    storage:
+      class_name: local-path
+      size: 20Gi
+
+pgbouncer:
+  image: "edoburu/pgbouncer:1.12.0"
+
+  pool_size: 12
+  max_clients: 100
+
+exporter:
+  image: "wrouesnel/postgres_exporter:v0.8.0"
+
+pgbackup:
+  image: "jamesclonk/pgbackup:aee0398bd7634f209ecd7e1ec03f55002c3c3a57"
+
+  resources:
+    memory_in_mb: 1024
+    storage:
+      class_name: local-path
+      size: 20Gi

@@ -1,0 +1,47 @@
+{{{- if .lets_encrypt.staging_key -}}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: letsencrypt-staging
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-staging: secret
+    kapp.k14s.io/change-rule.letsencrypt: upsert after upserting deployments
+type: Opaque
+data:
+  tls.key: {{{ .lets_encrypt.staging_key }}}
+{{{- end }}}
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  namespace: cert-manager
+  labels:
+    app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/instance: cert-manager
+  annotations:
+    kapp.k14s.io/change-group.letsencrypt-staging: clusterissuer
+    kapp.k14s.io/change-rule.letsencrypt-staging: upsert after upserting secret
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: {{{ .lets_encrypt.email }}}
+    {{{- if .lets_encrypt.staging_key }}}
+    disableAccountKeyGeneration: true{{{ end }}}
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+    - http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - kind: Gateway
+            name: envoy-gateway
+            namespace: envoy-gateway-system

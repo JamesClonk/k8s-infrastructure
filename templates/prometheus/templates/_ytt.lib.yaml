@@ -1,0 +1,7 @@
+#@ def labels(component):
+  app.kubernetes.io/component: #@ component
+  app.kubernetes.io/name: prometheus
+  app: prometheus
+  release: prometheus
+  app.kubernetes.io/part-of: prometheus
+#@ end
