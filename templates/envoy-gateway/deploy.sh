@@ -6,7 +6,7 @@ source ../setup.sh
 
 # deploy
 echo "deploying [envoy-gateway] ..."
-ytt --ignore-unknown-comments -f templates -f values.yaml -f - --data-value envoy.gateway_ip="${INGRESS_DOMAIN_IP}" |
+ytt --ignore-unknown-comments -f templates -f values.yaml |
 	kbld -f - -f image.lock.yaml |
 	kapp deploy -a envoy-gateway -c -y -f -
 kapp app-change garbage-collect -a envoy-gateway --max 5 -y
