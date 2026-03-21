@@ -1,7 +1,6 @@
-#@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yaml", "labels")
 
-#@ if data.values.enable_network_policy:
+{{{- if .environment.network_policy_enabled -}}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -37,4 +36,4 @@ spec:
           app.kubernetes.io/database-access: enabled
     ports:
     - port: 5432
-#@ end
+{{{ end }}}

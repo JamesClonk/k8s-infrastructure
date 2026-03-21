@@ -1,8 +1,6 @@
-#@ load("@ytt:data", "data")
-#@ load("@ytt:overlay", "overlay")
 #@ load("_ytt.lib.yaml", "labels")
 
-#@ if data.values.loki.enable_network_policy:
+{{{- if .environment.network_policy_enabled -}}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -38,4 +36,4 @@ spec:
       podSelector: {}
     ports:
     - port: 3100
-#@ end
+{{{ end }}}
