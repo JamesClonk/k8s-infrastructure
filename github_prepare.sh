@@ -51,6 +51,7 @@ function install_tool_from_tarball {
 }
 install_tool "sops" "https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64" "775f1384d55decfad228e7196a3f683791914f92a473f78fc47700531c29dfef"
 install_tool_from_tarball "plato" "plato" "https://github.com/JamesClonk/plato/releases/download/v1.2.0/plato_1.2.0_linux_x86_64.tar.gz" "06df874fd408c9f59dfc46cafe92bdb46ecb1095392650988fade58f37006d7b"
+install_tool_from_tarball "task" "task" "https://github.com/go-task/task/releases/download/v3.45.5/task_linux_amd64.tar.gz" "7f772c9abe4acf9aa943ff19d5e0657f9c776f9b3917b2b23869306189a47b9a"
 
 # render
 plato render
