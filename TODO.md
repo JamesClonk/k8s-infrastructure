@@ -1,8 +1,6 @@
 # TODO
 
 - switch all templating & secrets management to `plato`
-	- dont plato-render secrets into helm chart values.yamls, since helm chart output gets stored in git
-	- all helm chart dependencies need to be accounted for and mirrored/vendired too! No internet!
 	- get rid of ytt secrets loading, render secrets instead directly in ytt yamls
 	- get rid of env var secrets load, render secrets instead directly in shellscripts
 	- yaml-encrypted secrets.yaml, instead of binary-encrypted .sops file
