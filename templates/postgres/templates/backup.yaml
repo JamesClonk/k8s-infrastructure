@@ -62,4 +62,3 @@ spec:
           - name: storage
             persistentVolumeClaim:
               claimName: pgbackup
-#@ end
