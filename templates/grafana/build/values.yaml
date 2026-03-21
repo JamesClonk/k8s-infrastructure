@@ -23,8 +23,8 @@ deploymentStrategy:
 
 resources:
   limits:
-    cpu: 250m
-    memory: 192Mi
+    cpu: 500m
+    memory: 384Mi
   requests:
     cpu: 100m
     memory: 192Mi
