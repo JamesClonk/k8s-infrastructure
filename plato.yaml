@@ -3,7 +3,7 @@ plato:
   log_level: debug
 
 environment:
-  domain: jamesclonk.com
+  domain: jamesclonk.io
   ip: 178.104.49.223
   network_policy_enabled: true
 
@@ -27,7 +27,7 @@ hetzner:
 
   node:
     name: kubernetes
-    type: cx33 # https://www.hetzner.com/cloud#pricing # TODO: change to cpx32 once ready for prod deployment!
+    type: cpx32 # https://www.hetzner.com/cloud#pricing
     image: ubuntu-24.04
     location: nbg1 # https://docs.hetzner.com/general/others/data-centers-and-connection
 
