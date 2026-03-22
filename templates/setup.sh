@@ -99,7 +99,7 @@ install_tool "jq" "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-li
 install_tool "kind" "https://github.com/kubernetes-sigs/kind/releases/download/v0.30.0/kind-linux-amd64" "517ab7fc89ddeed5fa65abf71530d90648d9638ef0c4cde22c2c11f8097b8889"
 install_tool "cmctl" "https://github.com/cert-manager/cmctl/releases/download/v2.4.0/cmctl_linux_amd64" "57d12fc2c5fd7a9f2df372130c7da7f995855a06058ca41a2b6c66c26a6ca7ae"
 install_tool_from_tarball "plato" "plato" "https://github.com/JamesClonk/plato/releases/download/v1.2.0/plato_1.2.0_linux_x86_64.tar.gz" "06df874fd408c9f59dfc46cafe92bdb46ecb1095392650988fade58f37006d7b"
-install_tool_from_tarball "task" "task" "https://github.com/go-task/task/releases/download/v3.45.5/task_linux_amd64.tar.gz" "7f772c9abe4acf9aa943ff19d5e0657f9c776f9b3917b2b23869306189a47b9a"
+install_tool_from_tarball "task" "task" "https://github.com/go-task/task/releases/download/v3.49.1/task_linux_amd64.tar.gz" "a6fccf1e72a7aad1651503d2142abfee8f8341bc8c61e5d506be7c24f19aaed2"
 install_tool_from_tarball "hcloud" "hcloud" "https://github.com/hetznercloud/cli/releases/download/v1.57.0/hcloud-linux-amd64.tar.gz" "6852b9dde7e5d413c734d4ae134f631c2ec7380d4a6ad524227f42dd5ecdcd23"
 install_tool_from_tarball "linux-amd64/helm" "helm" "https://get.helm.sh/helm-v3.19.3-linux-amd64.tar.gz" "39244958465c4be60f3815b3cf5ddc1904024cef3753bfd54667bfaefd8a0d1b"
 install_tool_from_tarball "age/age" "age" "https://github.com/FiloSottile/age/releases/download/v1.2.1/age-v1.2.1-linux-amd64.tar.gz" "aaec874ed903da4b02a9d503778ae05ee5005b2acc0f4a4cf10e5d0f17fd4384"
