@@ -251,21 +251,22 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: resume
-  - name: blog
-    protocol: HTTPS
-    port: 443
-    hostname: blog.{{{ .environment.domain }}}
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - kind: Secret
-        name: blog-certificate
-    allowedRoutes:
-      namespaces:
-        from: Selector
-        selector:
-          matchLabels:
-            namespace.kubernetes.io/name: blog
+  ### managed by github pages
+  # - name: blog
+  #   protocol: HTTPS
+  #   port: 443
+  #   hostname: blog.{{{ .environment.domain }}}
+  #   tls:
+  #     mode: Terminate
+  #     certificateRefs:
+  #     - kind: Secret
+  #       name: blog-certificate
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Selector
+  #       selector:
+  #         matchLabels:
+  #           namespace.kubernetes.io/name: blog
   - name: jcio
     protocol: HTTPS
     port: 443
