@@ -11,7 +11,7 @@ tasks:
   render:
     desc: "Render the templates"
     cmds:
-    - task: plato render
+    - plato render
 
   vendor:
     desc: "Vendor all files"
