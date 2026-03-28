@@ -37,11 +37,11 @@ config:
     http: 0.0.0.0:5558
 
   enablePasswordDB: true
-  staticPasswords:{{{ range .dex.static_users }}}
-  - email: "{{{ .email }}}"
-    hash: "{{{ .hash }}}"
-    username: "{{{ .username }}}"
-    userID: "{{{ .user_id }}}"{{{ end }}}
+  staticPasswords:
+  - email: "{{{ .dex.static_user.email }}}"
+    hash: "{{{ .dex.static_user.hash }}}"
+    username: "{{{ .dex.static_user.username }}}"
+    userID: "{{{ .dex.static_user.user_id }}}"
 
   staticClients:
   - id: envoy-gateway
