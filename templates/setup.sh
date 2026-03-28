@@ -9,6 +9,7 @@ source $(dirname ${BASH_SOURCE[0]})/.env* 1>/dev/null 2>&1 || true # source any 
 ########################################################################################################################
 export KUBECONFIG="$HOME/.kube/k8s-infrastructure"
 export LOCAL_WIREGUARD_FILE="$HOME/.tmp/hetzner0.conf"
+export KAPP_NAMESPACE="default"
 
 ########################################################################################################################
 # helper functions
@@ -207,5 +208,6 @@ if [ ! -f "$HOME/.kube/config" ]; then
 	cp -f "${KUBECONFIG}" "$HOME/.kube/config" || true
 	chmod 600 "$HOME/.kube/config" || true
 fi
+kubectl config set-context --current --namespace=default || true
 set -u
 set -o pipefail
