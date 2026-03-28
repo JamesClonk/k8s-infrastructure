@@ -8,10 +8,16 @@ tasks:
     cmds:
     - task -l
 
+  setup:
+    desc: "Setup environment"
+    cmds:
+    - bash setup.sh
+
   deploy:
     desc: "Deploy entire infrastructure and components"
     # deploy it all, all of it!
     cmds:
+    - task: setup
     # setup cluster on hetzner cloud
     - task: hetzner:deploy
     # let's own the kube-system namespace
