@@ -196,12 +196,16 @@ if [ ! -f "${KUBECONFIG}" ]; then
 		echo "checking for k8s-api on [${HETZNER_NODE_PRIVATE_IP}:6443] ..."
 		nc -vz "${HETZNER_NODE_PRIVATE_IP}" 6443 -w5 || export HETZNER_KUBERNETES_API_RUNNING="false"
 		if [ "${HETZNER_KUBERNETES_API_RUNNING}" == "true" ]; then
-			echo "writing [${KUBECONFIG}] for [${HETZNER_NODE_PRIVATE_IP}] ..."
+			echo "writing KUBECONFIG to [${KUBECONFIG}] for [${HETZNER_NODE_PRIVATE_IP}] ..."
 			ssh -p 22333 root@${HETZNER_NODE_PRIVATE_IP} \
 				'cat /etc/rancher/k3s/k3s.yaml' | sed "s/127.0.0.1/${HETZNER_NODE_PRIVATE_IP}/g" >"${KUBECONFIG}" || true
 		fi
 	fi
 fi
 chmod 600 "${KUBECONFIG}" || true
+if [ ! -f "$HOME/.kube/config" ]; then
+	cp -f "${KUBECONFIG}" "$HOME/.kube/config" || true
+	chmod 600 "$HOME/.kube/config" || true
+fi
 set -u
 set -o pipefail

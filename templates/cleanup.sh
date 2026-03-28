@@ -27,5 +27,9 @@ rm -f "$HOME/.ssh/id_rsa" || true
 ########################################################################################################################
 # kubectl config
 ########################################################################################################################
+if cmp "$HOME/.kube/config" "${KUBECONFIG}" 2>/dev/null; then
+	echo "removing [$HOME/.kube/config] ..."
+	rm -f "$HOME/.kube/config" || true
+fi
 echo "removing [${KUBECONFIG}] ..."
 rm -f "${KUBECONFIG}" || true
