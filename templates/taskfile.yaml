@@ -29,12 +29,12 @@ tasks:
     # and use github oauth/oidc
     - task: dex:deploy
     # it also never hurts to have a dashboard!
-    - task: headlamp:deploy
+    - task: headlamp:all
     # # we can always use a good database..
     - task: postgres:deploy
     # metrics, monitoring, alerting, logs, what would we do without those?
     - task: prometheus:deploy
-    - task: loki:deploy
+    - task: loki:all
     - task: vector:deploy
     - task: grafana:deploy
     # admire our work!
