@@ -22,7 +22,3 @@
 - go through all remaining "# TODO:" comments
 
 - implement OIDC via GitHub in Dex, add connector and test it
-
-- run a new pgbackup job after db cleanup, to make sure you got a backup after size reduction (in both, backman and pgbackup sidecar cronjob)
-
-- switch cx32 to cpx32 once ready for prod deployment
