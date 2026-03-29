@@ -36,7 +36,7 @@ tasks:
     - task: prometheus:all
     - task: loki:all
     - task: vector:deploy
-    - task: grafana:deploy
+    - task: grafana:all
     # admire our work!
     - task: list-apps
     # cleanup properly afterwards ...

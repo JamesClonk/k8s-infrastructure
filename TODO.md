@@ -28,7 +28,7 @@
 	- update main taskfile.yaml, change from :deploy to :all
 	- add k8s-testing spec for component:
 		- ~loki~
-		- grafana
+		- ~grafana~
 		- ~prometheus~
 		- postgres
 		- cert-manager
