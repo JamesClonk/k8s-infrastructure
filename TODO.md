@@ -29,7 +29,7 @@
 	- add k8s-testing spec for component:
 		- ~loki~
 		- grafana
-		- prometheus
+		- ~prometheus~
 		- postgres
 		- cert-manager
 		- ~headlamp~

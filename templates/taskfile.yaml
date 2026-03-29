@@ -33,7 +33,7 @@ tasks:
     # # we can always use a good database..
     - task: postgres:deploy
     # metrics, monitoring, alerting, logs, what would we do without those?
-    - task: prometheus:deploy
+    - task: prometheus:all
     - task: loki:all
     - task: vector:deploy
     - task: grafana:deploy
