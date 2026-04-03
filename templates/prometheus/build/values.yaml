@@ -1,6 +1,7 @@
 forceNamespace: prometheus
 
 server:
+  baseURL: "https://prometheus.{{{ .environment.domain }}}"
   ingress:
     enabled: false
 

@@ -59,4 +59,6 @@ postgres:
 
 alertmanager:
   email:
+    enabled: false
+  discord:
     enabled: true

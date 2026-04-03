@@ -20,6 +20,17 @@ data:
         auth_password: '{{{ .alertmanager.email.password }}}'
         send_resolved: false
       {{{- end }}}
+      {{{- if .alertmanager.discord.enabled }}}
+      discord_configs:
+      - webhook_url: '{{{ .alertmanager.discord.webhook_url }}}'
+        send_resolved: true
+        # title: '{{ .Status | toUpper }}{{ if eq .Status "firing" }} ({{ .Alerts.Firing | len }}){{ end }}'
+        # message: |-
+        #   {{ range .Alerts }}
+        #   **{{ .Annotations.title }}**
+        #   {{ .Annotations.description }}
+        #   {{ end }}
+      {{{- end }}}
     route:
       group_interval: 10m
       group_wait: 1m
