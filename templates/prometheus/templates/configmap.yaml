@@ -289,30 +289,3 @@ data:
           description: '{{ $labels.app_kubernetes_io_component }} is reporting collector errors!'
         labels:
           severity: warning
-
-    - name: promtail
-      rules:
-      - alert: GolangPanic
-        expr: avg(promtail_custom_app_panic_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
-        for: 5m
-        annotations:
-          title: '{{ $labels.app }}: Golang panic'
-          description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting Golang panics!'
-        labels:
-          severity: critical
-      - alert: Error
-        expr: avg(promtail_custom_app_error_total) by (app, app_kubernetes_io_name, app_kubernetes_io_component) > 0
-        for: 5m
-        annotations:
-          title: '{{ $labels.app }}: error'
-          description: '{{ $labels.app }}/{{ $labels.app_kubernetes_io_component }} is reporting errors.'
-        labels:
-          severity: info
-      - alert: PushFailure
-        expr: avg(promtail_custom_repo_mirrorer_failed_push) by (job) > 0
-        for: 10m
-        annotations:
-          title: '{{ $labels.job }}: push failure'
-          description: '{{ $labels.job }} is reporting push failures.'
-        labels:
-          severity: warning
