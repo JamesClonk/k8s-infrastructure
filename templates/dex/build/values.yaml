@@ -70,4 +70,4 @@ config:
     - 'https://wireguard.{{{ .environment.domain }}}/oauth2/callback'
     secret: "{{{ .dex.oidc_client_secret }}}"
 
-  connectors: [] # TODO: render with plato!!!
+  connectors: []
