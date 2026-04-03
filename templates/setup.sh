@@ -134,7 +134,10 @@ fi
 ########################################################################################################################
 if [ ! -d "$HOME/.tmp" ]; then mkdir "$HOME/.tmp"; fi
 chmod 700 "$HOME/.tmp" || true
-cp -f "$(dirname ${BASH_SOURCE[0]})/hetzner-k3s/wireguard_local.conf" "${LOCAL_WIREGUARD_FILE}"
+cp -f "$(dirname ${BASH_SOURCE[0]})/hetzner-k3s/wireguard_job.conf" "${LOCAL_WIREGUARD_FILE}"
+if [[ "$(hostname)" == "ULRXWP001" ]]; then
+	cp -f "$(dirname ${BASH_SOURCE[0]})/hetzner-k3s/wireguard_local.conf" "${LOCAL_WIREGUARD_FILE}"
+fi
 chmod 600 "${LOCAL_WIREGUARD_FILE}"
 sudo wg-quick up "${LOCAL_WIREGUARD_FILE}" || true
 

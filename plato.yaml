@@ -18,6 +18,8 @@ hetzner:
       port: 58585
     client:
       ip: 10.10.250.10
+    job:
+      ip: 10.10.250.15
 
   private_network:
     name: kubernetes
