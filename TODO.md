@@ -22,14 +22,3 @@
 - go through all remaining "# TODO:" comments
 
 - implement OIDC via GitHub in Dex, add connector and test it
-
-- implement k8s-testing specs
-	- update component taskfile.yaml, add :default, :all and :test tasks
-	- update main taskfile.yaml, change from :deploy to :all
-	- add k8s-testing spec for component:
-		- ~loki~
-		- ~grafana~
-		- ~prometheus~
-		- postgres
-		- cert-manager
-		- ~headlamp~

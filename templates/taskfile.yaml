@@ -31,7 +31,7 @@ tasks:
     # it also never hurts to have a dashboard!
     - task: headlamp:all
     # # we can always use a good database..
-    - task: postgres:deploy
+    - task: postgres:all
     # metrics, monitoring, alerting, logs, what would we do without those?
     - task: prometheus:all
     - task: loki:all
