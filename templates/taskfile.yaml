@@ -25,7 +25,7 @@ tasks:
     # we need some fancy gateway-api routing
     - task: envoy-gateway:deploy
     # and automatic let's encrypt certificate management
-    - task: cert-manager:deploy
+    - task: cert-manager:all
     # and use github oauth/oidc
     - task: dex:deploy
     # it also never hurts to have a dashboard!
