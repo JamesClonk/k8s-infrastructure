@@ -69,10 +69,10 @@ data:
       rules:
       - alert: Instance_Down
         expr: up == 0
-        for: 5m
+        for: 10m
         annotations:
           title: 'Instance {{ $labels.instance }} / {{ $labels.job }} down'
-          description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+          description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 10 minutes.'
         labels:
           severity: warning
 
@@ -98,11 +98,11 @@ data:
     - name: memory
       rules:
       - alert: Memory_Requests
-        expr: (sum(kube_pod_container_resource_requests{resource="memory"}) by (node) / sum(kube_node_status_allocatable{resource="memory"}) by (node) * 100) > 75
+        expr: (sum(kube_pod_container_resource_requests{resource="memory"}) by (node) / sum(kube_node_status_allocatable{resource="memory"}) by (node) * 100) > 70
         for: 5m
         annotations:
-          title: 'K8s node {{ $labels.instance }} memory resource requests > 75%'
-          description: 'Kubernetes node {{ $labels.instance }} has resource requests on memory over 75% for more than 5 minutes.'
+          title: 'K8s node {{ $labels.instance }} memory resource requests > 70%'
+          description: 'Kubernetes node {{ $labels.instance }} has resource requests on memory over 70% for more than 5 minutes.'
         labels:
           severity: warning
       - alert: Memory_Usage
@@ -136,11 +136,11 @@ data:
     - name: certificate
       rules:
       - alert: Certificate_Expiration
-        expr: min(nginx_ingress_controller_ssl_expire_time_seconds) by (host) - time() < 1234567
+        expr: (certmanager_certificate_expiration_timestamp_seconds - time()) / 86400 < 10
         for: 10m
         annotations:
-          title: 'K8s host {{ $labels.host }} certificate expiration'
-          description: 'The certificate of Kubernetes host/ingress {{ $labels.host }} is about to expire!'
+          title: 'Certificate {{ $labels.namespace }}/{{ $labels.name }} expiring soon'
+          description: 'Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in {{ $value | humanize }} days.'
         labels:
           severity: critical
 

@@ -50,7 +50,7 @@ spec:
         envFrom:
         - secretRef:
             name: postgres
-        resources: #@ resources(125, data.values.postgres.resources.memory_in_mb)
+        resources: #@ resources(90, data.values.postgres.resources.memory_in_mb)
         readinessProbe:
           exec:
             command:
@@ -103,7 +103,7 @@ spec:
             name: postgres
         resources:
           requests:
-            cpu: 200m
+            cpu: 150m
             memory: 32Mi
           limits:
             cpu: 500m
