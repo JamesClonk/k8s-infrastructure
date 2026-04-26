@@ -251,6 +251,21 @@ spec:
         selector:
           matchLabels:
             namespace.kubernetes.io/name: resume
+  - name: kaizagaden
+    protocol: HTTPS
+    port: 443
+    hostname: xn--kaizgden-k7ab.{{{ .environment.domain }}}
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: kaizagaden-certificate
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            namespace.kubernetes.io/name: kaizagaden
   ### managed by github pages
   # - name: blog
   #   protocol: HTTPS
