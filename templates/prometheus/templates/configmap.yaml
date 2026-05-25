@@ -186,14 +186,6 @@ data:
           description: 'PostgreSQL high number of queries per second on {{ $labels.instance }} for database {{ $labels.datname }} with a value of {{ $value }}'
         labels:
           severity: warning
-      - alert: PostgreSQL_CacheHitRatio
-        expr: avg(rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) / (rate(pg_stat_database_blks_hit{datname!~"template.*"}[5m]) + rate(pg_stat_database_blks_read{datname!~"template.*"}[5m]))) by (datname) < 0.96
-        for: 5m
-        annotations:
-          title: 'PostgreSQL low cache hit rate on {{ $labels.instance }} for database {{ $labels.datname }}'
-          description: 'PostgreSQL low on cache hit rate on {{ $labels.instance }} for database {{ $labels.datname }} with a value of {{ $value }}'
-        labels:
-          severity: warning
 
     - name: backman
       rules:
@@ -274,7 +266,7 @@ data:
         labels:
           severity: warning
       - alert: Client_Error
-        expr: rate(ircollector_api_client_request_error_total[5m]) > 0.05
+        expr: rate(ircollector_api_client_request_error_total[5m]) > 0.1
         for: 5m
         annotations:
           title: '{{ $labels.app_kubernetes_io_component }}: API client error'
@@ -282,7 +274,7 @@ data:
         labels:
           severity: warning
       - alert: Collector_Error
-        expr: rate(ircollector_errors_total[5m]) > 0.05
+        expr: rate(ircollector_errors_total[5m]) > 0.1
         for: 5m
         annotations:
           title: '{{ $labels.app_kubernetes_io_component }}: collector error'
